@@ -57,6 +57,15 @@ bool printCheckmarkOrderedAux(Node index_node, Node next_node,
 
 }
 
+void destroyList(Node ptr) {
+    while(ptr) {
+        Node toDelete = ptr;
+        ptr = ptr->next;
+        free(toDelete);
+    }
+}
+
+
 bool printCheckmarkOrdered(Node node) {
 
     if (node == NULL) { //empty list
@@ -76,10 +85,12 @@ bool printCheckmarkOrdered(Node node) {
 
     // recursive aux function
     if (printCheckmarkOrderedAux(new_node, node->next, false)) {
+        Node to_delete = new_node;
         while(new_node != NULL) {
             printf("%d ", new_node->data);
             new_node = new_node->next;
         }
+        destroyList(to_delete);
         return true;
     }
 
