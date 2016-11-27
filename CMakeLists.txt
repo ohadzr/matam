@@ -9,5 +9,7 @@ set(SOURCE_FILES hello_world.c)
 
 add_subdirectory(hw0/part1)
 add_subdirectory(hw0/part2)
+add_subdirectory(hw2)
+
 
 add_executable(matam ${SOURCE_FILES})
