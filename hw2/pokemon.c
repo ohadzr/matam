@@ -9,6 +9,8 @@
 #include "pokemon.h"
 
 
+#define NO_MOVES 0
+
 /********************************
  * Helper Function Declarations *
  ********************************/
@@ -22,21 +24,25 @@
 */
 static bool isValidType(PokemonType type);
 
+/**
+* This function allocate new memory for given pokemon name
+* then copy (deep copy) the name into the pokemon
+*
+* @return
+*   bool - return true if allocation successed, otherwise false
+*/
+static bool createPokemonName(Pokemon pokemon, char* name);
+
+/**
+* This function free the memory of a pokemon move (it's name
+* and move itself) by a given index
+*
+*/
+static void destroyPokemonMove(Pokemon pokemon, int move_index);
 
 /********************************
- *     Pokemon Funcs      *
+ *    Assistent Pokemon Funcs   *
  ********************************/
-
-
-/*void freeMoves(PokemonMove ptr) {
-    if (ptr != NULL) {
-        while (ptr) {
-            PokemonMove to_delete = ptr;
-            ptr = ptr->next;
-            free(to_delete);
-        }
-    }
-}*/
 
 bool isValidType(PokemonType type) {
     bool is_valid = false;
@@ -47,6 +53,29 @@ bool isValidType(PokemonType type) {
     return is_valid;
 }
 
+bool createPokemonName(Pokemon pokemon, char* name){
+    if (pokemon != NULL) {
+        pokemon->name = malloc(sizeof(*name)+1);
+        if (pokemon->name != NULL) {
+            strcpy(pokemon->name, name);
+            pokemon->name[sizeof(*name)] = '\0';
+            return true;
+        }
+
+    }
+    return false;
+}
+
+void destroyPokemonMove(Pokemon pokemon, int move_index) {
+    if (pokemon != NULL) {
+        free(pokemon->moves[move_index]->name);
+        free(pokemon->moves[move_index]);
+    }
+}
+
+/********************************
+ *          Pokemon Funcs       *
+ ********************************/
 
 Pokemon pokemonCreate(char* name, PokemonType type, int experience,
                       int max_number_of_moves){
@@ -57,9 +86,10 @@ Pokemon pokemonCreate(char* name, PokemonType type, int experience,
 
         pokemon = malloc(sizeof(*pokemon));
         if (pokemon != NULL) {
-            pokemon->name = name;
+            createPokemonName(pokemon, name);
             pokemon->type = type;
             pokemon->experience = experience;
+            pokemon->number_of_moves = NO_MOVES;
             pokemon->max_number_of_moves = max_number_of_moves;
             pokemonHeal(pokemon);
         }
@@ -69,7 +99,36 @@ Pokemon pokemonCreate(char* name, PokemonType type, int experience,
 
 void pokemonDestroy(Pokemon pokemon) {
     if (pokemon != NULL) {
-        // TODO: free moves and name
-        free(pokemon);
+        free(pokemon->name); // free name
+        // free moves
+        for (int i = pokemon->number_of_moves-1; i >= 0 ; i--) {
+            destroyPokemonMove(pokemon,i);
+        }
+        free(pokemon->moves); // free moves pointer array
+        free(pokemon); // free pokemon
     }
+}
+
+Pokemon pokemonCopy(Pokemon pokemon) {
+    Pokemon new_pokemon = NULL;
+    if (pokemon != NULL) {
+        new_pokemon = malloc(sizeof(*new_pokemon));
+        if (new_pokemon != NULL){
+            createPokemonName(new_pokemon, pokemon->name);
+            new_pokemon->type = pokemon->type;
+            new_pokemon->health_points = pokemon->health_points;
+            new_pokemon->experience = pokemon->experience;
+            //TODO: copy moves
+            new_pokemon->number_of_moves = pokemon->number_of_moves;
+            new_pokemon->max_number_of_moves = pokemon->max_number_of_moves;
+        }
+    }
+    return new_pokemon;
+}
+
+
+PokemonResult pokemonTeachMove(Pokemon pokemon, char* move_name,
+                               PokemonType type, int max_power_points,
+                               int strength){
+
 }
