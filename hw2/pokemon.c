@@ -98,6 +98,16 @@ static int pokemonGetFactor(PokemonType move_type, PokemonType opponent_type);
 */
 static void raisePokemonExperience(Pokemon pokemon, int extra_experience);
 
+
+/**
+* This function checks if a character is a valid letter or not
+*
+* @return
+*   bool - true if letter, otherwise false
+*/
+static bool isLetter(char letter);
+
+
 /********************************
  *    Assistent Pokemon Funcs   *
  ********************************/
@@ -194,6 +204,15 @@ void raisePokemonExperience(Pokemon pokemon, int extra_experience) {
 }
 
 
+bool isLetter(char letter) {
+    if ((letter > 'a' && letter < 'z') ||
+        (letter > 'A' && letter < 'Z')) {
+        return true;
+    }
+    return false;
+}
+
+
 /********************************
  *          Pokemon Funcs       *
  ********************************/
@@ -202,9 +221,10 @@ Pokemon pokemonCreate(char* name, PokemonType type, int experience,
                       int max_number_of_moves){
     Pokemon pokemon = NULL;
     bool allocate_successfully;
-    if (name != NULL && strlen(name) != 0 \
+    if (name != NULL && strcmp(name,"") != SAME_STRINGS \
         && isValidType(type) != POKEMON_INVALID_TYPE \
-        && experience > 0 && experience <= 9901 && max_number_of_moves > 0) {
+        && experience > 0 && experience <= MAX_EXPERIENCE_POINTS \
+        && max_number_of_moves > 0) {
 
         pokemon = malloc(sizeof(*pokemon));
         if (pokemon != NULL) {
@@ -215,10 +235,14 @@ Pokemon pokemonCreate(char* name, PokemonType type, int experience,
             pokemonHeal(pokemon);
             pokemon->moves =
                     malloc(sizeof(*(pokemon->moves))*max_number_of_moves); //TODO: ask if this is correct
-            if (pokemon->moves == NULL) return NULL;
+            if (pokemon->moves == NULL) {
+                free(pokemon);
+                return NULL;
+            }
             allocate_successfully = createName(pokemon->name, name);
-            if (!allocate_successfully){
-                pokemonDestroy(pokemon);
+            if (!allocate_successfully) {
+                free(pokemon->moves);
+                free(pokemon);
                 return NULL;
             }
         }
@@ -257,7 +281,6 @@ Pokemon pokemonCopy(Pokemon pokemon) {
     }
     return new_pokemon;
 }
-
 
 
 PokemonResult pokemonTeachMove(Pokemon pokemon, char* move_name,
@@ -389,7 +412,7 @@ PokemonResult pokemonEvolve(Pokemon pokemon, char* new_name) {
     free(pokemon->name);
     createName(pokemon->name,new_name);
 
-    int experience = (pokemonGetLevel(pokemon)+1)*LEVEL_PARAMETER; //TODO: should be macro?
+    int experience = (pokemonGetLevel(pokemon)+1)*LEVEL_PARAMETER; //TODO: should be a macro?
     pokemon->experience = experience;
 
     return POKEMON_SUCCESS;
@@ -402,3 +425,26 @@ PokemonResult pokemonPrintName(Pokemon pokemon, FILE* file) {
     return POKEMON_SUCCESS;
 }
 
+
+PokemonResult pokemonPrintVoice(Pokemon pokemon, FILE* file) {
+    if (pokemon == NULL || file == NULL) return POKEMON_NULL_ARG;
+    char pokemon_voice[strlen(pokemon->name)]; //TODO: is this allowed? I shouldn't use malloc...
+    int pokemon_name_size=0, index=0;
+
+    while(pokemon->name[index] != '\0') {
+        if (isLetter(pokemon->name[index])) {
+            pokemon_voice[pokemon_name_size] = pokemon->name[index];
+            pokemon_name_size++;
+        }
+        index++;
+    }
+
+    int half_pokemon_name_size = (pokemon_name_size/2) + (pokemon_name_size%2);
+
+    pokemon_voice[half_pokemon_name_size] = '\0';
+    fprintf(file, "%s",pokemon_voice);
+    fprintf(file, "-");
+    fprintf(file, "%s",pokemon_voice);
+
+    return POKEMON_SUCCESS;
+}
