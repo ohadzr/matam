@@ -356,13 +356,25 @@ PokemonResult pokemonUseMove(Pokemon pokemon, Pokemon opponent_pokemon,
     int extra_experience = opponent_pokemon->health_points;
 
     opponent_pokemon->health_points -=
-            factor*(attacker_level*2 + pokemon->moves[move_index]->strength);
-    if (opponent_pokemon->health_points < 0) {
+            factor*(attacker_level*2 + pokemon->moves[move_index]->strength); //TODO: should be macro?
+    if (opponent_pokemon->health_points < 0) { //TODO:is zero allowed here? no const.?
         opponent_pokemon->health_points = 0;
     }
 
     pokemon->moves[move_index]->power_points--;
     extra_experience -= opponent_pokemon->health_points;
     raisePokemonExperience(pokemon, extra_experience);
+    return POKEMON_SUCCESS;
+}
+
+
+PokemonResult pokemonHeal(Pokemon pokemon) {
+    if (pokemon == NULL) return POKEMON_NULL_ARG;
+    int level = pokemonGetLevel(pokemon);
+    pokemon->health_points = (100 + level)*10; //TODO: should be macro?
+
+    for (int i=0; i<pokemon->number_of_moves; i++) {
+        pokemon->moves[i]->power_points = pokemon->moves[i]->max_power_points;
+    }
     return POKEMON_SUCCESS;
 }
