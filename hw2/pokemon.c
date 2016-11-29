@@ -12,6 +12,9 @@
 #define NO_MOVES 0
 #define SAME_STRINGS 0
 #define LEVEL_PARAMETER 100
+#define NORMAL_FACTOR 1
+#define BIG_FACTOR 2
+#define MAX_EXPERIENCE_POINTS 9901
 
 /********************************
  * Helper Function Declarations *
@@ -77,6 +80,24 @@ static PokemonResult checkMoveValidation(Pokemon pokemon, char* move_name,
                                         PokemonType type, int max_power_points,
                                         int strength);
 
+
+/**
+* This function checks if a big factor is supposed be to
+* an attacking move
+*
+* @return
+*   int - BIG_FACTOR or NORMAL_FACTOR
+*/
+static int pokemonGetFactor(PokemonType move_type, PokemonType opponent_type);
+
+/**
+* This function raise the experience points of a pokemon by the given points.
+* A pokemon can't have more than MAX_EXPERIENCE_POINTS so if experience
+* are more than MAX_EXPERIENCE_POINTS they become MAX_EXPERIENCE_POINTS
+*
+*/
+static void raisePokemonExperience(Pokemon pokemon, int extra_experience);
+
 /********************************
  *    Assistent Pokemon Funcs   *
  ********************************/
@@ -138,8 +159,8 @@ PokemonResult checkMoveValidation(Pokemon pokemon, char* move_name,
                                   PokemonType type, int max_power_points,
                                   int strength) {
     int move_index;
-    if (pokemon == NULL) return POKEMON_NULL_ARG;
-    if (move_name == NULL || strcmp(move_name,"") == SAME_STRINGS)
+    if (pokemon == NULL || move_name == NULL) return POKEMON_NULL_ARG;
+    if (strcmp(move_name,"") == SAME_STRINGS)
         return POKEMON_INVALID_MOVE_NAME;
     if (!isValidType(type)) return POKEMON_INVALID_TYPE;
     if (max_power_points <= 0) return POKEMON_INVALID_POWER_POINTS;
@@ -150,6 +171,28 @@ PokemonResult checkMoveValidation(Pokemon pokemon, char* move_name,
         return POKEMON_MOVE_ALREADY_EXISTS;
     return NULL;
 }
+
+
+int pokemonGetFactor(PokemonType move_type, PokemonType opponent_type) {
+    if ((move_type == TYPE_WATER && opponent_type == TYPE_FIRE) || \
+        (move_type == TYPE_FIRE && opponent_type == TYPE_GRASS) || \
+        (move_type == TYPE_GRASS && opponent_type == TYPE_WATER) || \
+        (move_type == TYPE_ELECTRIC && opponent_type == TYPE_WATER))
+        return BIG_FACTOR;
+
+    return NORMAL_FACTOR;
+}
+
+
+void raisePokemonExperience(Pokemon pokemon, int extra_experience) {
+    int experience = pokemon->experience;
+    experience += extra_experience;
+    if (experience > MAX_EXPERIENCE_POINTS){
+        experience = MAX_EXPERIENCE_POINTS;
+    }
+    pokemon->experience = experience;
+}
+
 
 /********************************
  *          Pokemon Funcs       *
@@ -294,3 +337,32 @@ int pokemonGetRank(Pokemon pokemon) {
 }
 
 
+PokemonResult pokemonUseMove(Pokemon pokemon, Pokemon opponent_pokemon,
+                             char* move_name) {
+    int move_index;
+    if (pokemon == NULL || opponent_pokemon == NULL || move_name == NULL)
+        return POKEMON_NULL_ARG;
+    if (strcmp(move_name,"")) return POKEMON_INVALID_MOVE_NAME;
+    if (!doesPokemonMoveExists(pokemon,move_name,&move_index))
+        return POKEMON_MOVE_DOES_NOT_EXIST;
+    if (pokemon->moves[move_index]->power_points == 0)
+        return POKEMON_NO_POWER_POINTS;
+    if (pokemon->health_points == 0 || opponent_pokemon->health_points == 0)
+        return POKEMON_NO_HEALTH_POINTS;
+
+    int attacker_level = pokemonGetLevel(pokemon);
+    int factor = pokemonGetFactor(pokemon->moves[move_index]->type,
+                                  opponent_pokemon->type);
+    int extra_experience = opponent_pokemon->health_points;
+
+    opponent_pokemon->health_points -=
+            factor*(attacker_level*2 + pokemon->moves[move_index]->strength);
+    if (opponent_pokemon->health_points < 0) {
+        opponent_pokemon->health_points = 0;
+    }
+
+    pokemon->moves[move_index]->power_points--;
+    extra_experience -= opponent_pokemon->health_points;
+    raisePokemonExperience(pokemon, extra_experience);
+    return POKEMON_SUCCESS;
+}
