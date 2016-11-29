@@ -389,10 +389,16 @@ PokemonResult pokemonEvolve(Pokemon pokemon, char* new_name) {
     free(pokemon->name);
     createName(pokemon->name,new_name);
 
-    int experience = (pokemonGetLevel(pokemon)+1)*LEVEL_PARAMETER;
+    int experience = (pokemonGetLevel(pokemon)+1)*LEVEL_PARAMETER; //TODO: should be macro?
     pokemon->experience = experience;
 
     return POKEMON_SUCCESS;
 }
 
+
+PokemonResult pokemonPrintName(Pokemon pokemon, FILE* file) {
+    if (pokemon == NULL || file == NULL) return POKEMON_NULL_ARG;
+    fprintf(file, pokemon->name);
+    return POKEMON_SUCCESS;
+}
 
