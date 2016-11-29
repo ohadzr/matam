@@ -410,7 +410,7 @@ PokemonResult pokemonEvolve(Pokemon pokemon, char* new_name) {
         return POKEMON_CANNOT_EVOLVE;
 
     free(pokemon->name);
-    createName(pokemon->name,new_name);
+    if(!createName(pokemon->name,new_name)) return POKEMON_OUT_OF_MEM; //TODO: if allocation fails - should the old name be in pokemon or not?
 
     int experience = (pokemonGetLevel(pokemon)+1)*LEVEL_PARAMETER; //TODO: should be a macro?
     pokemon->experience = experience;
@@ -428,7 +428,8 @@ PokemonResult pokemonPrintName(Pokemon pokemon, FILE* file) {
 
 PokemonResult pokemonPrintVoice(Pokemon pokemon, FILE* file) {
     if (pokemon == NULL || file == NULL) return POKEMON_NULL_ARG;
-    char pokemon_voice[strlen(pokemon->name)]; //TODO: is this allowed? I shouldn't use malloc...
+    char* pokemon_voice = malloc(sizeof(char)*strlen(pokemon->name));
+    if (pokemon_voice == NULL) return POKEMON_OUT_OF_MEM;
     int pokemon_name_size=0, index=0;
 
     while(pokemon->name[index] != '\0') {
@@ -445,6 +446,8 @@ PokemonResult pokemonPrintVoice(Pokemon pokemon, FILE* file) {
     fprintf(file, "%s",pokemon_voice);
     fprintf(file, "-");
     fprintf(file, "%s",pokemon_voice);
+
+    free(pokemon_voice);
 
     return POKEMON_SUCCESS;
 }

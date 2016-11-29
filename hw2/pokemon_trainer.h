@@ -22,20 +22,31 @@ typedef struct pokemon_trainer_t {
 
 PokemonTrainer pokemonTrainerCreate(char* name, Pokemon initial_pokemon,
 	int max_num_local, int max_num_remote);
+
 void pokemonTrainerDestroy(PokemonTrainer trainer);
+
 PokemonTrainer pokemonTrainerCopy(PokemonTrainer trainer);
+
 PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
 	Pokemon pokemon);
+
 Pokemon pokemonTrainerGetPokemon(PokemonTrainer trainer, int pokemon_index);
+
 PokemonTrainerResult pokemonTrainerRemovePokemon(
 	PokemonTrainer trainer, int pokemon_index);
+
 PokemonTrainerResult pokemonTrainerDepositPokemon(
 	PokemonTrainer trainer, int pokemon_index);
+
 PokemonTrainerResult pokemonTrainerWithdrawPokemon(
 	PokemonTrainer trainer, int pokemon_index);
+
 int pokemonTrainerGetNumberOfPokemons(PokemonTrainer trainer);
+
 Pokemon pokemonTrainerGetMostRankedPokemon(PokemonTrainer trainer);
+
 PokemonTrainerResult pokemonTrainerMakeMostRankedParty(PokemonTrainer trainer);
+
 PokemonTrainerResult pokemonTrainerPrintEnumeration(
 	PokemonTrainer trainer, FILE* file);
 
