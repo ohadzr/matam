@@ -11,6 +11,7 @@
 
 #define SAME_STRINGS 0
 #define NO_POKEMONS 0
+#define MIN_POKEMON_INDEX 1
 
 
 /********************************
@@ -126,6 +127,7 @@ void pokemonTrainerDestroy(PokemonTrainer trainer) {
         for (int i = trainer->num_of_pokemons_local-1; i >= 0 ; i--) {
             pokemonDestroy(trainer->pokemons_local[i]);
         }
+        // duplication - but creating a function for 3 lines is redundant TODO:should I create a function?
         for (int j = trainer->num_of_pokemons_remote-1; j >= 0 ; j--) {
             pokemonDestroy(trainer->pokemons_remote[j]);
         }
@@ -133,4 +135,57 @@ void pokemonTrainerDestroy(PokemonTrainer trainer) {
         free(trainer->pokemons_remote);
         free(trainer);
     }
+}
+
+
+PokemonTrainer pokemonTrainerCopy(PokemonTrainer trainer) {
+    if (trainer == NULL) return NULL;
+    PokemonTrainer new_trainer = pokemonTrainerCreate(trainer->name,
+                trainer->pokemons_local[0],trainer->max_num_of_pokemons_local,
+                                         trainer->max_num_of_pokemons_remote);
+    if (new_trainer == NULL) return NULL;
+
+    for (int i=1; i<trainer->num_of_pokemons_local; i++) {
+        if (pokemonTrainerAddPokemon(new_trainer, trainer->pokemons_local[i]) \
+                                     != POKEMON_TRAINER_SUCCESS) {
+            pokemonTrainerDestroy(new_trainer);
+            return NULL;
+        }
+        new_trainer->num_of_pokemons_local++;
+    }
+    // TODO: should duplicated code should move to another function? how?
+    for (int j=1; j<trainer->num_of_pokemons_remote; j++) {
+        if (pokemonTrainerAddPokemon(new_trainer, trainer->pokemons_remote[j]) \
+                                     != POKEMON_TRAINER_SUCCESS) {
+            pokemonTrainerDestroy(new_trainer);
+            return NULL;
+        }
+        new_trainer->num_of_pokemons_remote++;
+    }
+    return new_trainer;
+}
+
+PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
+                                              Pokemon pokemon) {
+    if (trainer == NULL || pokemon == NULL) return POKEMON_TRAINER_NULL_ARG;
+    if (trainer->num_of_pokemons_local == trainer->max_num_of_pokemons_local)
+        return POKEMON_TRAINER_PARTY_FULL;
+
+    trainer->pokemons_local[trainer->num_of_pokemons_local] = \
+            pokemonCopy(pokemon);
+    if (trainer->pokemons_local[trainer->num_of_pokemons_local] == NULL)
+        return POKEMON_TRAINER_OUT_OF_MEM;
+
+    trainer->pokemons_local++;
+
+    return POKEMON_TRAINER_SUCCESS;
+}
+
+Pokemon pokemonTrainerGetPokemon(PokemonTrainer trainer, int pokemon_index) {
+    if (trainer == NULL || pokemon_index < MIN_POKEMON_INDEX || \
+        pokemon_index > trainer->num_of_pokemons_local) {
+        return NULL;
+    }
+
+    return trainer->pokemons_local[pokemon_index-1];
 }

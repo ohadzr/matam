@@ -50,11 +50,36 @@ PokemonTrainer pokemonTrainerCreate(char* name, Pokemon initial_pokemon,
 */
 void pokemonTrainerDestroy(PokemonTrainer trainer);
 
+/**
+* Creates a newly allocated copy of a given pokemon trainer.
+*
+* @return
+*   A newly allocated copy of the original pokemon trainer.
+*   NULL if the trainer  is NULL or in any case of memory allocation failure.
+*/
 PokemonTrainer pokemonTrainerCopy(PokemonTrainer trainer);
 
+/**
+* Add the a pokemon to a given trainer.
+* The new pokemon is a copy of given pokemon.
+* The pokemon index is the number of pokemons the trainer has.
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer or pokemon is NULL.
+* 	POKEMON_TRAINER_PARTY_FULL if number of local pokemons reached max.
+* 	POKEMON_SUCCESS otherwise.
+*/
 PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
 	Pokemon pokemon);
 
+/**
+* Find and return a pokemon by given index
+*
+* @return
+* NULL if trainer is NULL or if pokemon_index is invalid (lower than 1 or
+* bigger than num_of_pokemons_local).
+* Pokemon - by the given index, otherwise.
+*/
 Pokemon pokemonTrainerGetPokemon(PokemonTrainer trainer, int pokemon_index);
 
 PokemonTrainerResult pokemonTrainerRemovePokemon(
