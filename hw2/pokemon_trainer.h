@@ -44,6 +44,10 @@ typedef struct pokemon_trainer_t {
 PokemonTrainer pokemonTrainerCreate(char* name, Pokemon initial_pokemon,
 	int max_num_local, int max_num_remote);
 
+/**
+* Frees all memory allocated for the given pokemon trainer.
+* This function can receive NULL. In this case, no action will be taken.
+*/
 void pokemonTrainerDestroy(PokemonTrainer trainer);
 
 PokemonTrainer pokemonTrainerCopy(PokemonTrainer trainer);

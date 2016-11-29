@@ -60,26 +60,25 @@ bool createName(char* dst_name, char* name) {
 bool pokemonTrainerCreateAllocateFields(PokemonTrainer trainer,
                                         char* name, Pokemon initial_pokemon,
                                         int max_num_local, int max_num_remote) {
-    bool allocate_successfully = true;
     trainer->pokemons_local = \
                     malloc(sizeof(*(trainer->pokemons_local))*max_num_local);
     if (trainer->pokemons_local == NULL) {
         free(trainer);
-        allocate_successfully = false;
+        return false;
     }
     trainer->pokemons_remote = \
                     malloc(sizeof(*(trainer->pokemons_remote))*max_num_remote);
     if (trainer->pokemons_remote == NULL) {
         free(trainer->pokemons_local);
         free(trainer);
-        allocate_successfully = false;
+        return false;
     }
-    if (!createName(trainer->name, name)) allocate_successfully = false;
+    bool allocate_successfully = createName(trainer->name, name);
     if (!allocate_successfully) {
         free(trainer->pokemons_remote);
         free(trainer->pokemons_local);
         free(trainer);
-        allocate_successfully = false;
+        return false;
     }
     trainer->pokemons_local[0] = pokemonCopy(initial_pokemon);
     if (trainer->pokemons_local[0] == NULL){
@@ -87,8 +86,9 @@ bool pokemonTrainerCreateAllocateFields(PokemonTrainer trainer,
         free(trainer->pokemons_remote);
         free(trainer->pokemons_local);
         free(trainer);
+        return false;
     }
-    return allocate_successfully;
+    return true;
 }
 
 
@@ -116,4 +116,21 @@ PokemonTrainer pokemonTrainerCreate(char* name, Pokemon initial_pokemon,
     trainer->num_of_pokemons_local++;
 
     return trainer;
+}
+
+
+void pokemonTrainerDestroy(PokemonTrainer trainer) {
+    if (trainer != NULL) {
+        free(trainer->name);
+
+        for (int i = trainer->num_of_pokemons_local-1; i >= 0 ; i--) {
+            pokemonDestroy(trainer->pokemons_local[i]);
+        }
+        for (int j = trainer->num_of_pokemons_remote-1; j >= 0 ; j--) {
+            pokemonDestroy(trainer->pokemons_remote[j]);
+        }
+        free(trainer->pokemons_local); //TODO: ask if this correct
+        free(trainer->pokemons_remote);
+        free(trainer);
+    }
 }
