@@ -76,12 +76,26 @@ PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
 * Find and return a pokemon by given index
 *
 * @return
-* NULL if trainer is NULL or if pokemon_index is invalid (lower than 1 or
-* bigger than num_of_pokemons_local).
-* Pokemon - by the given index, otherwise.
+*   NULL if trainer is NULL or if pokemon_index is invalid (lower than 1 or
+*   bigger than num_of_pokemons_local).
+*   Pokemon - by the given index, otherwise.
 */
 Pokemon pokemonTrainerGetPokemon(PokemonTrainer trainer, int pokemon_index);
 
+
+/**
+* Remove a pokemon from a trainer (local pokemon). Can't remove last pokemon.
+* Pokemon index must be valid (lower than 1 or bigger than
+* num_of_pokemons_local).
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer is NULL.
+* 	POKEMON_TRAINER_INVALID_INDEX if pokemon_index is invalid (lower than 1 or
+*   bigger than num_of_pokemons_local).
+*   POKEMON_TRAINER_REMOVE_LAST if the pokemon trainer has one last pokemon
+*   locally.
+* 	POKEMON_SUCCESS otherwise.
+*/
 PokemonTrainerResult pokemonTrainerRemovePokemon(
 	PokemonTrainer trainer, int pokemon_index);
 

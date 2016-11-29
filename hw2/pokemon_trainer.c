@@ -12,6 +12,7 @@
 #define SAME_STRINGS 0
 #define NO_POKEMONS 0
 #define MIN_POKEMON_INDEX 1
+#define LAST_POKEMON 1
 
 
 /********************************
@@ -188,4 +189,31 @@ Pokemon pokemonTrainerGetPokemon(PokemonTrainer trainer, int pokemon_index) {
     }
 
     return trainer->pokemons_local[pokemon_index-1];
+}
+
+
+PokemonTrainerResult pokemonTrainerRemovePokemon(
+        PokemonTrainer trainer, int pokemon_index) {
+    if (trainer == NULL) return POKEMON_TRAINER_NULL_ARG;
+    if (pokemon_index < MIN_POKEMON_INDEX || \
+    pokemon_index > trainer->num_of_pokemons_local) {
+        return POKEMON_TRAINER_INVALID_INDEX;
+    }
+    if (trainer->num_of_pokemons_local == LAST_POKEMON)
+        return POKEMON_TRAINER_REMOVE_LAST;
+
+    Pokemon pokemon = pokemonTrainerGetPokemon(trainer, pokemon_index);
+    if (pokemon == NULL) return POKEMON_TRAINER_OUT_OF_MEM;
+
+    pokemonDestroy(pokemon);
+
+    // fix pokemons indexes
+    int i=pokemon_index-1;
+    for ( ; i < trainer->num_of_pokemons_local-1; i++){
+        trainer->pokemons_local[i] = trainer->pokemons_local[i+1];
+    }
+    //pokemon->moves[i] = NULL; // remove duplicate pointer NOT freeing move TODO:should I remove duplicated pointer?
+    trainer->num_of_pokemons_local--;
+
+    return POKEMON_TRAINER_SUCCESS;
 }
