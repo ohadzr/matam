@@ -18,8 +18,29 @@ typedef enum {
 
 typedef struct pokemon_trainer_t {
 	// TODO: Add fields here
+    char* name;
+    Pokemon* pokemons_local;
+    Pokemon* pokemons_remote;
+    int num_of_pokemons_local, num_of_pokemons_remote;
+    int max_num_of_pokemons_local, max_num_of_pokemons_remote;
 } *PokemonTrainer;
 
+/**
+* Creates a new pokemon trainer.
+* The trainer has a name property,
+* pokemon list that get initialized with a first given pokemon.
+*
+* The max_num_local parameter sets the maximum amount of pokemons that the
+* trainer is allowed to have on him at any given time.
+* The max_num_remote parameter sets the maximum amount of pokemons that the
+* trainer is allowed to have at the professor at any given time.
+*
+* @return
+* 	A new allocated pokemon trainer.
+* 	If name is NULL or empty, initial_pokemon is NULL, max_num_local or
+*   max_num_remote is not positive, or in case of a memory allocation failure
+*   - return NULL.
+**/
 PokemonTrainer pokemonTrainerCreate(char* name, Pokemon initial_pokemon,
 	int max_num_local, int max_num_remote);
 

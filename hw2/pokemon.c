@@ -29,9 +29,11 @@
 */
 static bool isValidType(PokemonType type);
 
+// TODO: shouldn't be static? same function in pokemon_trainer.c
 /**
 * This function allocate new memory for given pokemon name / move name
-* then copy (deep copy) the name into the pokemon
+* then copy (deep copy) the name into the pokemon / move
+*
 *
 * @return
 *   bool - return true if allocation successed, otherwise false
@@ -221,32 +223,34 @@ Pokemon pokemonCreate(char* name, PokemonType type, int experience,
                       int max_number_of_moves){
     Pokemon pokemon = NULL;
     bool allocate_successfully;
-    if (name != NULL && strcmp(name,"") != SAME_STRINGS \
-        && isValidType(type) != POKEMON_INVALID_TYPE \
-        && experience > 0 && experience <= MAX_EXPERIENCE_POINTS \
-        && max_number_of_moves > 0) {
-
-        pokemon = malloc(sizeof(*pokemon));
-        if (pokemon != NULL) {
-            pokemon->type = type;
-            pokemon->experience = experience;
-            pokemon->number_of_moves = NO_MOVES;
-            pokemon->max_number_of_moves = max_number_of_moves;
-            pokemonHeal(pokemon);
-            pokemon->moves =
-                    malloc(sizeof(*(pokemon->moves))*max_number_of_moves); //TODO: ask if this is correct
-            if (pokemon->moves == NULL) {
-                free(pokemon);
-                return NULL;
-            }
-            allocate_successfully = createName(pokemon->name, name);
-            if (!allocate_successfully) {
-                free(pokemon->moves);
-                free(pokemon);
-                return NULL;
-            }
-        }
+    if (name == NULL || strcmp(name,"") == SAME_STRINGS \
+        || isValidType(type) == POKEMON_INVALID_TYPE \
+        || experience <= 0 || experience > MAX_EXPERIENCE_POINTS \
+        || max_number_of_moves <= 0) {
+        return NULL;
     }
+    pokemon = malloc(sizeof(*pokemon));
+    if (pokemon == NULL) return NULL;
+
+    pokemon->type = type;
+    pokemon->experience = experience;
+    pokemon->number_of_moves = NO_MOVES;
+    pokemon->max_number_of_moves = max_number_of_moves;
+    pokemonHeal(pokemon);
+    pokemon->moves =
+            malloc(sizeof(*(pokemon->moves))*max_number_of_moves); //TODO: ask if this is correct
+    if (pokemon->moves == NULL) {
+        free(pokemon);
+        return NULL;
+    }
+    allocate_successfully = createName(pokemon->name, name);
+    if (!allocate_successfully) {
+        free(pokemon->moves);
+        free(pokemon);
+        return NULL;
+    }
+
+
     return pokemon;
 }
 
