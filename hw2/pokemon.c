@@ -342,7 +342,7 @@ PokemonResult pokemonUseMove(Pokemon pokemon, Pokemon opponent_pokemon,
     int move_index;
     if (pokemon == NULL || opponent_pokemon == NULL || move_name == NULL)
         return POKEMON_NULL_ARG;
-    if (strcmp(move_name,"")) return POKEMON_INVALID_MOVE_NAME;
+    if (strcmp(move_name,"") == SAME_STRINGS) return POKEMON_INVALID_MOVE_NAME;
     if (!doesPokemonMoveExists(pokemon,move_name,&move_index))
         return POKEMON_MOVE_DOES_NOT_EXIST;
     if (pokemon->moves[move_index]->power_points == 0)
@@ -378,3 +378,21 @@ PokemonResult pokemonHeal(Pokemon pokemon) {
     }
     return POKEMON_SUCCESS;
 }
+
+
+PokemonResult pokemonEvolve(Pokemon pokemon, char* new_name) {
+    if (pokemon == NULL || new_name == NULL) return POKEMON_NULL_ARG;
+    if (strcmp(new_name,"") == SAME_STRINGS) return POKEMON_INVALID_NAME;
+    if (pokemon->experience == MAX_EXPERIENCE_POINTS)
+        return POKEMON_CANNOT_EVOLVE;
+
+    free(pokemon->name);
+    createName(pokemon->name,new_name);
+
+    int experience = (pokemonGetLevel(pokemon)+1)*LEVEL_PARAMETER;
+    pokemon->experience = experience;
+
+    return POKEMON_SUCCESS;
+}
+
+
