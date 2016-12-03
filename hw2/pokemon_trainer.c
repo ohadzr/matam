@@ -51,14 +51,67 @@ static bool pokemonTrainerCreateAllocateFields(PokemonTrainer trainer,
 static void fixPokemonIndexes(PokemonTrainer trainer, int starting_index,
                               bool is_local);
 
-
+/**
+* Aux function for @pokemonTrainerDepositPokemon and
+* @pokemonTrainerWithdrawPokemon Remove a pokemon from a trainer locally [or
+ * remote pokemon] and send it to the professor remote pokemon
+* [or back to trainer].
+*
+* Pokemon index must be valid (lower than 1 or bigger than
+* num_of_pokemons_local). The remote pokemon index is the number of remote
+* pokemons (include him). local pokemons indexes are changed.
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer is NULL.
+* 	POKEMON_TRAINER_INVALID_INDEX if pokemon_index is invalid (lower than 1 or
+*   bigger than num_of_pokemons_local).
+*   POKEMON_TRAINER_DEPOSIT_LAST if it's last local pokemon, and he cannot
+*   deposit it (only in case of deposit).
+*   POKEMON_TRAINER_DEPOSIT_FULL if the professor's deposit is full and can't
+*   have more pokemons (only in case of deposit).
+*   POKEMON_TRAINER_PARTY_FULL if trainer's deposit is full and can't have
+*   more pokemons (only in case of withdraw).
+* 	POKEMON_SUCCESS otherwise.
+*/
 static PokemonTrainerResult pokemonTrainerDepositOrWithdrawPokemon(
         PokemonTrainer trainer, int pokemon_index, bool is_desposit);
 
+/**
+* Aux function to @pokemonTrainerRemovePokemon.
+* Remove a pokemon from a trainer (local or remote pokemon).
+* Can't remove last pokemon.
+* Pokemon index must be valid (lower than 1 or bigger than
+* num_of_pokemons_local).
+*
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer is NULL.
+* 	POKEMON_TRAINER_INVALID_INDEX if pokemon_index is invalid (lower than 1 or
+*   bigger than num_of_pokemons_local).
+*   POKEMON_TRAINER_REMOVE_LAST if the pokemon trainer has one last pokemon
+*   locally.
+* 	POKEMON_SUCCESS otherwise.
+*/
 static PokemonTrainerResult pokemonTrainerRemovePokemonAux(
         PokemonTrainer trainer, int pokemon_index, bool is_local);
 
-
+/**
+* Aux function to @pokemonTrainerGetMostRankedPokemon.
+* Find and order the most ranked pokemons at the trainer. the trainer should
+* have his most ranked pokemons by order (most ranked - first).
+* If there are pokemons with the same rank, the function will order them as
+* following :
+* 1. trainer pokemon or professor pokemon --> trainer pokemon first
+* 2. both pokemons at trainer or at the professor --> return smallest index
+*
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer is NULL.
+* 	POKEMON_SUCCESS otherwise.
+* 	*most_ranked_index - int for the index of the pokemon in trainer list
+* 	*most_ranked_is_local - bool for telling if pokemon is at the trainer
+* 	(local) or at the proffesor (remote)
+*/
 static Pokemon pokemonTrainerGetMostRankedPokemonAux(PokemonTrainer trainer,
         int starting_index, bool start_at_local, int* most_ranked_index,
                                               bool* most_ranked_is_local);

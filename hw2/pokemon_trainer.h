@@ -73,7 +73,7 @@ PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
 	Pokemon pokemon);
 
 /**
-* Find and return a pokemon by given index
+* Find and return a pokemon by a given index
 *
 * @return
 *   NULL if trainer is NULL or if pokemon_index is invalid (lower than 1 or
@@ -84,7 +84,8 @@ Pokemon pokemonTrainerGetPokemon(PokemonTrainer trainer, int pokemon_index);
 
 
 /**
-* Remove a pokemon from a trainer (local pokemon). Can't remove last pokemon.
+* Remove a pokemon from a trainer (local or remote pokemon).
+* Can't remove last pokemon locally.
 * Pokemon index must be valid (lower than 1 or bigger than
 * num_of_pokemons_local).
 *
@@ -149,19 +150,32 @@ int pokemonTrainerGetNumberOfPokemons(PokemonTrainer trainer);
 /**
 * Find the most ranked pokemon (using pokemonGetRank). if there are pokemons
 * with the same rank, the function will return the following pokemon:
-* 1. trainer pokemon or professor pokemon --> returm trainer pokemon
+* 1. trainer pokemon or professor pokemon --> return trainer pokemon
 * 2. both pokemons at trainer or at the professor --> return smallest index
+* Using @pokemonTrainerGetMostRankedPokemonAux function
 *
 * @return
 * 	Pokemon - the most ranked pokemon
 */
 Pokemon pokemonTrainerGetMostRankedPokemon(PokemonTrainer trainer);
 
+
+/**
+* Find and order the most ranked pokemons at the trainer. the trainer should
+* have his most ranked pokemons by order (most ranked - first).
+* If there are pokemons with the same rank, the function will order them as
+* following :
+* 1. trainer pokemon or professor pokemon --> trainer pokemon first
+* 2. both pokemons at trainer or at the professor --> return smallest index
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer is NULL.
+* 	POKEMON_SUCCESS otherwise.
+*/
 PokemonTrainerResult pokemonTrainerMakeMostRankedParty(PokemonTrainer trainer);
+
 
 PokemonTrainerResult pokemonTrainerPrintEnumeration(
 	PokemonTrainer trainer, FILE* file);
-
-//TODO: explain all function!
 
 #endif // POKEMON_TRAINER_H_
