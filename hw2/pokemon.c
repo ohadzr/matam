@@ -36,9 +36,9 @@ static bool isValidType(PokemonType type);
 *
 *
 * @return
-*   bool - return true if allocation successed, otherwise false
+*   chr* - return the pointer of name if success, otherwise NULL
 */
-static bool createName(char* dst_name, char* name);
+static char* createName(char* name);
 
 /**
 * This function free the memory of a pokemon move (it's name
@@ -123,17 +123,15 @@ bool isValidType(PokemonType type) {
     return is_valid;
 }
 
-bool createName(char* dst_name, char* name) {
-    dst_name = malloc(sizeof(*name)+1);
-        if (dst_name != NULL) {
-            strcpy(dst_name, name);
-            dst_name[sizeof(*name)] = '\0';
-            return true;
-        }
-
-    return false;
+char* createName(char* name) {
+    char* dst_name = malloc(sizeof(*name)+1);
+    if (dst_name != NULL) {
+        strcpy(dst_name, name);
+        dst_name[strlen(name)] = '\0';
+        return dst_name;
+    }
+    return NULL;
 }
-
 
 
 void destroyPokemonMove(Pokemon pokemon, int move_index) {
@@ -179,7 +177,7 @@ PokemonResult checkMoveValidation(Pokemon pokemon, char* move_name,
     if (strength <= 0) return POKEMON_INVALID_STRENGTH;
     if (type != TYPE_NORMAL && type != pokemon->type)
         return POKEMON_INCOMPATIBLE_MOVE_TYPE;
-    if (doesPokemonMoveExists(pokemon,move_name, &move_index));
+    if (doesPokemonMoveExists(pokemon,move_name, &move_index))
         return POKEMON_MOVE_ALREADY_EXISTS;
     return POKEMON_SUCCESS;
 }
@@ -222,7 +220,6 @@ bool isLetter(char letter) {
 Pokemon pokemonCreate(char* name, PokemonType type, int experience,
                       int max_number_of_moves){
     Pokemon pokemon = NULL;
-    bool allocate_successfully;
     if (name == NULL || strcmp(name,"") == SAME_STRINGS \
         || isValidType(type) == POKEMON_INVALID_TYPE \
         || experience <= 0 || experience > MAX_EXPERIENCE_POINTS \
@@ -243,8 +240,8 @@ Pokemon pokemonCreate(char* name, PokemonType type, int experience,
         free(pokemon);
         return NULL;
     }
-    allocate_successfully = createName(pokemon->name, name);
-    if (!allocate_successfully) {
+    pokemon->name = createName(name);
+    if (pokemon->name == NULL) {
         free(pokemon->moves);
         free(pokemon);
         return NULL;
@@ -268,17 +265,22 @@ void pokemonDestroy(Pokemon pokemon) {
 
 
 Pokemon pokemonCopy(Pokemon pokemon) {
+    if (pokemon == NULL) return NULL;
     Pokemon new_pokemon = NULL;
     new_pokemon = pokemonCreate(pokemon->name, pokemon->type, \
                     pokemon->experience, pokemon->max_number_of_moves);
     if (new_pokemon != NULL) {
             new_pokemon->health_points = pokemon->health_points;
             for (int i=0 ; i<pokemon->number_of_moves; i++) {
-                pokemonTeachMove(new_pokemon,
+                PokemonResult result = pokemonTeachMove(new_pokemon,
                                  pokemon->moves[i]->name,
                                  pokemon->moves[i]->type,
                                  pokemon->moves[i]->max_power_points,
                                  pokemon->moves[i]->strength);
+                if (result != POKEMON_SUCCESS) {
+                    pokemonDestroy(pokemon);
+                    return NULL;
+                }
                 new_pokemon->moves[i]->power_points = \
                                     pokemon->moves[i]->power_points;
             }
@@ -290,7 +292,6 @@ Pokemon pokemonCopy(Pokemon pokemon) {
 PokemonResult pokemonTeachMove(Pokemon pokemon, char* move_name,
                                PokemonType type, int max_power_points,
                                int strength) {
-    bool allcoate_successfully;
     PokemonResult result = checkMoveValidation(pokemon, move_name, type,
                                                max_power_points,strength);
     if (result != POKEMON_SUCCESS) return result;
@@ -303,8 +304,8 @@ PokemonResult pokemonTeachMove(Pokemon pokemon, char* move_name,
     move->power_points = max_power_points;
     move->strength = strength;
 
-    allcoate_successfully = createName(move->name, move_name);
-    if (!allcoate_successfully) {
+    move->name = createName(move_name);
+    if (move->name == NULL) {
         free(move);
         return POKEMON_OUT_OF_MEM;
     }
@@ -358,6 +359,9 @@ int pokemonGetRank(Pokemon pokemon) {
     for (int i=0 ; i<pokemon->number_of_moves; i++) {
         average_move_strength += pokemon->moves[i]->strength;
     }
+    if (pokemon->number_of_moves == 0)
+        return 0;
+
     average_move_strength = average_move_strength/pokemon->number_of_moves;
 
     return rank + average_move_strength;
@@ -414,9 +418,10 @@ PokemonResult pokemonEvolve(Pokemon pokemon, char* new_name) {
         return POKEMON_CANNOT_EVOLVE;
 
     free(pokemon->name);
-    if(!createName(pokemon->name,new_name)) return POKEMON_OUT_OF_MEM; //TODO: if allocation fails - should the old name be in pokemon or not?
+    pokemon->name = createName(new_name);
+    if(pokemon->name == NULL) return POKEMON_OUT_OF_MEM; //TODO: if allocation fails - should the old name be in pokemon or not?
 
-    int experience = (pokemonGetLevel(pokemon)+1)*LEVEL_PARAMETER; //TODO: should be a macro?
+    int experience = (pokemonGetLevel(pokemon)*LEVEL_PARAMETER)+1; //TODO: should be a macro?
     pokemon->experience = experience;
 
     return POKEMON_SUCCESS;

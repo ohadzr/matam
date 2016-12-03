@@ -21,13 +21,14 @@
 
 // TODO: shouldn't be static? same function in pokemon_trainer.c
 /**
-* This function allocate new memory for a given pokemon name / move name
+* This function allocate new memory for given pokemon name / move name
 * then copy (deep copy) the name into the pokemon / move
 *
+*
 * @return
-*   bool - return true if allocation successed, otherwise false
+*   chr* - return the pointer of name if success, otherwise NULL
 */
-static bool createName(char* dst_name, char* name);
+static char* createName(char* name);
 
 /**
 * This function allocate new memory for a given trainer.
@@ -127,15 +128,14 @@ static void mergeTrainerAndProfessor(PokemonTrainer trainer);
  *    Assistent Pokemon Trainer Funcs   *
  ****************************************/
 
-bool createName(char* dst_name, char* name) {
-    dst_name = malloc(sizeof(*name)+1);
-    if (dst_name != NULL) {
-        strcpy(dst_name, name);
-        dst_name[sizeof(*name)] = '\0';
-        return true;
-    }
-
-    return false;
+char* createName(char* name) {
+        char* dst_name = malloc(sizeof(*name)+1);
+        if (dst_name != NULL) {
+            strcpy(dst_name, name);
+            dst_name[strlen(name)] = '\0';
+            return dst_name;
+        }
+    return NULL;
 }
 
 
@@ -155,8 +155,8 @@ bool pokemonTrainerCreateAllocateFields(PokemonTrainer trainer,
         free(trainer);
         return false;
     }
-    bool allocate_successfully = createName(trainer->name, name);
-    if (!allocate_successfully) {
+    trainer->name = createName(name);
+    if (trainer->name == NULL) {
         free(trainer->pokemons_remote);
         free(trainer->pokemons_local);
         free(trainer);
