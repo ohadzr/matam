@@ -470,3 +470,22 @@ PokemonTrainerResult pokemonTrainerMakeMostRankedParty(PokemonTrainer trainer) {
 
     return POKEMON_TRAINER_SUCCESS;
 }
+
+
+PokemonTrainerResult pokemonTrainerPrintEnumeration(
+        PokemonTrainer trainer, FILE* file) {
+       if (trainer == NULL || file == NULL) return POKEMON_TRAINER_NULL_ARG;
+
+    for (int i=0; i<trainer->num_of_pokemons_local; i++) {
+        fprintf(file, "%s",trainer->name);
+        fprintf(file, ": ");
+        pokemonPrintName(trainer->pokemons_local[i],file);
+        fprintf(file, "\n");
+        pokemonPrintName(trainer->pokemons_local[i],file);
+        fprintf(file, ": ");
+        pokemonPrintVoice(trainer->pokemons_local[i],file);
+        fprintf(file, "\n");
+    }
+
+    return POKEMON_TRAINER_SUCCESS;
+}

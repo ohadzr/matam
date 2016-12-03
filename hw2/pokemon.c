@@ -432,8 +432,9 @@ PokemonResult pokemonPrintName(Pokemon pokemon, FILE* file) {
 
 PokemonResult pokemonPrintVoice(Pokemon pokemon, FILE* file) {
     if (pokemon == NULL || file == NULL) return POKEMON_NULL_ARG;
-    char* pokemon_voice = malloc(sizeof(char)*strlen(pokemon->name));
-    if (pokemon_voice == NULL) return POKEMON_OUT_OF_MEM;
+    char pokemon_voice[strlen(pokemon->name)]; //TODO: is this allowed?
+    // char* pokemon_voice = malloc(sizeof(char)*strlen(pokemon->name));
+    //if (pokemon_voice == NULL) return POKEMON_OUT_OF_MEM;
     int pokemon_name_size=0, index=0;
 
     while(pokemon->name[index] != '\0') {
@@ -451,7 +452,7 @@ PokemonResult pokemonPrintVoice(Pokemon pokemon, FILE* file) {
     fprintf(file, "-");
     fprintf(file, "%s",pokemon_voice);
 
-    free(pokemon_voice);
+    //free(pokemon_voice);
 
     return POKEMON_SUCCESS;
 }
