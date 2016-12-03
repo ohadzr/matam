@@ -181,7 +181,7 @@ PokemonResult checkMoveValidation(Pokemon pokemon, char* move_name,
         return POKEMON_INCOMPATIBLE_MOVE_TYPE;
     if (doesPokemonMoveExists(pokemon,move_name, &move_index));
         return POKEMON_MOVE_ALREADY_EXISTS;
-    return NULL;
+    return POKEMON_SUCCESS;
 }
 
 
@@ -293,7 +293,7 @@ PokemonResult pokemonTeachMove(Pokemon pokemon, char* move_name,
     bool allcoate_successfully;
     PokemonResult result = checkMoveValidation(pokemon, move_name, type,
                                                max_power_points,strength);
-    if (result != NULL) return result;
+    if (result != POKEMON_SUCCESS) return result;
 
     PokemonMove move = malloc(sizeof(*move));
     if (move == NULL) return POKEMON_OUT_OF_MEM; //TODO: ask if must be here and not at the beginning of function

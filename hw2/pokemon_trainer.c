@@ -449,8 +449,10 @@ PokemonTrainerResult pokemonTrainerMakeMostRankedParty(PokemonTrainer trainer) {
 
     for (int i=0; i < total_pokemons; i++) {
         if (i - trainer->num_of_pokemons_local >= 0) is_local=false;
-        is_local ? starting_index = i : \
-                        starting_index = i - trainer->num_of_pokemons_local;
+        if (is_local)
+            starting_index = i;
+        else
+            starting_index = i - trainer->num_of_pokemons_local;
         most_ranked_pokemon = pokemonTrainerGetMostRankedPokemonAux(
                             trainer, starting_index, is_local,
                            &most_ranked_pokemon_index, &most_ranked_is_local);
@@ -467,7 +469,6 @@ PokemonTrainerResult pokemonTrainerMakeMostRankedParty(PokemonTrainer trainer) {
         else trainer->pokemons_remote[most_ranked_pokemon_index] = tmp_pokemon;
     }
     mergeTrainerAndProfessor(trainer);
-
     return POKEMON_TRAINER_SUCCESS;
 }
 

@@ -5,7 +5,7 @@
 static bool testCombo() {
 	bool result = true;
 	Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
-	TEST_DIFFERENT(result, pikachu, NULL);
+    	TEST_DIFFERENT(result, pikachu, NULL);
 	Pokemon pikachu_copy = pokemonCopy(pikachu);
 	TEST_DIFFERENT(result, pikachu_copy, NULL);
 	pokemonDestroy(pikachu_copy);
@@ -122,6 +122,7 @@ static bool testPokemonPrintVoice() {
 }
 
 int main() {
+    printf("START TESTS");
 	RUN_TEST(testCombo);
 	RUN_TEST(testPokemonCreate);
 	RUN_TEST(testPokemonDestroy);
