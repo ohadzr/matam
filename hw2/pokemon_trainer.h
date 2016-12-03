@@ -99,19 +99,69 @@ Pokemon pokemonTrainerGetPokemon(PokemonTrainer trainer, int pokemon_index);
 PokemonTrainerResult pokemonTrainerRemovePokemon(
 	PokemonTrainer trainer, int pokemon_index);
 
+/**
+* Remove a pokemon from a trainer (local pokemon) and send it to the professor
+* (remote pokemon).
+* Pokemon index must be valid (lower than 1 or bigger than
+* num_of_pokemons_local). The remote pokemon index is the number of remote
+* pokemons (include him). local pokemons indexes are changed.
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer is NULL.
+* 	POKEMON_TRAINER_INVALID_INDEX if pokemon_index is invalid (lower than 1 or
+*   bigger than num_of_pokemons_local).
+*   POKEMON_TRAINER_DEPOSIT_LAST if it's last local pokemon, and he cannot
+*   deposit it.
+*   POKEMON_TRAINER_DEPOSIT_FULL if the professor's deposit is full and can't
+*   have more pokemons
+* 	POKEMON_SUCCESS otherwise.
+*/
 PokemonTrainerResult pokemonTrainerDepositPokemon(
 	PokemonTrainer trainer, int pokemon_index);
 
+/**
+* Remove a pokemon from the professor (remote pokemon) and send it to the
+* trainer (local pokemon).
+* Pokemon index must be valid (lower than 1 or bigger than
+* num_of_pokemons_local). The remote pokemon index is the number of remote
+* pokemons (include him). local pokemons indexes are changed.
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer is NULL.
+* 	POKEMON_TRAINER_INVALID_INDEX if pokemon_index is invalid (lower than 1 or
+*   bigger than num_of_pokemons_local).
+*   POKEMON_TRAINER_PARTY_FULL if the trainer's deposit is full and can't
+*   have more pokemons
+* 	POKEMON_SUCCESS otherwise.
+*/
 PokemonTrainerResult pokemonTrainerWithdrawPokemon(
 	PokemonTrainer trainer, int pokemon_index);
 
+/**
+* Calculate the number of pokemons the trainer have in total (locally and
+* at the proffesor.
+*
+* @return
+* 	int - total number of pokemons
+*/
 int pokemonTrainerGetNumberOfPokemons(PokemonTrainer trainer);
 
+/**
+* Find the most ranked pokemon (using pokemonGetRank). if there are pokemons
+* with the same rank, the function will return the following pokemon:
+* 1. trainer pokemon or professor pokemon --> returm trainer pokemon
+* 2. both pokemons at trainer or at the professor --> return smallest index
+*
+* @return
+* 	Pokemon - the most ranked pokemon
+*/
 Pokemon pokemonTrainerGetMostRankedPokemon(PokemonTrainer trainer);
 
 PokemonTrainerResult pokemonTrainerMakeMostRankedParty(PokemonTrainer trainer);
 
 PokemonTrainerResult pokemonTrainerPrintEnumeration(
 	PokemonTrainer trainer, FILE* file);
+
+//TODO: explain all function!
 
 #endif // POKEMON_TRAINER_H_
