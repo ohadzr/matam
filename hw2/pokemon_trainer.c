@@ -475,16 +475,20 @@ PokemonTrainerResult pokemonTrainerMakeMostRankedParty(PokemonTrainer trainer) {
 
 PokemonTrainerResult pokemonTrainerPrintEnumeration(
         PokemonTrainer trainer, FILE* file) {
-       if (trainer == NULL || file == NULL) return POKEMON_TRAINER_NULL_ARG;
+    if (trainer == NULL || file == NULL) return POKEMON_TRAINER_NULL_ARG;
+
+    PokemonResult result;
 
     for (int i=0; i<trainer->num_of_pokemons_local; i++) {
         fprintf(file, "%s",trainer->name);
         fprintf(file, ": ");
-        pokemonPrintName(trainer->pokemons_local[i],file);
+        result = pokemonPrintName(trainer->pokemons_local[i],file);
+        if (result == POKEMON_OUT_OF_MEM) return POKEMON_TRAINER_OUT_OF_MEM;
         fprintf(file, "\n");
         pokemonPrintName(trainer->pokemons_local[i],file);
         fprintf(file, ": ");
-        pokemonPrintVoice(trainer->pokemons_local[i],file);
+        result = pokemonPrintVoice(trainer->pokemons_local[i],file);
+        if (result == POKEMON_OUT_OF_MEM) return POKEMON_TRAINER_OUT_OF_MEM;
         fprintf(file, "\n");
     }
 

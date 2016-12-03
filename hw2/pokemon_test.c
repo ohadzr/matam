@@ -219,14 +219,12 @@ static bool testPokemonTeachMove() {
             pikachu, "Thunder2", TYPE_ELECTRIC, 10, 110), POKEMON_SUCCESS);
     TEST_EQUALS(result, pokemonTeachMove(
             pikachu, "Thunder0", TYPE_NORMAL, 20, 220), POKEMON_SUCCESS);
-    if (strcmp(pikachu->moves[2]->name, "Thunder0") != 0 || \
-        pikachu->moves[2]->type != TYPE_NORMAL)
-        result = false;
+    TEST_EQUALS(result,strcmp(pikachu->moves[2]->name, "Thunder0"),0)
+    TEST_EQUALS(result,pikachu->moves[2]->type, TYPE_NORMAL);
     TEST_EQUALS(result, pokemonTeachMove(
             pikachu, "Thunder00", TYPE_ELECTRIC, 30, 330), POKEMON_SUCCESS);
-    if (strcmp(pikachu->moves[2]->name, "Thunder0") != 0 || \
-        pikachu->moves[2]->type != TYPE_NORMAL)
-        result = false;
+    TEST_EQUALS(result,strcmp(pikachu->moves[2]->name, "Thunder0"),0)
+    TEST_EQUALS(result,pikachu->moves[2]->type, TYPE_NORMAL);
 
     TEST_EQUALS(result, pokemonTeachMove(
             pikachu, NULL, TYPE_ELECTRIC, 10, 110), POKEMON_NULL_ARG);
@@ -266,6 +264,7 @@ static bool testPokemonUnteachMove() {
 
     Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
     TEST_DIFFERENT(result, pikachu, NULL);
+
     TEST_EQUALS(result, pokemonTeachMove(
             pikachu, "Thunder4", TYPE_ELECTRIC, 10, 110), POKEMON_SUCCESS);
     TEST_EQUALS(result, pokemonTeachMove(
@@ -295,6 +294,8 @@ static bool testPokemonGetLevel() {
 	bool result = true;
 
     Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 1, 4);
+    TEST_DIFFERENT(result, pikachu, NULL);
+
     TEST_EQUALS(result, pokemonGetLevel(pikachu), 1);
     pokemonDestroy(pikachu);
     pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 100, 4);
@@ -314,6 +315,8 @@ static bool testPokemonGetRank() {
 	bool result = true;
 
     Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 1, 4);
+    TEST_DIFFERENT(result, pikachu, NULL);
+
     TEST_EQUALS(result, pokemonGetRank(pikachu), 0);
     TEST_EQUALS(result, pokemonTeachMove(
             pikachu, "Thunder1", TYPE_ELECTRIC, 10, 100), POKEMON_SUCCESS);
@@ -330,7 +333,53 @@ static bool testPokemonGetRank() {
 static bool testPokemonUseMove() {
 	bool result = true;
 
+    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    TEST_DIFFERENT(result, pikachu, NULL);
+    Pokemon squirtle = pokemonCreate("Squirtle", TYPE_WATER, 10, 4);
+    TEST_DIFFERENT(result, squirtle, NULL);
 
+    TEST_EQUALS(result, pokemonTeachMove(
+            pikachu, "Thunder", TYPE_ELECTRIC, 1, 600), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonTeachMove(
+            pikachu, "Tickle", TYPE_ELECTRIC, 100, 3), POKEMON_SUCCESS);
+    TEST_EQUALS(result,
+                pokemonTeachMove(squirtle, "Bubble", TYPE_WATER, 30, 40),
+                POKEMON_SUCCESS)
+
+    TEST_EQUALS(result, pokemonUseMove(
+            pikachu, squirtle, "Tickle"), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pikachu->experience, 20+10);
+    TEST_EQUALS(result, squirtle->health_points, 1010-10);
+
+    TEST_EQUALS(result, pokemonUseMove(
+            NULL, squirtle, "Tickle"), POKEMON_NULL_ARG);
+    TEST_EQUALS(result, pokemonUseMove(
+            pikachu, NULL, "Tickle"), POKEMON_NULL_ARG);
+    TEST_EQUALS(result, pokemonUseMove(
+            pikachu, squirtle, NULL), POKEMON_NULL_ARG);
+    TEST_EQUALS(result, pokemonUseMove(
+            pikachu, squirtle, ""), POKEMON_INVALID_MOVE_NAME);
+
+    TEST_EQUALS(result, pokemonUseMove(
+            squirtle, pikachu, "Bubble"), POKEMON_SUCCESS);
+    TEST_EQUALS(result, squirtle->experience, 10+42);
+    TEST_EQUALS(result, pikachu->health_points, 1010-42);
+    TEST_EQUALS(result, pokemonUseMove(
+            pikachu, squirtle, "Thunder"), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pikachu->experience, 20+10+1000);
+    TEST_EQUALS(result, squirtle->health_points, 0);
+    TEST_EQUALS(result, pokemonUseMove(
+            pikachu, squirtle, "Thunder"), POKEMON_NO_POWER_POINTS);
+    TEST_EQUALS(result, pokemonUseMove(
+            pikachu, squirtle, "Tickle"), POKEMON_NO_HEALTH_POINTS);
+    TEST_EQUALS(result, pokemonUseMove(
+            squirtle, pikachu, "Bubble"), POKEMON_NO_HEALTH_POINTS);
+    TEST_EQUALS(result, pokemonUseMove(
+            squirtle, pikachu, "WaterGun"), POKEMON_MOVE_DOES_NOT_EXIST);
+
+
+    pokemonDestroy(pikachu);
+    pokemonDestroy(squirtle);
 
 	return result;
 }
@@ -338,7 +387,31 @@ static bool testPokemonUseMove() {
 static bool testPokemonHeal() {
 	bool result = true;
 
-	// Complete your code here...
+    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    TEST_DIFFERENT(result, pikachu, NULL);
+    Pokemon squirtle = pokemonCreate("Squirtle", TYPE_WATER, 10, 4);
+    TEST_DIFFERENT(result, squirtle, NULL);
+
+    TEST_EQUALS(result, pokemonTeachMove(
+            pikachu, "Thunder", TYPE_ELECTRIC, 2, 600), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonTeachMove(
+            pikachu, "Tickle", TYPE_ELECTRIC, 100, 3), POKEMON_SUCCESS);
+    TEST_EQUALS(result,
+                pokemonTeachMove(squirtle, "Bubble", TYPE_WATER, 30, 40),
+                POKEMON_SUCCESS)
+    TEST_EQUALS(result, pokemonUseMove(
+            pikachu, squirtle, "Thunder"), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonHeal(squirtle), POKEMON_SUCCESS);
+    TEST_EQUALS(result, squirtle->health_points, 1010);
+    TEST_EQUALS(result, pokemonUseMove(
+            pikachu, squirtle, "Thunder"), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonHeal(pikachu), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pikachu->moves[0]->power_points, 2);
+
+    TEST_EQUALS(result, pokemonHeal(NULL), POKEMON_NULL_ARG);
+
+    pokemonDestroy(pikachu);
+    pokemonDestroy(squirtle);
 
 	return result;
 }
@@ -346,7 +419,35 @@ static bool testPokemonHeal() {
 static bool testPokemonEvolve() {
 	bool result = true;
 
-	// Complete your code here...
+    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    TEST_DIFFERENT(result, pikachu, NULL);
+    Pokemon squirtle = pokemonCreate("Squirtle", TYPE_WATER, 10, 4);
+    TEST_DIFFERENT(result, squirtle, NULL);
+
+    TEST_EQUALS(result, pokemonEvolve(squirtle, "Wartortle"), POKEMON_SUCCESS);
+    TEST_EQUALS(result, squirtle->experience, 101);
+    pokemonDestroy(squirtle);
+
+    squirtle = pokemonCreate("Squirtle", TYPE_WATER, 10, 4);
+    TEST_DIFFERENT(result, squirtle, NULL);
+
+    TEST_EQUALS(result, pokemonTeachMove(
+            pikachu, "Thunder", TYPE_ELECTRIC, 2, 600), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonUseMove(
+            pikachu, squirtle, "Thunder"), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonEvolve(squirtle, "Wartortle"), POKEMON_SUCCESS);
+    pokemonDestroy(squirtle);
+
+    squirtle = pokemonCreate("Squirtle", TYPE_WATER, 9901, 4);
+    TEST_DIFFERENT(result, squirtle, NULL);
+    TEST_EQUALS(result, pokemonEvolve(squirtle, "Wartortle"),
+                POKEMON_CANNOT_EVOLVE);
+    TEST_EQUALS(result, pokemonEvolve(NULL, "Raichu"),POKEMON_NULL_ARG);
+    TEST_EQUALS(result, pokemonEvolve(pikachu, NULL),POKEMON_NULL_ARG);
+    TEST_EQUALS(result, pokemonEvolve(pikachu, ""),POKEMON_INVALID_NAME);
+
+    pokemonDestroy(pikachu);
+    pokemonDestroy(squirtle);
 
 	return result;
 }
@@ -354,7 +455,12 @@ static bool testPokemonEvolve() {
 static bool testPokemonPrintName() {
 	bool result = true;
 
-	// Complete your code here...
+    Pokemon pikachu = pokemonCreate("$Pikachu", TYPE_ELECTRIC, 20, 4);
+    TEST_DIFFERENT(result, pikachu, NULL);
+
+    TEST_EQUALS(result, pokemonPrintName(pikachu, NULL), POKEMON_NULL_ARG);
+
+    pokemonDestroy(pikachu);
 
 	return result;
 }
@@ -362,13 +468,19 @@ static bool testPokemonPrintName() {
 static bool testPokemonPrintVoice() {
 	bool result = true;
 
-	// Complete your code here...
+    Pokemon pikachu = pokemonCreate("$Pikachu", TYPE_ELECTRIC, 20, 4);
+    TEST_DIFFERENT(result, pikachu, NULL);
+
+    TEST_EQUALS(result, pokemonPrintVoice(pikachu, NULL), POKEMON_NULL_ARG);
+
+    pokemonDestroy(pikachu);
 
 	return result;
 }
 
 int main() {
     RUN_TEST(testCombo);
+    //MY TESTS
 	RUN_TEST(testPokemonCreate);
 	RUN_TEST(testPokemonDestroy);
 	RUN_TEST(testPokemonCopy);
