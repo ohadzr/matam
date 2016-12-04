@@ -17,7 +17,6 @@ typedef enum {
 } PokemonTrainerResult;
 
 typedef struct pokemon_trainer_t {
-	// TODO: Add fields here
     char* name;
     Pokemon* pokemons_local;
     Pokemon* pokemons_remote;

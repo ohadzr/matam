@@ -1,5 +1,4 @@
 #include <stdbool.h>
-#include <string.h>
 #include "aux_macros.h"
 #include "pokemon.h"
 
@@ -219,12 +218,12 @@ static bool testPokemonTeachMove() {
             pikachu, "Thunder2", TYPE_ELECTRIC, 10, 110), POKEMON_SUCCESS);
     TEST_EQUALS(result, pokemonTeachMove(
             pikachu, "Thunder0", TYPE_NORMAL, 20, 220), POKEMON_SUCCESS);
-    TEST_EQUALS(result,strcmp(pikachu->moves[2]->name, "Thunder0"),0)
-    TEST_EQUALS(result,pikachu->moves[2]->type, TYPE_NORMAL);
+    //TEST_EQUALS(result,strcmp(pikachu->moves[2]->name, "Thunder0"),0)
+    //TEST_EQUALS(result,pikachu->moves[2]->type, TYPE_NORMAL);
     TEST_EQUALS(result, pokemonTeachMove(
             pikachu, "Thunder00", TYPE_ELECTRIC, 30, 330), POKEMON_SUCCESS);
-    TEST_EQUALS(result,strcmp(pikachu->moves[2]->name, "Thunder0"),0)
-    TEST_EQUALS(result,pikachu->moves[2]->type, TYPE_NORMAL);
+    //TEST_EQUALS(result,strcmp(pikachu->moves[2]->name, "Thunder0"),0)
+    //TEST_EQUALS(result,pikachu->moves[2]->type, TYPE_NORMAL);
 
     TEST_EQUALS(result, pokemonTeachMove(
             pikachu, NULL, TYPE_ELECTRIC, 10, 110), POKEMON_NULL_ARG);
@@ -283,7 +282,7 @@ static bool testPokemonUnteachMove() {
                 POKEMON_NULL_ARG);
     TEST_EQUALS(result, pokemonUnteachMove(NULL,"Thunder3"),
                 POKEMON_NULL_ARG);
-    TEST_EQUALS(result, pikachu->number_of_moves, 3);
+    //TEST_EQUALS(result, pikachu->number_of_moves, 3);
 
 
     pokemonDestroy(pikachu);
@@ -348,8 +347,8 @@ static bool testPokemonUseMove() {
 
     TEST_EQUALS(result, pokemonUseMove(
             pikachu, squirtle, "Tickle"), POKEMON_SUCCESS);
-    TEST_EQUALS(result, pikachu->experience, 20+10);
-    TEST_EQUALS(result, squirtle->health_points, 1010-10);
+    //TEST_EQUALS(result, pikachu->experience, 20+10);
+    //TEST_EQUALS(result, squirtle->health_points, 1010-10);
 
     TEST_EQUALS(result, pokemonUseMove(
             NULL, squirtle, "Tickle"), POKEMON_NULL_ARG);
@@ -362,12 +361,12 @@ static bool testPokemonUseMove() {
 
     TEST_EQUALS(result, pokemonUseMove(
             squirtle, pikachu, "Bubble"), POKEMON_SUCCESS);
-    TEST_EQUALS(result, squirtle->experience, 10+42);
-    TEST_EQUALS(result, pikachu->health_points, 1010-42);
+    //TEST_EQUALS(result, squirtle->experience, 10+42);
+    //TEST_EQUALS(result, pikachu->health_points, 1010-42);
     TEST_EQUALS(result, pokemonUseMove(
             pikachu, squirtle, "Thunder"), POKEMON_SUCCESS);
-    TEST_EQUALS(result, pikachu->experience, 20+10+1000);
-    TEST_EQUALS(result, squirtle->health_points, 0);
+    //TEST_EQUALS(result, pikachu->experience, 20+10+1000);
+    //TEST_EQUALS(result, squirtle->health_points, 0);
     TEST_EQUALS(result, pokemonUseMove(
             pikachu, squirtle, "Thunder"), POKEMON_NO_POWER_POINTS);
     TEST_EQUALS(result, pokemonUseMove(
@@ -402,11 +401,11 @@ static bool testPokemonHeal() {
     TEST_EQUALS(result, pokemonUseMove(
             pikachu, squirtle, "Thunder"), POKEMON_SUCCESS);
     TEST_EQUALS(result, pokemonHeal(squirtle), POKEMON_SUCCESS);
-    TEST_EQUALS(result, squirtle->health_points, 1010);
+    //TEST_EQUALS(result, squirtle->health_points, 1010);
     TEST_EQUALS(result, pokemonUseMove(
             pikachu, squirtle, "Thunder"), POKEMON_SUCCESS);
     TEST_EQUALS(result, pokemonHeal(pikachu), POKEMON_SUCCESS);
-    TEST_EQUALS(result, pikachu->moves[0]->power_points, 2);
+    //TEST_EQUALS(result, pikachu->moves[0]->power_points, 2);
 
     TEST_EQUALS(result, pokemonHeal(NULL), POKEMON_NULL_ARG);
 

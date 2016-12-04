@@ -15,6 +15,7 @@
 #define NORMAL_FACTOR 1
 #define BIG_FACTOR 2
 #define MAX_EXPERIENCE_POINTS 9901
+#define NO_HEALTH_POINTS 0
 
 /********************************
  * Helper Function Declarations *
@@ -297,7 +298,7 @@ PokemonResult pokemonTeachMove(Pokemon pokemon, char* move_name,
     if (result != POKEMON_SUCCESS) return result;
 
     PokemonMove move = malloc(sizeof(*move));
-    if (move == NULL) return POKEMON_OUT_OF_MEM; //TODO: ask if must be here and not at the beginning of function
+    if (move == NULL) return POKEMON_OUT_OF_MEM;
 
     move->type = type;
     move->max_power_points = max_power_points;
@@ -388,8 +389,8 @@ PokemonResult pokemonUseMove(Pokemon pokemon, Pokemon opponent_pokemon,
 
     opponent_pokemon->health_points -=
             factor*(attacker_level*2 + pokemon->moves[move_index]->strength); //TODO: should be macro?
-    if (opponent_pokemon->health_points < 0) { //TODO:is zero allowed here? no const.?
-        opponent_pokemon->health_points = 0;
+    if (opponent_pokemon->health_points < NO_HEALTH_POINTS) {
+        opponent_pokemon->health_points = NO_HEALTH_POINTS;
     }
 
     pokemon->moves[move_index]->power_points--;
@@ -419,7 +420,7 @@ PokemonResult pokemonEvolve(Pokemon pokemon, char* new_name) {
 
     free(pokemon->name);
     pokemon->name = createName(new_name);
-    if(pokemon->name == NULL) return POKEMON_OUT_OF_MEM; //TODO: if allocation fails - should the old name be in pokemon or not?
+    if(pokemon->name == NULL) return POKEMON_OUT_OF_MEM;
 
     int experience = (pokemonGetLevel(pokemon)*LEVEL_PARAMETER)+1; //TODO: should be a macro?
     pokemon->experience = experience;

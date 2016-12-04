@@ -19,7 +19,6 @@
  * Helper Function Declarations *
  ********************************/
 
-// TODO: shouldn't be static? same function in pokemon_trainer.c
 /**
 * This function allocate new memory for given pokemon name / move name
 * then copy (deep copy) the name into the pokemon / move
@@ -124,6 +123,18 @@ static Pokemon pokemonTrainerGetMostRankedPokemonAux(PokemonTrainer trainer,
 */
 static void mergeTrainerAndProfessor(PokemonTrainer trainer);
 
+
+/**
+* Find a pokemon (local or remote) by given index. Helper function to
+* @pokemonTrainerGetPokemon.
+*
+* @return
+* 	A pointer to a Pokemon that already exist.
+* 	If trainer is NULL or empty or pokemon index is not valid - return NULL.
+**/
+static Pokemon pokemonTrainerGetPokemonAux(PokemonTrainer trainer,
+                                           int pokemon_index, bool is_local);
+
 /****************************************
  *    Assistent Pokemon Trainer Funcs   *
  ****************************************/
@@ -184,7 +195,8 @@ PokemonTrainerResult pokemonTrainerRemovePokemonAux(
     if (is_local && trainer->num_of_pokemons_local == LAST_POKEMON)
         return POKEMON_TRAINER_REMOVE_LAST;
 
-    Pokemon pokemon = pokemonTrainerGetPokemon(trainer, pokemon_index);
+    Pokemon pokemon = pokemonTrainerGetPokemonAux(trainer, pokemon_index,
+                                                  is_local);
     if (pokemon == NULL) return POKEMON_TRAINER_OUT_OF_MEM;
 
     pokemonDestroy(pokemon);
@@ -213,8 +225,8 @@ PokemonTrainerResult pokemonTrainerDepositOrWithdrawPokemon(
     if (trainer->num_of_pokemons_local == \
             trainer->max_num_of_pokemons_local && !is_desposit)
         return POKEMON_TRAINER_PARTY_FULL;
-    Pokemon pokemon = pokemonCopy(pokemonTrainerGetPokemon(trainer,
-                                                           pokemon_index));
+    Pokemon pokemon = pokemonCopy(pokemonTrainerGetPokemonAux(trainer,
+                                                   pokemon_index, is_desposit));
     if (pokemon == NULL) return POKEMON_TRAINER_OUT_OF_MEM;
     // no need to check remove result because of validation
     pokemonTrainerRemovePokemonAux(trainer,pokemon_index, is_desposit);
@@ -241,7 +253,7 @@ void fixPokemonIndexes(PokemonTrainer trainer, int starting_index,
         //pokemon->moves[i] = NULL; // remove duplicate pointer NOT freeing move TODO:should I remove duplicated pointer?
         trainer->num_of_pokemons_local--;
     }
-    else { //TODO: count as dup?
+    else {
         for ( ; i < trainer->num_of_pokemons_remote-1; i++){
             trainer->pokemons_remote[i] = trainer->pokemons_remote[i+1];
         }
@@ -254,35 +266,34 @@ void fixPokemonIndexes(PokemonTrainer trainer, int starting_index,
 Pokemon pokemonTrainerGetMostRankedPokemonAux(PokemonTrainer trainer,
             int starting_index, bool start_at_local, int* most_ranked_index,
             bool* most_ranked_is_local) {
-    *most_ranked_index=starting_index;
+    *most_ranked_index=starting_index+1;
     int rank;
     bool is_local = start_at_local;
     // checking local first
     if (is_local) {
         for (int i=starting_index+1; i < trainer->num_of_pokemons_local ; i++) {
-            rank = pokemonGetRank(trainer->pokemons_local[*most_ranked_index]);
-            if (pokemonGetRank(trainer->pokemons_local[i]) > rank) {
-                *most_ranked_index = i;
+            rank = pokemonGetRank(pokemonTrainerGetPokemonAux(trainer,
+                                                          *most_ranked_index,
+                                                          is_local));
+            if (pokemonGetRank(pokemonTrainerGetPokemonAux(trainer, i,true)) >
+                    rank) {
+                *most_ranked_index = i+1;
             }
         }
     }
     if (start_at_local) starting_index=0;
     for (int i=starting_index; i < trainer->num_of_pokemons_remote ; i++) {
-        if (is_local) {
-            rank = pokemonGetRank(trainer->pokemons_local[*most_ranked_index]);
-        }
-        else {
-            rank = pokemonGetRank(trainer->pokemons_remote[*most_ranked_index]);
-        }
-
-        if (pokemonGetRank(trainer->pokemons_remote[i]) > rank) {
-            *most_ranked_index = i;
+        rank = pokemonGetRank(pokemonTrainerGetPokemonAux(trainer,
+                                                        *most_ranked_index,
+                                                        is_local));
+        if (pokemonGetRank(pokemonTrainerGetPokemonAux(trainer, i,false)) >
+                rank) {
+            *most_ranked_index = i+1;
             is_local = false;
         }
     }
     *most_ranked_is_local = is_local;
-    if (is_local) return trainer->pokemons_local[*most_ranked_index];
-    return trainer->pokemons_remote[*most_ranked_index];
+    return pokemonTrainerGetPokemonAux(trainer, *most_ranked_index, is_local);
 }
 
 
@@ -294,6 +305,23 @@ void mergeTrainerAndProfessor(PokemonTrainer trainer) {
         trainer->num_of_pokemons_local++;
 
         fixPokemonIndexes(trainer, 1, false); //fix first prof. pokemon index
+    }
+}
+
+
+Pokemon pokemonTrainerGetPokemonAux(PokemonTrainer trainer,
+                                    int pokemon_index, bool is_local) {
+    if (trainer == NULL || pokemon_index < MIN_POKEMON_INDEX || \
+        (pokemon_index > trainer->num_of_pokemons_local && is_local) || \
+        (pokemon_index > trainer->num_of_pokemons_remote && !is_local)) {
+        return NULL;
+    }
+
+    if (is_local) {
+        return trainer->pokemons_local[pokemon_index-1];
+    }
+    else {
+        return trainer->pokemons_remote[pokemon_index-1];
     }
 }
 
@@ -331,11 +359,11 @@ void pokemonTrainerDestroy(PokemonTrainer trainer) {
         for (int i = trainer->num_of_pokemons_local-1; i >= 0 ; i--) {
             pokemonDestroy(trainer->pokemons_local[i]);
         }
-        // duplication - but creating a function for 3 lines is redundant TODO:should I create a function?
+        // duplication - but creating a function for 2 lines is redundant
         for (int j = trainer->num_of_pokemons_remote-1; j >= 0 ; j--) {
             pokemonDestroy(trainer->pokemons_remote[j]);
         }
-        free(trainer->pokemons_local); //TODO: ask if this correct
+        free(trainer->pokemons_local);
         free(trainer->pokemons_remote);
         free(trainer);
     }
@@ -357,8 +385,7 @@ PokemonTrainer pokemonTrainerCopy(PokemonTrainer trainer) {
         }
         new_trainer->num_of_pokemons_local++;
     }
-    // TODO: should duplicated code should move to another function? how?
-    for (int j=1; j<trainer->num_of_pokemons_remote; j++) {
+    for (int j=0; j<trainer->num_of_pokemons_remote; j++) {
         if (pokemonTrainerAddPokemon(new_trainer, trainer->pokemons_remote[j]) \
                                      != POKEMON_TRAINER_SUCCESS) {
             pokemonTrainerDestroy(new_trainer);
@@ -380,18 +407,18 @@ PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
     if (trainer->pokemons_local[trainer->num_of_pokemons_local] == NULL)
         return POKEMON_TRAINER_OUT_OF_MEM;
 
-    trainer->pokemons_local++;
+    trainer->num_of_pokemons_local++;
 
     return POKEMON_TRAINER_SUCCESS;
 }
 
 Pokemon pokemonTrainerGetPokemon(PokemonTrainer trainer, int pokemon_index) {
-    if (trainer == NULL || pokemon_index < MIN_POKEMON_INDEX || \
-        pokemon_index > trainer->num_of_pokemons_local) {
-        return NULL;
-    }
 
-    return trainer->pokemons_local[pokemon_index-1];
+    bool is_local=true;
+
+    Pokemon pokemon = pokemonTrainerGetPokemonAux(trainer, pokemon_index,
+                                                  is_local);
+    return pokemon;
 }
 
 
