@@ -22,6 +22,7 @@
 /**
 * This function allocate new memory for given pokemon name / move name
 * then copy (deep copy) the name into the pokemon / move
+* Name must not be NULL or empty string
 *
 *
 * @return
@@ -140,12 +141,13 @@ static Pokemon pokemonTrainerGetPokemonAux(PokemonTrainer trainer,
  ****************************************/
 
 char* createName(char* name) {
-        char* dst_name = malloc(sizeof(*name)+1);
-        if (dst_name != NULL) {
-            strcpy(dst_name, name);
-            dst_name[strlen(name)] = '\0';
-            return dst_name;
-        }
+    if (name == NULL || name[0] == '\0') return NULL;
+    char* dst_name = malloc(sizeof(*name)+1);
+    if (dst_name != NULL) {
+        strcpy(dst_name, name);
+        dst_name[strlen(name)] = '\0';
+        return dst_name;
+    }
     return NULL;
 }
 

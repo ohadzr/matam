@@ -37,7 +37,7 @@ static bool isValidType(PokemonType type);
 /**
 * This function allocate new memory for given pokemon name / move name
 * then copy (deep copy) the name into the pokemon / move
-*
+* Name must not be NULL or empty string
 *
 * @return
 *   chr* - return the pointer of name if success, otherwise NULL
@@ -128,6 +128,7 @@ bool isValidType(PokemonType type) {
 }
 
 char* createName(char* name) {
+    if (name == NULL || name[0] == '\0') return NULL;
     char* dst_name = malloc(sizeof(*name)+1);
     if (dst_name != NULL) {
         strcpy(dst_name, name);
