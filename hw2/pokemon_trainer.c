@@ -110,14 +110,14 @@ static PokemonTrainerResult pokemonTrainerRemovePokemonAux(
 * 	POKEMON_SUCCESS otherwise.
 * 	*most_ranked_index - int for the index of the pokemon in trainer list
 * 	*most_ranked_is_local - bool for telling if pokemon is at the trainer
-* 	(local) or at the proffesor (remote)
+* 	(local) or at the professor (remote)
 */
 static Pokemon pokemonTrainerGetMostRankedPokemonAux(PokemonTrainer trainer,
         int starting_index, bool start_at_local, int* most_ranked_index,
                                               bool* most_ranked_is_local);
 
 /**
-* Move pokemons indexes(!) from proffesor to trainer. The trainer should have
+* Move pokemons indexes(!) from professor to trainer. The trainer should have
 * either max_num_of_pokemons_local number of pokemons or all pokemons he own.
 *
 */

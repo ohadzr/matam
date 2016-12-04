@@ -391,7 +391,6 @@ PokemonResult pokemonUseMove(Pokemon pokemon, Pokemon opponent_pokemon,
 
     opponent_pokemon->health_points -= CALC_ATTACK_POWER(factor,attacker_level,
                                          pokemon->moves[move_index]->strength);
-            //factor*(attacker_level*2 + pokemon->moves[move_index]->strength); //TODO: should be macro?
     if (opponent_pokemon->health_points < NO_HEALTH_POINTS) {
         opponent_pokemon->health_points = NO_HEALTH_POINTS;
     }
@@ -406,7 +405,7 @@ PokemonResult pokemonUseMove(Pokemon pokemon, Pokemon opponent_pokemon,
 PokemonResult pokemonHeal(Pokemon pokemon) {
     if (pokemon == NULL) return POKEMON_NULL_ARG;
     int level = pokemonGetLevel(pokemon);
-    pokemon->health_points = POKEMON_HEAL(level);//(100 + level)*10; //TODO: should be macro?
+    pokemon->health_points = POKEMON_HEAL(level);
 
     for (int i=0; i<pokemon->number_of_moves; i++) {
         pokemon->moves[i]->power_points = pokemon->moves[i]->max_power_points;
@@ -425,7 +424,7 @@ PokemonResult pokemonEvolve(Pokemon pokemon, char* new_name) {
     pokemon->name = createName(new_name);
     if(pokemon->name == NULL) return POKEMON_OUT_OF_MEM;
 
-    int experience = CALC_MIN_EXPERIENCE(pokemonGetLevel(pokemon));//(pokemonGetLevel(pokemon)*LEVEL_PARAMETER)+1; //TODO: should be a macro?
+    int experience = CALC_MIN_EXPERIENCE(pokemonGetLevel(pokemon));
     pokemon->experience = experience;
 
     return POKEMON_SUCCESS;

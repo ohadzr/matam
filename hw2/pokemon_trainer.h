@@ -173,7 +173,21 @@ Pokemon pokemonTrainerGetMostRankedPokemon(PokemonTrainer trainer);
 */
 PokemonTrainerResult pokemonTrainerMakeMostRankedParty(PokemonTrainer trainer);
 
-
+/**
+* Prints the voices that the pokemons the trainer has locally make into a file
+* the voice that is printed is based on @pokemonPrintVoice.
+* First, the trainer call a pokemon and the pokemon answer with his voice.
+* Examples: lets say Ash has: "Oh-Ho" and "Pikachu"
+* Ash: Ho-Oh
+* Ho-Oh: Ho-Ho
+* Ash: Pikachu
+* Pikachu: Pika-Pika
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer is NULL.
+* 	POKEMON_TRAINER_OUT_OF_MEM if memory allocation error.
+* 	POKEMON_SUCCESS otherwise.
+*/
 PokemonTrainerResult pokemonTrainerPrintEnumeration(
 	PokemonTrainer trainer, FILE* file);
 
