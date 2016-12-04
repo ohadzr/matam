@@ -620,7 +620,7 @@ static bool testPokemonTrainerPrintEnumeration() {
 
     TEST_EQUALS(result, pokemonTrainerPrintEnumeration(trainer, NULL),
                 POKEMON_TRAINER_NULL_ARG);
-    (result, pokemonTrainerPrintEnumeration(NULL, NULL),
+    TEST_EQUALS(result, pokemonTrainerPrintEnumeration(NULL, NULL),
                 POKEMON_TRAINER_NULL_ARG);
 
     pokemonTrainerDestroy(trainer);

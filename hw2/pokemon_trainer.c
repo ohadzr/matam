@@ -188,8 +188,8 @@ PokemonTrainerResult pokemonTrainerRemovePokemonAux(
         PokemonTrainer trainer, int pokemon_index, bool is_local) {
     if (trainer == NULL) return POKEMON_TRAINER_NULL_ARG;
     if (pokemon_index < MIN_POKEMON_INDEX || \
-    (is_local && pokemon_index > trainer->num_of_pokemons_local || \
-    (!is_local && pokemon_index > trainer->num_of_pokemons_remote))) {
+    (is_local && pokemon_index > trainer->num_of_pokemons_local) || \
+    (!is_local && pokemon_index > trainer->num_of_pokemons_remote)) {
         return POKEMON_TRAINER_INVALID_INDEX;
     }
     if (is_local && trainer->num_of_pokemons_local == LAST_POKEMON)
