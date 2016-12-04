@@ -16,6 +16,10 @@
 #define BIG_FACTOR 2
 #define MAX_EXPERIENCE_POINTS 9901
 #define NO_HEALTH_POINTS 0
+#define CALC_ATTACK_POWER(factor, attacker_level ,move_strength)    (factor)* \
+                            ((attacker_level)*2 + (move_strength))
+#define POKEMON_HEAL(level)     (100 + (level))*10
+#define CALC_MIN_EXPERIENCE(level)  ((level)*LEVEL_PARAMETER)+1
 
 /********************************
  * Helper Function Declarations *
@@ -30,7 +34,6 @@
 */
 static bool isValidType(PokemonType type);
 
-// TODO: shouldn't be static? same function in pokemon_trainer.c
 /**
 * This function allocate new memory for given pokemon name / move name
 * then copy (deep copy) the name into the pokemon / move
@@ -236,7 +239,7 @@ Pokemon pokemonCreate(char* name, PokemonType type, int experience,
     pokemon->max_number_of_moves = max_number_of_moves;
     pokemonHeal(pokemon);
     pokemon->moves =
-            malloc(sizeof(*(pokemon->moves))*max_number_of_moves); //TODO: ask if this is correct
+            malloc(sizeof(*(pokemon->moves))*max_number_of_moves);
     if (pokemon->moves == NULL) {
         free(pokemon);
         return NULL;
@@ -259,7 +262,7 @@ void pokemonDestroy(Pokemon pokemon) {
         for (int i = pokemon->number_of_moves-1; i >= 0 ; i--) {
             destroyPokemonMove(pokemon,i);
         }
-        free(pokemon->moves); // free moves pointer array TODO: ask if this is correct
+        free(pokemon->moves); // free moves pointer array
         free(pokemon); // free pokemon
     }
 }
@@ -339,7 +342,6 @@ PokemonResult pokemonUnteachMove(Pokemon pokemon, char *move_name) {
     for ( ; i < pokemon->number_of_moves-1; i++){
         pokemon->moves[i] = pokemon->moves[i+1];
     }
-    //pokemon->moves[i] = NULL; // remove duplicate pointer NOT freeing move TODO:should I remove duplicated pointer?
     pokemon->number_of_moves--;
     return POKEMON_SUCCESS;
 }
@@ -360,7 +362,7 @@ int pokemonGetRank(Pokemon pokemon) {
     for (int i=0 ; i<pokemon->number_of_moves; i++) {
         average_move_strength += pokemon->moves[i]->strength;
     }
-    if (pokemon->number_of_moves == 0)
+    if (pokemon->number_of_moves == NO_MOVES)
         return 0;
 
     average_move_strength = average_move_strength/pokemon->number_of_moves;
@@ -387,8 +389,9 @@ PokemonResult pokemonUseMove(Pokemon pokemon, Pokemon opponent_pokemon,
                                   opponent_pokemon->type);
     int extra_experience = opponent_pokemon->health_points;
 
-    opponent_pokemon->health_points -=
-            factor*(attacker_level*2 + pokemon->moves[move_index]->strength); //TODO: should be macro?
+    opponent_pokemon->health_points -= CALC_ATTACK_POWER(factor,attacker_level,
+                                         pokemon->moves[move_index]->strength);
+            //factor*(attacker_level*2 + pokemon->moves[move_index]->strength); //TODO: should be macro?
     if (opponent_pokemon->health_points < NO_HEALTH_POINTS) {
         opponent_pokemon->health_points = NO_HEALTH_POINTS;
     }
@@ -403,7 +406,7 @@ PokemonResult pokemonUseMove(Pokemon pokemon, Pokemon opponent_pokemon,
 PokemonResult pokemonHeal(Pokemon pokemon) {
     if (pokemon == NULL) return POKEMON_NULL_ARG;
     int level = pokemonGetLevel(pokemon);
-    pokemon->health_points = (100 + level)*10; //TODO: should be macro?
+    pokemon->health_points = POKEMON_HEAL(level);//(100 + level)*10; //TODO: should be macro?
 
     for (int i=0; i<pokemon->number_of_moves; i++) {
         pokemon->moves[i]->power_points = pokemon->moves[i]->max_power_points;
@@ -422,7 +425,7 @@ PokemonResult pokemonEvolve(Pokemon pokemon, char* new_name) {
     pokemon->name = createName(new_name);
     if(pokemon->name == NULL) return POKEMON_OUT_OF_MEM;
 
-    int experience = (pokemonGetLevel(pokemon)*LEVEL_PARAMETER)+1; //TODO: should be a macro?
+    int experience = CALC_MIN_EXPERIENCE(pokemonGetLevel(pokemon));//(pokemonGetLevel(pokemon)*LEVEL_PARAMETER)+1; //TODO: should be a macro?
     pokemon->experience = experience;
 
     return POKEMON_SUCCESS;

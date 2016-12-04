@@ -74,7 +74,7 @@ static void fixPokemonIndexes(PokemonTrainer trainer, int starting_index,
 * 	POKEMON_SUCCESS otherwise.
 */
 static PokemonTrainerResult pokemonTrainerDepositOrWithdrawPokemon(
-        PokemonTrainer trainer, int pokemon_index, bool is_desposit);
+        PokemonTrainer trainer, int pokemon_index, bool is_deposit);
 
 /**
 * Aux function to @pokemonTrainerRemovePokemon.
@@ -208,29 +208,31 @@ PokemonTrainerResult pokemonTrainerRemovePokemonAux(
 
 
 PokemonTrainerResult pokemonTrainerDepositOrWithdrawPokemon(
-        PokemonTrainer trainer, int pokemon_index, bool is_desposit) {
-    // TODO: is similar validation should be in a different function? (dup with above)
+        PokemonTrainer trainer, int pokemon_index, bool is_deposit) {
+    // validation is similar to @pokemonTrainerRemovePokemonAux but moving it
+    // to a different function won't make the function shorter (need to check
+    // if result is POKEMON_TRAINER_SUCCESS) - 4 validation lines are OK.
     if (trainer == NULL) return POKEMON_TRAINER_NULL_ARG;
     if (pokemon_index < MIN_POKEMON_INDEX || \
-        (is_desposit && pokemon_index > trainer->num_of_pokemons_local) ||\
-        (!is_desposit && pokemon_index > trainer->num_of_pokemons_remote)) {
+        (is_deposit && pokemon_index > trainer->num_of_pokemons_local) ||\
+        (!is_deposit && pokemon_index > trainer->num_of_pokemons_remote)) {
         return POKEMON_TRAINER_INVALID_INDEX;
     }
-    if (trainer->num_of_pokemons_local == LAST_POKEMON && is_desposit)
+    if (trainer->num_of_pokemons_local == LAST_POKEMON && is_deposit)
         return POKEMON_TRAINER_DEPOSIT_LAST;
 
     if (trainer->num_of_pokemons_remote == \
-            trainer->max_num_of_pokemons_remote && is_desposit)
+            trainer->max_num_of_pokemons_remote && is_deposit)
         return POKEMON_TRAINER_DEPOSIT_FULL;
     if (trainer->num_of_pokemons_local == \
-            trainer->max_num_of_pokemons_local && !is_desposit)
+            trainer->max_num_of_pokemons_local && !is_deposit)
         return POKEMON_TRAINER_PARTY_FULL;
     Pokemon pokemon = pokemonCopy(pokemonTrainerGetPokemonAux(trainer,
-                                                   pokemon_index, is_desposit));
+                                                   pokemon_index, is_deposit));
     if (pokemon == NULL) return POKEMON_TRAINER_OUT_OF_MEM;
     // no need to check remove result because of validation
-    pokemonTrainerRemovePokemonAux(trainer,pokemon_index, is_desposit);
-    if (is_desposit) {
+    pokemonTrainerRemovePokemonAux(trainer,pokemon_index, is_deposit);
+    if (is_deposit) {
         trainer->pokemons_remote[trainer->num_of_pokemons_remote] = pokemon;
         trainer->num_of_pokemons_remote++;
     }
@@ -250,14 +252,12 @@ void fixPokemonIndexes(PokemonTrainer trainer, int starting_index,
         for ( ; i < trainer->num_of_pokemons_local-1; i++){
             trainer->pokemons_local[i] = trainer->pokemons_local[i+1];
         }
-        //pokemon->moves[i] = NULL; // remove duplicate pointer NOT freeing move TODO:should I remove duplicated pointer?
         trainer->num_of_pokemons_local--;
     }
     else {
         for ( ; i < trainer->num_of_pokemons_remote-1; i++){
             trainer->pokemons_remote[i] = trainer->pokemons_remote[i+1];
         }
-        //pokemon->moves[i] = NULL; // remove duplicate pointer NOT freeing move TODO:should I remove duplicated pointer?
         trainer->num_of_pokemons_remote--;
     }
 }
@@ -332,7 +332,8 @@ Pokemon pokemonTrainerGetPokemonAux(PokemonTrainer trainer,
 PokemonTrainer pokemonTrainerCreate(char* name, Pokemon initial_pokemon,
                                     int max_num_local, int max_num_remote) {
     if (name == NULL || strcmp(name,"") == SAME_STRINGS ||
-        initial_pokemon == NULL || max_num_local <= 0 || max_num_remote <= 0)
+        initial_pokemon == NULL || max_num_local <= NO_POKEMONS
+        || max_num_remote <= NO_POKEMONS)
         return NULL;
     PokemonTrainer trainer = malloc(sizeof(*trainer));
     if (trainer == NULL) return NULL;
@@ -435,20 +436,20 @@ PokemonTrainerResult pokemonTrainerRemovePokemon(
 
 PokemonTrainerResult pokemonTrainerDepositPokemon(
         PokemonTrainer trainer, int pokemon_index) {
-    bool is_desposit = true;
+    bool is_deposit = true;
 
     PokemonTrainerResult result = \
-    pokemonTrainerDepositOrWithdrawPokemon(trainer,pokemon_index,is_desposit);
+    pokemonTrainerDepositOrWithdrawPokemon(trainer,pokemon_index,is_deposit);
 
     return result;
 }
 
 PokemonTrainerResult pokemonTrainerWithdrawPokemon(
         PokemonTrainer trainer, int pokemon_index) {
-    bool is_desposit = false;
+    bool is_deposit = false;
 
     PokemonTrainerResult result = \
-    pokemonTrainerDepositOrWithdrawPokemon(trainer,pokemon_index,is_desposit);
+    pokemonTrainerDepositOrWithdrawPokemon(trainer,pokemon_index,is_deposit);
 
     return result;
 }
