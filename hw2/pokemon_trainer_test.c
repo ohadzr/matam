@@ -31,9 +31,105 @@ static bool testCombo() {
 	return result;
 }
 
+static bool testPokemonTrainerCreate() {
+    bool result = true;
+
+
+    return result;
+}
+
+static bool testPokemonTrainerDestroy() {
+    bool result = true;
+
+
+    return result;
+}
+
+static bool testPokemonTrainerCopy() {
+    bool result = true;
+
+
+    return result;
+}
+
+static bool testPokemonTrainerAddPokemon() {
+    bool result = true;
+
+
+    return result;
+}
+
+static bool testPokemonTrainerGetPokemon() {
+    bool result = true;
+
+
+    return result;
+}
+
+static bool testPokemonTrainerRemovePokemon() {
+    bool result = true;
+
+
+    return result;
+}
+
+static bool testPokemonTrainerDepositPokemon() {
+    bool result = true;
+
+
+    return result;
+}
+
+static bool testPokemonTrainerWithdrawPokemon() {
+    bool result = true;
+
+
+    return result;
+}
+
+static bool testPokemonTrainerGetNumberOfPokemons() {
+    bool result = true;
+
+
+    return result;
+}
+
+static bool testPokemonTrainerGetMostRankedPokemon() {
+    bool result = true;
+
+
+    return result;
+}
+
+static bool testPokemonTrainerMakeMostRankedParty() {
+    bool result = true;
+
+
+    return result;
+}
+
+static bool testPokemonTrainerPrintEnumeration() {
+    bool result = true;
+
+
+    return result;
+}
+
+
 int main() {
 	RUN_TEST(testCombo);
-	// TODO: add more tests:
-	// RUN_TEST(...);
+	// MY_TESTS
+	RUN_TEST(testPokemonTrainerCreate);
+    RUN_TEST(testPokemonTrainerDestroy);
+    RUN_TEST(testPokemonTrainerCopy);
+    RUN_TEST(testPokemonTrainerAddPokemon);
+    RUN_TEST(testPokemonTrainerGetPokemon);
+    RUN_TEST(testPokemonTrainerRemovePokemon);
+    RUN_TEST(testPokemonTrainerDepositPokemon);
+    RUN_TEST(testPokemonTrainerWithdrawPokemon);
+    RUN_TEST(testPokemonTrainerGetNumberOfPokemons);
+    RUN_TEST(testPokemonTrainerGetMostRankedPokemon);
+    RUN_TEST(testPokemonTrainerMakeMostRankedParty);
+    RUN_TEST(testPokemonTrainerPrintEnumeration);
 	return 0;
 }
