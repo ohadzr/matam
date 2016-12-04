@@ -141,8 +141,7 @@ static Pokemon pokemonTrainerGetPokemonAux(PokemonTrainer trainer,
  ****************************************/
 
 char* createName(char* name) {
-    if (name == NULL || name[0] == '\0') return NULL;
-    char* dst_name = malloc(sizeof(*name)+1);
+    char* dst_name = malloc(strlen(name)+1);
     if (dst_name != NULL) {
         strcpy(dst_name, name);
         dst_name[strlen(name)] = '\0';
