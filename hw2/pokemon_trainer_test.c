@@ -377,6 +377,39 @@ static bool testPokemonTrainerDepositPokemon() {
 static bool testPokemonTrainerWithdrawPokemon() {
     bool result = true;
 
+    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    PokemonTrainer trainer = pokemonTrainerCreate("Ash", pikachu, 4, 20);
+    pokemonDestroy(pikachu);
+
+    Pokemon squirtle = pokemonCreate("Squirtle", TYPE_WATER, 10, 4);
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer, squirtle),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer, squirtle),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer, squirtle),
+                POKEMON_TRAINER_SUCCESS);
+    pokemonDestroy(squirtle);
+
+    TEST_EQUALS(result, pokemonTrainerDepositPokemon(trainer,1),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerDepositPokemon(trainer,2),
+                POKEMON_TRAINER_SUCCESS);
+
+    TEST_EQUALS(result, pokemonTrainerWithdrawPokemon(NULL,1),
+                POKEMON_TRAINER_NULL_ARG);
+    TEST_EQUALS(result, pokemonTrainerWithdrawPokemon(trainer,1),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerWithdrawPokemon(trainer,2),
+                POKEMON_TRAINER_INVALID_INDEX);
+    Pokemon ho_ho = pokemonCreate("Ho-ho", TYPE_GRASS, 30, 4);
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer, ho_ho),
+                POKEMON_TRAINER_SUCCESS);
+    pokemonDestroy(ho_ho);
+    TEST_EQUALS(result, pokemonTrainerWithdrawPokemon(trainer,1),
+                POKEMON_TRAINER_PARTY_FULL);
+
+
+    pokemonTrainerDestroy(trainer);
 
     return result;
 }
@@ -384,6 +417,54 @@ static bool testPokemonTrainerWithdrawPokemon() {
 static bool testPokemonTrainerGetNumberOfPokemons() {
     bool result = true;
 
+    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    PokemonTrainer trainer = pokemonTrainerCreate("Ash", pikachu, 4, 2);
+    pokemonDestroy(pikachu);
+
+    Pokemon squirtle = pokemonCreate("Squirtle", TYPE_WATER, 10, 4);
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer, squirtle),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer, squirtle),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer, squirtle),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer, squirtle),
+                POKEMON_TRAINER_PARTY_FULL);
+
+    TEST_EQUALS(result, pokemonTrainerGetNumberOfPokemons(trainer), 4);
+
+    TEST_EQUALS(result, pokemonTrainerDepositPokemon(trainer,2),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerDepositPokemon(trainer,2),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerDepositPokemon(trainer,2),
+                POKEMON_TRAINER_DEPOSIT_FULL);
+
+    TEST_EQUALS(result, pokemonTrainerGetNumberOfPokemons(trainer), 4);
+
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer, squirtle),
+                POKEMON_TRAINER_SUCCESS);
+    pokemonDestroy(squirtle);
+
+    TEST_EQUALS(result, pokemonTrainerGetNumberOfPokemons(trainer), 5);
+
+    TEST_EQUALS(result, pokemonTrainerRemovePokemon(trainer, 3),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerRemovePokemon(trainer, 2),
+                POKEMON_TRAINER_SUCCESS);
+
+    TEST_EQUALS(result, pokemonTrainerGetNumberOfPokemons(trainer), 3);
+
+    TEST_EQUALS(result, pokemonTrainerWithdrawPokemon(trainer,1),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerWithdrawPokemon(trainer,1),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerWithdrawPokemon(trainer,1),
+                POKEMON_TRAINER_INVALID_INDEX);
+
+    TEST_EQUALS(result, pokemonTrainerGetNumberOfPokemons(trainer), 3);
+
+    pokemonTrainerDestroy(trainer);
 
     return result;
 }
@@ -391,6 +472,40 @@ static bool testPokemonTrainerGetNumberOfPokemons() {
 static bool testPokemonTrainerGetMostRankedPokemon() {
     bool result = true;
 
+    TEST_EQUALS(result, pokemonTrainerGetMostRankedPokemon(NULL), NULL);
+
+    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    TEST_EQUALS(result, pokemonTeachMove(
+            pikachu, "Thunder1", TYPE_ELECTRIC, 10, 100), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonGetRank(pikachu), 101);
+    TEST_EQUALS(result, pokemonTeachMove(
+            pikachu, "Thunder2", TYPE_ELECTRIC, 10, 80), POKEMON_SUCCESS);
+    PokemonTrainer trainer = pokemonTrainerCreate("Ash", pikachu, 4, 2);
+    pokemonDestroy(pikachu);
+
+    TEST_EQUALS(result, pokemonTrainerGetMostRankedPokemon(trainer),
+    pokemonTrainerGetPokemon(trainer,1));
+
+    Pokemon squirtle = pokemonCreate("Squirtle", TYPE_WATER, 10, 4);
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer, squirtle),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer, squirtle),
+                POKEMON_TRAINER_SUCCESS);
+    pokemonDestroy(squirtle);
+
+    TEST_EQUALS(result, pokemonTrainerDepositPokemon(trainer,2),
+                POKEMON_TRAINER_SUCCESS);
+
+    TEST_EQUALS(result, pokemonTrainerGetMostRankedPokemon(trainer),
+                pokemonTrainerGetPokemon(trainer,1));
+
+    TEST_EQUALS(result, pokemonTrainerRemovePokemon(trainer, 1),
+                POKEMON_TRAINER_SUCCESS);
+
+    TEST_EQUALS(result, pokemonTrainerGetMostRankedPokemon(trainer),
+                pokemonTrainerGetPokemon(trainer,1));
+
+    pokemonTrainerDestroy(trainer);
 
     return result;
 }
@@ -398,6 +513,100 @@ static bool testPokemonTrainerGetMostRankedPokemon() {
 static bool testPokemonTrainerMakeMostRankedParty() {
     bool result = true;
 
+    TEST_EQUALS(result, pokemonTrainerMakeMostRankedParty(NULL),
+                POKEMON_TRAINER_NULL_ARG);
+
+    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    TEST_EQUALS(result, pokemonTeachMove(
+            pikachu, "Thunder1", TYPE_ELECTRIC, 10, 100), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonTeachMove(
+            pikachu, "Thunder2", TYPE_ELECTRIC, 10, 80), POKEMON_SUCCESS);
+
+    Pokemon squirtle = pokemonCreate("Squirtle", TYPE_WATER, 10, 4);
+    TEST_EQUALS(result, pokemonTeachMove(
+            squirtle, "Bubble", TYPE_WATER, 10, 50), POKEMON_SUCCESS);
+
+    Pokemon ho_ho = pokemonCreate("Ho-ho", TYPE_GRASS, 30, 4);
+
+    PokemonTrainer trainer = pokemonTrainerCreate("Ash", ho_ho, 3, 3);
+
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer, pikachu),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer, pikachu),
+                POKEMON_TRAINER_SUCCESS);
+
+    Pokemon local_pokemon1_ptr = pokemonTrainerGetPokemon(trainer,2);
+
+    TEST_EQUALS(result, pokemonTrainerDepositPokemon(trainer,3),
+                POKEMON_TRAINER_SUCCESS);
+
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer, squirtle),
+                POKEMON_TRAINER_SUCCESS);
+
+    //Pokemon remote_pokemon2 = pokemonTrainerGetPokemon(trainer,1);
+
+    TEST_EQUALS(result, pokemonTrainerDepositPokemon(trainer,3),
+                POKEMON_TRAINER_SUCCESS);
+
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer, squirtle),
+                POKEMON_TRAINER_SUCCESS);
+
+    Pokemon local_pokemon3_ptr = pokemonTrainerGetPokemon(trainer,3);
+
+    TEST_EQUALS(result,pokemonTrainerMakeMostRankedParty(trainer),
+                POKEMON_TRAINER_SUCCESS);
+
+    TEST_EQUALS(result, pokemonTrainerGetPokemon(trainer,1),
+                local_pokemon1_ptr);
+    TEST_EQUALS(result, pokemonTrainerGetPokemon(trainer,3),
+                local_pokemon3_ptr);
+
+
+    //TEST_EQUALS(result, trainer->pokemons_remote[1], remote_pokemon2);
+
+
+    // SAME TEST ONLY THIS TIME TRAINER HAS 4 LOCAL POKEMONS
+    PokemonTrainer trainer2 = pokemonTrainerCreate("Ash", ho_ho, 4, 3);
+
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer2, pikachu),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer2, pikachu),
+                POKEMON_TRAINER_SUCCESS);
+
+    local_pokemon1_ptr = pokemonTrainerGetPokemon(trainer2,2);
+
+    TEST_EQUALS(result, pokemonTrainerDepositPokemon(trainer2,3),
+                POKEMON_TRAINER_SUCCESS);
+
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer2, squirtle),
+                POKEMON_TRAINER_SUCCESS);
+
+    //Pokemon remote_pokemon1 = pokemonTrainerGetPokemon(trainer2,1);
+
+    TEST_EQUALS(result, pokemonTrainerDepositPokemon(trainer2,3),
+                POKEMON_TRAINER_SUCCESS);
+
+    TEST_EQUALS(result, pokemonTrainerAddPokemon(trainer2, squirtle),
+                POKEMON_TRAINER_SUCCESS);
+
+    local_pokemon3_ptr = pokemonTrainerGetPokemon(trainer2,3);
+
+    TEST_EQUALS(result,pokemonTrainerMakeMostRankedParty(trainer2),
+                POKEMON_TRAINER_SUCCESS);
+
+    TEST_EQUALS(result, pokemonTrainerGetPokemon(trainer2,1),
+                local_pokemon1_ptr);
+    TEST_EQUALS(result, pokemonTrainerGetPokemon(trainer2,3),
+                local_pokemon3_ptr);
+
+    //TEST_EQUALS(result, trainer2->pokemons_remote[0], remote_pokemon1);
+
+    pokemonDestroy(pikachu);
+    pokemonDestroy(squirtle);
+    pokemonDestroy(ho_ho);
+
+    pokemonTrainerDestroy(trainer);
+    pokemonTrainerDestroy(trainer2);
 
     return result;
 }
@@ -405,6 +614,16 @@ static bool testPokemonTrainerMakeMostRankedParty() {
 static bool testPokemonTrainerPrintEnumeration() {
     bool result = true;
 
+    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    PokemonTrainer trainer = pokemonTrainerCreate("Ash", pikachu, 4, 2);
+    pokemonDestroy(pikachu);
+
+    TEST_EQUALS(result, pokemonTrainerPrintEnumeration(trainer, NULL),
+                POKEMON_TRAINER_NULL_ARG);
+    (result, pokemonTrainerPrintEnumeration(NULL, NULL),
+                POKEMON_TRAINER_NULL_ARG);
+
+    pokemonTrainerDestroy(trainer);
 
     return result;
 }

@@ -266,29 +266,29 @@ void fixPokemonIndexes(PokemonTrainer trainer, int starting_index,
 Pokemon pokemonTrainerGetMostRankedPokemonAux(PokemonTrainer trainer,
             int starting_index, bool start_at_local, int* most_ranked_index,
             bool* most_ranked_is_local) {
-    *most_ranked_index=starting_index+1;
+    *most_ranked_index=starting_index;
     int rank;
     bool is_local = start_at_local;
     // checking local first
     if (is_local) {
-        for (int i=starting_index+1; i < trainer->num_of_pokemons_local ; i++) {
+        for (int i=starting_index; i <= trainer->num_of_pokemons_local ;i++) {
             rank = pokemonGetRank(pokemonTrainerGetPokemonAux(trainer,
                                                           *most_ranked_index,
                                                           is_local));
             if (pokemonGetRank(pokemonTrainerGetPokemonAux(trainer, i,true)) >
                     rank) {
-                *most_ranked_index = i+1;
+                *most_ranked_index = i;
             }
         }
     }
-    if (start_at_local) starting_index=0;
-    for (int i=starting_index; i < trainer->num_of_pokemons_remote ; i++) {
+    if (start_at_local) starting_index=1;
+    for (int i=starting_index; i <= trainer->num_of_pokemons_remote ; i++) {
         rank = pokemonGetRank(pokemonTrainerGetPokemonAux(trainer,
                                                         *most_ranked_index,
                                                         is_local));
         if (pokemonGetRank(pokemonTrainerGetPokemonAux(trainer, i,false)) >
                 rank) {
-            *most_ranked_index = i+1;
+            *most_ranked_index = i;
             is_local = false;
         }
     }
@@ -463,7 +463,7 @@ Pokemon pokemonTrainerGetMostRankedPokemon(PokemonTrainer trainer) {
     int most_ranked_index;
     bool most_ranked_is_local;
     Pokemon pokemon = pokemonTrainerGetMostRankedPokemonAux(
-                    trainer,0,true,&most_ranked_index,&most_ranked_is_local);
+                    trainer,1,true,&most_ranked_index,&most_ranked_is_local);
     return pokemon;
 }
 
@@ -474,8 +474,8 @@ PokemonTrainerResult pokemonTrainerMakeMostRankedParty(PokemonTrainer trainer) {
     bool is_local = true, most_ranked_is_local;
     Pokemon most_ranked_pokemon, tmp_pokemon;
 
-    for (int i=0; i < total_pokemons; i++) {
-        if (i - trainer->num_of_pokemons_local >= 0) is_local=false;
+    for (int i=1; i <= total_pokemons; i++) {
+        if (i - trainer->num_of_pokemons_local > 0) is_local=false;
         if (is_local)
             starting_index = i;
         else
@@ -483,17 +483,17 @@ PokemonTrainerResult pokemonTrainerMakeMostRankedParty(PokemonTrainer trainer) {
         most_ranked_pokemon = pokemonTrainerGetMostRankedPokemonAux(
                             trainer, starting_index, is_local,
                            &most_ranked_pokemon_index, &most_ranked_is_local);
-        if (is_local) {
-            tmp_pokemon = trainer->pokemons_local[starting_index];
-            trainer->pokemons_local[starting_index] = most_ranked_pokemon;
-        }
-        else {
-            tmp_pokemon = trainer->pokemons_remote[starting_index];
-            trainer->pokemons_remote[starting_index] = most_ranked_pokemon;
-        }
+        tmp_pokemon = pokemonTrainerGetPokemonAux(trainer, starting_index,
+                                                  is_local);
+        if (is_local)
+            trainer->pokemons_local[starting_index-1] = most_ranked_pokemon;
+        else
+            trainer->pokemons_remote[starting_index-1] = most_ranked_pokemon;
+
         if (most_ranked_is_local)
-            trainer->pokemons_local[most_ranked_pokemon_index] = tmp_pokemon;
-        else trainer->pokemons_remote[most_ranked_pokemon_index] = tmp_pokemon;
+            trainer->pokemons_local[most_ranked_pokemon_index-1] = tmp_pokemon;
+        else
+            trainer->pokemons_remote[most_ranked_pokemon_index-1] = tmp_pokemon;
     }
     mergeTrainerAndProfessor(trainer);
     return POKEMON_TRAINER_SUCCESS;

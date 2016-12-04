@@ -206,8 +206,8 @@ void raisePokemonExperience(Pokemon pokemon, int extra_experience) {
 
 
 bool isLetter(char letter) {
-    if ((letter > 'a' && letter < 'z') ||
-        (letter > 'A' && letter < 'Z')) {
+    if ((letter >= 'a' && letter <= 'z') ||
+        (letter >= 'A' && letter <= 'Z')) {
         return true;
     }
     return false;
@@ -431,7 +431,7 @@ PokemonResult pokemonEvolve(Pokemon pokemon, char* new_name) {
 
 PokemonResult pokemonPrintName(Pokemon pokemon, FILE* file) {
     if (pokemon == NULL || file == NULL) return POKEMON_NULL_ARG;
-    fprintf(file, pokemon->name);
+    fprintf(file,"%s", pokemon->name);
     return POKEMON_SUCCESS;
 }
 
