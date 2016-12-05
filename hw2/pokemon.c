@@ -315,13 +315,13 @@ PokemonResult pokemonTeachMove(Pokemon pokemon, char* move_name,
     }
     if (pokemon->number_of_moves < pokemon->max_number_of_moves) {
         pokemon->moves[pokemon->number_of_moves] = move;
-        pokemon->number_of_moves++;
     }
     else {
         int move_index = findMoveIndexToUnteach(pokemon);
         pokemonUnteachMove(pokemon, pokemon->moves[move_index]->name);
         pokemon->moves[move_index] = move;
     }
+    pokemon->number_of_moves++;
     return POKEMON_SUCCESS;
 }
 
