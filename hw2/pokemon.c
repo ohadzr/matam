@@ -282,7 +282,7 @@ Pokemon pokemonCopy(Pokemon pokemon) {
                                  pokemon->moves[i]->max_power_points,
                                  pokemon->moves[i]->strength);
                 if (result != POKEMON_SUCCESS) {
-                    pokemonDestroy(pokemon);
+                    pokemonDestroy(new_pokemon);
                     return NULL;
                 }
                 new_pokemon->moves[i]->power_points = \
@@ -329,13 +329,14 @@ PokemonResult pokemonUnteachMove(Pokemon pokemon, char *move_name) {
     int move_index;
     if (pokemon == NULL || move_name == NULL)
         return POKEMON_NULL_ARG;
-    if (strcmp(move_name, "") == 0)
+    if (strcmp(move_name, "") == SAME_STRINGS)
         return POKEMON_INVALID_MOVE_NAME;
     if (!doesPokemonMoveExists(pokemon,move_name,&move_index))
         return POKEMON_MOVE_DOES_NOT_EXIST;
 
-    free(pokemon->moves[move_index]->name);
-    free(pokemon->moves[move_index]);
+    destroyPokemonMove(pokemon, move_index);
+    //free(pokemon->moves[move_index]->name);
+    //free(pokemon->moves[move_index]);
 
     // fix moves indexes
     int i=move_index;

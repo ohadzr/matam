@@ -40,7 +40,7 @@ static bool testPokemonCreate() {
 
 static bool testPokemonDestroy() {
 	bool result = true;
-    // many tests for valgrid
+    // many tests for valgrind
     Pokemon pikachu0 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
     pokemonDestroy(pikachu0);
     Pokemon pikachu1 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
@@ -343,7 +343,7 @@ static bool testPokemonUseMove() {
             pikachu, "Tickle", TYPE_ELECTRIC, 100, 3), POKEMON_SUCCESS);
     TEST_EQUALS(result,
                 pokemonTeachMove(squirtle, "Bubble", TYPE_WATER, 30, 40),
-                POKEMON_SUCCESS)
+                POKEMON_SUCCESS);
 
     TEST_EQUALS(result, pokemonUseMove(
             pikachu, squirtle, "Tickle"), POKEMON_SUCCESS);
