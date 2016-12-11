@@ -1,0 +1,58 @@
+Ash captured a pidgey in paris.
+Clemont captured a pidgey in london.
+
+***   Stock Report   ***
+candy    10             X 1
+candy    20             X 1
+candy    200            X 1
+potion   20             X 2
+
+*************  Trainer Report  ************
+Ash
+Currently in paris
+Budget  110   Pokecoins
+XP      1.00
+
+* Trainer's Items:
+candy    10             X 1
+* Trainer's Pokemons:
+1    pidgey              HP    100.00
+                         CP        20
+                         LEVEL      1
+
+*************  Trainer Report  ************
+Clemont
+Currently in london
+Budget  140   Pokecoins
+XP      1.00
+
+* Trainer's Items:
+candy    20             X 1
+* Trainer's Pokemons:
+1    pidgey              HP    100.00
+                         CP        20
+                         LEVEL      1
+
+************  Pokemon Battle  *************
+Ash              		vs.		          Clemont
+pidgey           		   		           pidgey
+20               		CP 		               20
+100.00 --> 70.00 		HP 		100.00 -->  70.00
+1      --> 2     		LVL		     1 -->      2
+1.00   --> 4.00  		XP 		  1.00 -->   4.00
+
+*************  Trainer Report  ************
+Ash
+Currently in paris
+Budget  90    Pokecoins
+XP      4.00
+
+* Trainer's Items:
+* Trainer's Pokemons:
+1    pidgey              HP     90.00
+                         CP        30
+                         LEVEL      2
+
+***   Stock Report   ***
+candy    200            X 1
+potion   20             X 1

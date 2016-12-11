@@ -1,0 +1,40 @@
+berlin is empty: Ash could not catch any pokemons.
+Clemont captured a pidgey in london.
+Serena captured a caterpie in sydney.
+Ash captured a pidgey in paris.
+Clemont captured a rattata in paris.
+
+************  Pokemon Battle  *************
+Ash              		vs.		          Clemont
+pidgey           		   		          rattata
+20               		CP 		               15
+100.00 --> 77.50 		HP 		100.00 -->  70.00
+1      --> 2     		LVL		     1 -->      2
+1.00   --> 4.00  		XP 		  1.00 -->   3.00
+
+*************  Trainer Report  ************
+Clemont
+Currently in paris
+Budget  190   Pokecoins
+XP      3.00
+
+* Trainer's Items:
+* Trainer's Pokemons:
+1    pidgey              HP    100.00
+                         CP        20
+                         LEVEL      1
+2    rattata             HP     70.00
+                         CP        15
+                         LEVEL      2
+
+*************  Trainer Report  ************
+Ash
+Currently in paris
+Budget  130   Pokecoins
+XP      4.00
+
+* Trainer's Items:
+* Trainer's Pokemons:
+1    pidgey              HP     77.50
+                         CP        20
+                         LEVEL      2
