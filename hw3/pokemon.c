@@ -83,6 +83,7 @@ Pokemon pokemonCreate(char* name, PokemonType type, int cp) {
     pokemon->cp_bonus = DEFAULT_CP_BONUS;
     pokemon->level = DEFAULT_LEVEL;
     pokemon->hp = DEFAULT_HP;
+    pokemon->next_pokemon = NULL; //TODO: add pokemonGetNextPokemon function
     pokemon->name = createName(name);
 
     if (pokemon->name == NULL) {
@@ -174,7 +175,7 @@ PokemonResult pokemonUseItem(Pokemon pokemon, Item item) { // TODO: does this fu
 
 PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) {
     if (first_pokemon == NULL || second_pokemon == NULL)
-        return POKEMON_DIFFERENT;
+        return POKEMON_NULL_ARG;
 
     if (strcmp(first_pokemon->name, second_pokemon->name) == SAME_STRINGS &&
         first_pokemon->type == second_pokemon->type)

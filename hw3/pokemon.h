@@ -46,7 +46,7 @@ typedef struct pokemon_t {
 	PokemonType type; //TODO: make this a set of types
 	int cp, cp_bonus, level;
     double hp;
-	Pokemon* next_pokemon;
+	Pokemon next_pokemon;
 };
 
 /**

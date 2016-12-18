@@ -22,7 +22,7 @@
  *              Structs               *
  **************************************/
 
-struct item_t {
+struct item_t { //TODO: should be in h. file
 	ItemType type;
 	int quantity;
 	int value;
