@@ -29,7 +29,7 @@ typedef enum {
 	POKEMON_OUT_OF_MEM,
 	POKEMON_INVALID_TYPE,
     POKEMON_INVALID_VALUE,
-    //POKEMON_CANT_EVOLVE, //TODO: remove comment when working
+    //POKEMON_CANT_EVOLVE, //TODO: remove comment when pokemonCheckEvolution is working
 	POKEMON_INVALID_NAME,
     POKEMON_EQUAL,
     POKEMON_DIFFERENT,
@@ -37,17 +37,23 @@ typedef enum {
 } PokemonResult;
 
 
+/**************************************
+ *        Structs declarations        *
+ **************************************/
+
 typedef struct pokemon_t* Pokemon;
+
 /*
 * The pokemon structure.
 */
-typedef struct pokemon_t {
-	char* name;
-	PokemonType type; //TODO: make this a set of types
-	int cp, cp_bonus, level;
+struct pokemon_t {
+    char *name;
+    PokemonType type; //TODO: make this a set of types
+    int cp, cp_bonus, level;
     double hp;
-	Pokemon next_pokemon;
+    Pokemon next_pokemon;
 };
+
 
 /**
 * Creates a new pokemon.
