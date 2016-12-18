@@ -7,8 +7,7 @@
 #include <stdbool.h>
 #include <assert.h>
 #include "pokemon.h"
-#include "print_utils.h"
-#include "item.h"
+#include "store.h"
 
 
 #define SAME_STRINGS 0
@@ -88,11 +87,14 @@ Pokemon pokemonCreate(char* name, char* location, PokemonType type, int cp) {
     pokemon->level = DEFAULT_LEVEL;
     pokemon->hp = DEFAULT_HP;
     pokemon->name = createName(name);
-    if (pokemon->name == NULL)
-        return _NULL;
+    if (pokemon->name == NULL) {
+        free(pokemon);
+        return NULL;
+    }
     pokemon->location = createName(location);
     if (pokemon->location == NULL) {
         free(pokemon->name);
+        free(pokemon);
         return NULL;
     }
     pokemon->next_pokemon = NULL;
@@ -167,7 +169,7 @@ char* pokemonGetLocation(Pokemon pokemon) {
 PokemonResult pokemonUseItem(Pokemon pokemon, Item item) { // TODO: does this function need a different implementation? (not using Item but only bools)
     if (pokemon == NULL || item == NULL) return POKEMON_NULL_ARG;
     ItemType item_type = itemGetType(item_type); //TODO: should be here?
-    int value = itemGet(item);
+    int value = itemGetValue(item);
     if (item_type == TYPE_POTION) {
         pokemonUpdateHP(pokemon, value);
     }
