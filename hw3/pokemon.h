@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include "store.h"
 
 typedef enum {
 	TYPE_BUG,
@@ -29,6 +30,8 @@ typedef enum {
 	POKEMON_INVALID_TYPE,
     POKEMON_CANT_EVOLVE,
 	POKEMON_INVALID_NAME,
+    POKEMON_EQUAL,
+    POKEMON_DIFFERENT,
 	POKEMON_NO_HEALTH_POINTS,
 } PokemonResult;
 
@@ -138,10 +141,10 @@ PokemonResult pokemonUseItem(Pokemon pokemon, Item item);
 * and if the type is the same type.
 *
 * @return
-* 	true - if the same.
- * 	false - if one of the pokemons is NULL or if not same.
+*   POKEMON_EQUAL - if the same.
+* 	POKEMON_DIFFERENT - if one of the pokemons is NULL or if not same.
 */
-bool pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon);
+PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon);
 
 /**
 * Check if a pokemon should get evolved. If so, evolves the given pokemon.

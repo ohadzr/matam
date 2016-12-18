@@ -179,15 +179,15 @@ PokemonResult pokemonUseItem(Pokemon pokemon, Item item) { // TODO: does this fu
     return POKEMON_SUCCESS;
 }
 
-bool pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) {
+PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) {
     if (first_pokemon == NULL || second_pokemon == NULL)
-        return false;
+        return POKEMON_DIFFERENT;
 
     if (strcmp(first_pokemon->name, second_pokemon->name) == SAME_STRINGS &&
         first_pokemon->type == second_pokemon->type)
-        return true;
+        return POKEMON_EQUAL;
 
-    return false;
+    return POKEMON_DIFFERENT;
 }
 
 

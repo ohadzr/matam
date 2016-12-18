@@ -9,17 +9,8 @@ static bool testCombo() {
 	Pokemon pikachu_copy = pokemonCopy(pikachu);
 	TEST_DIFFERENT(result, pikachu_copy, NULL);
 	pokemonDestroy(pikachu_copy);
-	TEST_EQUALS(result, pokemonTeachMove(
-		pikachu, "Thunder", TYPE_ELECTRIC, 10, 110), POKEMON_SUCCESS);
-	TEST_EQUALS(result, pokemonUnteachMove(pikachu, "Thunder"), POKEMON_SUCCESS);
 	TEST_EQUALS(result, pokemonGetLevel(pikachu), 1);
-	TEST_EQUALS(result, pokemonGetRank(pikachu), 0);
 	Pokemon squirtle = pokemonCreate("Squirtle", TYPE_WATER, 10, 4);
-	pokemonTeachMove(squirtle, "Bubble", TYPE_WATER, 30, 40);
-	TEST_EQUALS(result, pokemonUseMove(
-		squirtle, pikachu, "Bubble"), POKEMON_SUCCESS);
-	TEST_EQUALS(result, pokemonHeal(pikachu), POKEMON_SUCCESS);
-	TEST_EQUALS(result, pokemonEvolve(squirtle, "Wartortle"), POKEMON_SUCCESS);
 	pokemonDestroy(pikachu);
 	pokemonDestroy(squirtle);
 	return result;

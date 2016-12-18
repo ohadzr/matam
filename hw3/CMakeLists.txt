@@ -3,7 +3,7 @@ project(hw3)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -pedantic-errors -D NDEBUG")
 
-set(LIBMTM libmtm/win64/libmtm.a)
+set(LIBMTM libmtm.a)
 
 set(STORE_FILES store.c store.h store_test.c)
 add_executable(hw3_store_test ${STORE_FILES})
