@@ -7,7 +7,6 @@
 #include <stdbool.h>
 #include <assert.h>
 #include "pokemon.h"
-#include "store.h"
 
 
 #define SAME_STRINGS 0
@@ -193,9 +192,14 @@ PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) {
 
 PokemonResult pokemonCheckEvolution(Pokemon pokemon) {
     if (pokemon == NULL) return POKEMON_NULL_ARG;
+    char* next_evolution = NULL;
     int new_cp = pokemon->cp;
-    char* next_evolution = pokedexGetNextEvoultion(pokemon, &new_cp); //TODO: add pokedex function
-    if (next_evolution == NULL) return POKEMON_CANT_EVOLVE;
+    PokedexResult result = pokedexCheckNextEvolution(pokemon); //TODO: add pokedex function
+    if (result == POKEDEX_POKEMON_EVOLVE) {
+        next_evolution = pokedexGetNextEvolutionName(pokemon);
+        new_cp = pokedexGetNextEvolutionCP(pokemon);
+        if (next_evolution == NULL) return POKEMON_CANT_EVOLVE;
+    }
 
     free(pokemon->name);
     pokemon->name = createName(next_evolution);
