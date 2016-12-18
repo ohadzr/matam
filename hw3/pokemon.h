@@ -166,4 +166,13 @@ PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon);
 //PokemonResult pokemonCheckEvolution(Pokemon pokemon);
 //TODO: remove comment when working
 
+/**
+* Get the next pokemon in linked list.
+* return the pointer to the next pokemon set in next_pokemon
+*
+* @return
+* 	return the pointer of the next pokemon in list.
+**/
+Pokemon pokemonGetNextPokemon(Pokemon pokemon);
+
 #endif // POKEMON_H_

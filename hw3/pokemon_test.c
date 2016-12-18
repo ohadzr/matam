@@ -28,6 +28,9 @@ static bool testCombo() {
     TEST_EQUALS(result, pokemonCompare(pikachu, pikachu2), POKEMON_EQUAL);
     TEST_EQUALS(result, pokemonCompare(pikachu, squirtle), POKEMON_DIFFERENT);
 	//TEST_EQUALS(result, pokemonCheckEvolution(pikachu)...???) //TODO: add when function is done
+
+    TEST_EQUALS(result, pokemonGetNextPokemon(pikachu), NULL);
+
     pokemonDestroy(pikachu);
     pokemonDestroy(pikachu2);
     pokemonDestroy(squirtle);

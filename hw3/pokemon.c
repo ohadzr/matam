@@ -207,3 +207,8 @@ PokemonResult pokemonCheckEvolution(Pokemon pokemon) {
 }
 
  */
+
+Pokemon pokemonGetNextPokemon(Pokemon pokemon) {
+    assert(pokemon != NULL);
+    return pokemon->next_pokemon;
+}
