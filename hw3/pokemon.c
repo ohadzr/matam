@@ -4,7 +4,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include <assert.h>
 #include "pokemon.h"
 
@@ -70,10 +69,9 @@ bool isValidType(PokemonType type) {
  *          Pokemon Funcs       *
  ********************************/
 
-Pokemon pokemonCreate(char* name, char* location, PokemonType type, int cp) {
+Pokemon pokemonCreate(char* name, PokemonType type, int cp) {
     Pokemon pokemon = NULL;
-    if (name == NULL || strcmp(name,"")== SAME_STRINGS || location == NULL || \
-        strcmp(location, "") == SAME_STRINGS || cp <=0)
+    if (name == NULL || strcmp(name,"")== SAME_STRINGS || cp <=0)
         return NULL;
     if (!isValidType(type)) return NULL;
 
@@ -86,16 +84,12 @@ Pokemon pokemonCreate(char* name, char* location, PokemonType type, int cp) {
     pokemon->level = DEFAULT_LEVEL;
     pokemon->hp = DEFAULT_HP;
     pokemon->name = createName(name);
+
     if (pokemon->name == NULL) {
         free(pokemon);
         return NULL;
     }
-    pokemon->location = createName(location);
-    if (pokemon->location == NULL) {
-        free(pokemon->name);
-        free(pokemon);
-        return NULL;
-    }
+
     pokemon->next_pokemon = NULL;
 
     return pokemon;
@@ -104,7 +98,6 @@ Pokemon pokemonCreate(char* name, char* location, PokemonType type, int cp) {
 void pokemonDestroy(Pokemon pokemon) {
     if (pokemon != NULL) {
         free(pokemon->name);
-        free(pokemon->location);
         if (pokemon->next_pokemon != NULL)
             free(pokemon->next_pokemon);
         free(pokemon);
@@ -115,8 +108,7 @@ void pokemonDestroy(Pokemon pokemon) {
 Pokemon pokemonCopy(Pokemon pokemon) {
     if (pokemon == NULL) return NULL;
     Pokemon new_pokemon = NULL;
-    new_pokemon = pokemonCreate(pokemon->name,pokemon->location,
-                                pokemon->type,pokemon->cp);
+    new_pokemon = pokemonCreate(pokemon->name,pokemon->type,pokemon->cp);
     if (new_pokemon != NULL) {
             new_pokemon->hp = pokemon->hp;
             new_pokemon->level = pokemon->level;
@@ -130,9 +122,12 @@ int pokemonGetLevel(Pokemon pokemon) {
     return pokemon->level;
 }
 
-void pokemonUpdateLevel(Pokemon pokemon, int value) {
-    assert(pokemon != NULL);
-    pokemon->level += value;
+PokemonResult pokemonUpdateLevel(Pokemon pokemon, int added_value) {
+    if (pokemon == NULL) return POKEMON_NULL_ARG;
+    if (added_value < 0)
+        return POKEMON_INVALID_VALUE;
+    pokemon->level += added_value;
+    return POKEMON_SUCCESS;
 }
 
 int pokemonGetCP(Pokemon pokemon) {
@@ -148,8 +143,10 @@ double pokemonGetHP(Pokemon pokemon) {
 PokemonResult pokemonUpdateHP(Pokemon pokemon, int value) {
     if (pokemon == NULL) return POKEMON_NULL_ARG;
     pokemon->hp += value;
-    if (pokemon->hp <= 0)
+    if (pokemon->hp <= 0) {
+        pokemon->hp = 0;
         return POKEMON_NO_HEALTH_POINTS;
+    }
     if (pokemon->hp > DEFAULT_HP)
         pokemon->hp = DEFAULT_HP;
     return POKEMON_SUCCESS;
@@ -160,15 +157,12 @@ char* pokemonGetName(Pokemon pokemon) { //TODO: should be static?
     return pokemon->name;
 }
 
-char* pokemonGetLocation(Pokemon pokemon) {
-    assert(pokemon != NULL);
-    return pokemon->location;
-}
 
 PokemonResult pokemonUseItem(Pokemon pokemon, Item item) { // TODO: does this function need a different implementation? (not using Item but only bools)
     if (pokemon == NULL || item == NULL) return POKEMON_NULL_ARG;
-    ItemType item_type = itemGetType(item_type); //TODO: should be here?
+    ItemType item_type = itemGetType(item); //TODO: should be here?
     int value = itemGetValue(item);
+
     if (item_type == TYPE_POTION) {
         pokemonUpdateHP(pokemon, value);
     }
@@ -201,8 +195,10 @@ PokemonResult pokemonCheckEvolution(Pokemon pokemon) {
         if (next_evolution == NULL) return POKEMON_CANT_EVOLVE;
     }
 
-    free(pokemon->name);
-    pokemon->name = createName(next_evolution);
+    if (next_evolution != NULL) {
+        free(pokemon->name);
+        pokemon->name = createName(next_evolution);
+    }
     if (pokemon->name == NULL) return POKEMON_OUT_OF_MEM;
 
     pokemon->cp = new_cp;

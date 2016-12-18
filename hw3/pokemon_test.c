@@ -1,103 +1,119 @@
 #include <stdbool.h>
+#include <string.h>
 #include "aux_macros.h"
 #include "pokemon.h"
 
 static bool testCombo() {
 	bool result = true;
-	Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+	Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     	TEST_DIFFERENT(result, pikachu, NULL);
 	Pokemon pikachu_copy = pokemonCopy(pikachu);
 	TEST_DIFFERENT(result, pikachu_copy, NULL);
 	pokemonDestroy(pikachu_copy);
 	TEST_EQUALS(result, pokemonGetLevel(pikachu), 1);
-	Pokemon squirtle = pokemonCreate("Squirtle", TYPE_WATER, 10, 4);
-	pokemonDestroy(pikachu);
+    TEST_EQUALS(result, pokemonGetHP(pikachu), 100);
+    //TEST_EQUALS(result, pokemonGetCP(pikachu), ????); //TODO: add pokedex tests too
+    TEST_EQUALS(result, strcmp(pokemonGetName(pikachu),"Pikachu"), 0);
+    TEST_EQUALS(result, pokemonUpdateHP(pikachu, 20),POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonGetHP(pikachu), 100);
+    TEST_EQUALS(result, pokemonUpdateHP(pikachu, -50),POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonGetHP(pikachu), 50);
+    TEST_EQUALS(result, pokemonUpdateHP(pikachu, -70),POKEMON_NO_HEALTH_POINTS);
+    TEST_EQUALS(result, pokemonGetHP(pikachu), 0);
+    TEST_EQUALS(result, pokemonGetCP(pikachu), 30);
+    TEST_EQUALS(result, pokemonUpdateLevel(pikachu,2), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonGetLevel(pikachu), 3);
+    Pokemon pikachu2 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 50);
+	Pokemon squirtle = pokemonCreate("Squirtle", TYPE_WATER, 10);
+    TEST_EQUALS(result, pokemonCompare(pikachu, pikachu2), POKEMON_EQUAL);
+    TEST_EQUALS(result, pokemonCompare(pikachu, squirtle), POKEMON_DIFFERENT);
+	//TEST_EQUALS(result, pokemonCheckEvolution(pikachu)...???) //TODO: add when function is done
+    pokemonDestroy(pikachu);
 	pokemonDestroy(squirtle);
 	return result;
+
 }
 
 static bool testPokemonCreate() {
 	bool result = true;
-    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     TEST_DIFFERENT(result, pikachu, NULL);
     pokemonDestroy(pikachu);
-    TEST_EQUALS(result,pokemonCreate("", TYPE_ELECTRIC, 20, 4),NULL);
-    TEST_EQUALS(result,pokemonCreate(NULL, TYPE_ELECTRIC, 20, 4),NULL);
-    TEST_EQUALS(result,pokemonCreate("Pikachu", TYPE_ELECTRIC, -20, 4),NULL);
-    TEST_EQUALS(result,pokemonCreate("Pikachu", TYPE_ELECTRIC, 20000, 4),NULL);
-    TEST_EQUALS(result,pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, -4),NULL);
+    TEST_EQUALS(result,pokemonCreate("", TYPE_ELECTRIC, 20),NULL);
+    TEST_EQUALS(result,pokemonCreate(NULL, TYPE_ELECTRIC, 20),NULL);
+    TEST_EQUALS(result,pokemonCreate("Pikachu", TYPE_ELECTRIC, -20),NULL);
     return result;
 }
 
 static bool testPokemonDestroy() {
 	bool result = true;
     // many tests for valgrind
-    Pokemon pikachu0 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu0 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu0);
-    Pokemon pikachu1 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu1 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu1);
-    Pokemon pikachu2 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu2 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu2);
-    Pokemon pikachu3 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu3 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu3);
-    Pokemon pikachu4 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu4 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu4);
-    Pokemon pikachu5 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu5 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu5);
-    Pokemon pikachu6 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu6 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu6);
-    Pokemon pikachu7 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu7 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu7);
-    Pokemon pikachu8 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu8 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu8);
-    Pokemon pikachu9 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu9 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu9);
-    Pokemon pikachu10 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu10 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu10);
-    Pokemon pikachu11 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu11 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu11);
-    Pokemon pikachu12 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu12 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu12);
-    Pokemon pikachu13 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu13 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu13);
-    Pokemon pikachu14 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu14 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu14);
-    Pokemon pikachu15 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu15 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu15);
-    Pokemon pikachu16 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu16 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu16);
-    Pokemon pikachu17 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu17 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu17);
-    Pokemon pikachu18 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu18 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu18);
-    Pokemon pikachu19 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu19 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu19);
-    Pokemon pikachu20 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu20 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu20);
-    Pokemon pikachu21 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu21 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu21);
-    Pokemon pikachu22 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu22 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu22);
-    Pokemon pikachu23 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu23 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu23);
-    Pokemon pikachu24 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu24 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu24);
-    Pokemon pikachu25 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu25 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu25);
-    Pokemon pikachu26 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu26 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu26);
-    Pokemon pikachu27 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu27 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu27);
-    Pokemon pikachu28 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu28 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu28);
-    Pokemon pikachu29 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu29 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     pokemonDestroy(pikachu29);
 	return result;
 }
 
 static bool testPokemonCopy() {
 	bool result = true;
-    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
+    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
     // many tests for valgrid
     Pokemon pikachu0 = pokemonCopy(pikachu);
     TEST_DIFFERENT(result, pikachu0, NULL);
@@ -194,59 +210,37 @@ static bool testPokemonCopy() {
 	return result;
 }
 
-static bool testPokemonGetLevel() {
-	bool result = true;
+static bool testPokemonUpdateLevel() {
+    bool result = true;
 
-    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 1, 4);
-    TEST_DIFFERENT(result, pikachu, NULL);
 
-    TEST_EQUALS(result, pokemonGetLevel(pikachu), 1);
-    pokemonDestroy(pikachu);
-    pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 100, 4);
-    TEST_EQUALS(result, pokemonGetLevel(pikachu), 1);
-    pokemonDestroy(pikachu);
-    pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 101, 4);
-    TEST_EQUALS(result, pokemonGetLevel(pikachu), 2);
-    pokemonDestroy(pikachu);
-    pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 9901, 4);
-    TEST_EQUALS(result, pokemonGetLevel(pikachu), 100);
-    pokemonDestroy(pikachu);
 
-	return result;
+    return result;
 }
 
-static bool testPokemonEvolve() {
+
+static bool testPokemonUpdateHP() {
+    bool result = true;
+
+
+
+    return result;
+}
+
+static bool testPokemonUseItem() {
+    bool result = true;
+
+    return result;
+}
+
+static bool testPokemonCompare() {
+    bool result = true;
+
+    return result;
+}
+
+static bool testPokemonCheckEvolution() { //TODO: change this when function is ready
 	bool result = true;
-
-    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 20, 4);
-    TEST_DIFFERENT(result, pikachu, NULL);
-    Pokemon squirtle = pokemonCreate("Squirtle", TYPE_WATER, 10, 4);
-    TEST_DIFFERENT(result, squirtle, NULL);
-
-    TEST_EQUALS(result, pokemonEvolve(squirtle, "Wartortle"), POKEMON_SUCCESS);
-    TEST_EQUALS(result, squirtle->experience, 101);
-    pokemonDestroy(squirtle);
-
-    squirtle = pokemonCreate("Squirtle", TYPE_WATER, 10, 4);
-    TEST_DIFFERENT(result, squirtle, NULL);
-
-    TEST_EQUALS(result, pokemonTeachMove(
-            pikachu, "Thunder", TYPE_ELECTRIC, 2, 600), POKEMON_SUCCESS);
-    TEST_EQUALS(result, pokemonUseMove(
-            pikachu, squirtle, "Thunder"), POKEMON_SUCCESS);
-    TEST_EQUALS(result, pokemonEvolve(squirtle, "Wartortle"), POKEMON_SUCCESS);
-    pokemonDestroy(squirtle);
-
-    squirtle = pokemonCreate("Squirtle", TYPE_WATER, 9901, 4);
-    TEST_DIFFERENT(result, squirtle, NULL);
-    TEST_EQUALS(result, pokemonEvolve(squirtle, "Wartortle"),
-                POKEMON_CANNOT_EVOLVE);
-    TEST_EQUALS(result, pokemonEvolve(NULL, "Raichu"),POKEMON_NULL_ARG);
-    TEST_EQUALS(result, pokemonEvolve(pikachu, NULL),POKEMON_NULL_ARG);
-    TEST_EQUALS(result, pokemonEvolve(pikachu, ""),POKEMON_INVALID_NAME);
-
-    pokemonDestroy(pikachu);
-    pokemonDestroy(squirtle);
 
 	return result;
 }
@@ -256,7 +250,10 @@ int main() {
 	RUN_TEST(testPokemonCreate);
 	RUN_TEST(testPokemonDestroy);
 	RUN_TEST(testPokemonCopy);
-	RUN_TEST(testPokemonGetLevel);
-	RUN_TEST(testPokemonEvolve);
+    RUN_TEST(testPokemonUpdateLevel);
+    RUN_TEST(testPokemonUpdateHP);
+    RUN_TEST(testPokemonUseItem);
+    RUN_TEST(testPokemonCompare);
+    RUN_TEST(testPokemonCheckEvolution);
 	return 0;
 }

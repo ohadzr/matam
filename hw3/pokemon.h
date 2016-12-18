@@ -28,6 +28,7 @@ typedef enum {
 	POKEMON_NULL_ARG,
 	POKEMON_OUT_OF_MEM,
 	POKEMON_INVALID_TYPE,
+    POKEMON_INVALID_VALUE,
     POKEMON_CANT_EVOLVE,
 	POKEMON_INVALID_NAME,
     POKEMON_EQUAL,
@@ -42,7 +43,6 @@ typedef struct pokemon_t* Pokemon;
 */
 typedef struct pokemon_t {
 	char* name;
-    char* location;
 	PokemonType type;
 	int cp, cp_bonus, level;
     double hp; //TODO: should be float?
@@ -51,7 +51,7 @@ typedef struct pokemon_t {
 
 /**
 * Creates a new pokemon.
-* The name, type, location and cp are parameters set the corresponding
+* The name, type and cp are parameters set the corresponding
 * properties of the pokemon.
 * The pokemon is created at level 1 and 100 HP.
 *
@@ -60,7 +60,7 @@ typedef struct pokemon_t {
 * 	If name is NULL or empty, type is invalid, experience or max_number_of_moves
 *   is not positive, or in case of a memory allocation failure - return NULL.
 **/
-Pokemon pokemonCreate(char* name, char* location, PokemonType type, int cp);
+Pokemon pokemonCreate(char* name, PokemonType type, int cp);
 
 /**
 * Frees all memory allocated for the given pokemon.
@@ -86,6 +86,17 @@ Pokemon pokemonCopy(Pokemon pokemon);
 int pokemonGetLevel(Pokemon pokemon);
 
 /**
+* Changes the pokemon's level - by given value.
+* value must be >= 0
+*
+* @return
+* 	POKEMON_NULL_ARG if pokemon is NULL.
+* 	POKEMON_INVALID_VALUE - if value is < 0
+* 	POKEMON_SUCCESS otherwise.
+*/
+PokemonResult pokemonUpdateLevel(Pokemon pokemon, int added_value);
+
+/**
 * get the pokemon HP
 *
 * This function asserts (pokemon != NULL).
@@ -106,12 +117,6 @@ int pokemonGetCP(Pokemon pokemon);
 */
 char* pokemonGetName(Pokemon pokemon);
 
-/**
-* get the pointer to the pokemon's location
-*
-* This function asserts (pokemon != NULL).
-*/
-char* pokemonGetLocation(Pokemon pokemon);
 
 /**
 * Update the given pokemon HP by given value.
