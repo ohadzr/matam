@@ -1,4 +1,3 @@
-
 /**************************************
  *       Header files include         *
  **************************************/
@@ -70,29 +69,6 @@ StoreResult static updateNewItemInStore(Store store,Item item) {
 	return STORE_SUCCESS;
 }
 
-/* return requested store-item address , return NULL if not exist */
-Item static getItemAddress(Store store,Item item) {
-	assert( store && item );
-	Item requested_item = store->items;
-	while ( itemCompare(requested_item,item) != ITEM_EQUAL ) {
-		requested_item = requested_item->next_item;
-		 if ( !requested_item ) return NULL;
-	}
-	return requested_item;
-}
-
-/* return item's value */
-int static itemValueGet(Item item) {
-	assert(item);
-	return item->value;
-}
-
-/* return item's type */
-ItemType static itemTypeGet(Item item) {
-	assert(item);
-	return item->type;
-}
-
 /* return item's quantity */
 int itemGetQuantity(Item item) {
 	assert( item );
@@ -131,6 +107,16 @@ Item itemCopy(Item item) {
 
 void itemDestroy(Item item) {
 	free (item);
+}
+
+Item getItemFromStore(Store store,Item item) {
+	assert( store && item );
+	Item requested_item = store->items;
+	while ( itemCompare(requested_item,item) != ITEM_EQUAL ) {
+		requested_item = requested_item->next_item;
+		if ( !requested_item ) return NULL;
+	}
+	return requested_item;
 }
 
 ItemResult itemCompare(Item item1, Item item2) {
@@ -190,7 +176,7 @@ StoreResult addItemToStore(Store store,Item item) {
 	if ( !item ) return STORE_ITEM_NULL_ARG;
 	if ( !doesItemExistInStore(store,item) )
 		return updateNewItemInStore(store,item);
-	Item item_to_update = getItemAddress(store,item);
+	Item item_to_update = getItemFromStore(store,item);
 	updateQuantity(item_to_update,ADD);
 	return STORE_SUCCESS;
 }
@@ -200,7 +186,7 @@ StoreResult destroyStoreItem(Store store,Item item) {
 	if (  getNumOfItems( store ) == 1 ) return STORE_DESTROY_LAST;
 	if( doesItemExistInStore(store,item) ) {
 		Item previous_item = store->items;
-		Item item_to_destroy = getItemAddress(store,item);
+		Item item_to_destroy = getItemFromStore(store,item);
 		Item next_item = item_to_destroy->next_item;
 		while(itemCompare(previous_item->next_item,item_to_destroy)!=ITEM_EQUAL)
 			previous_item = previous_item->next_item;
@@ -215,11 +201,21 @@ StoreResult sellItem(Store store,Item requsted_item,Item* sold_item) {
 	if ( !store ) return STORE_NULL_ARG;
 	if ( !requsted_item ) return STORE_ITEM_NULL_ARG;
 	if (!doesItemExistInStore(store,requsted_item)) return STORE_ITEM_NOT_EXIST;
-	Item item_to_update = getItemAddress(store,requsted_item);
+	Item item_to_update = getItemFromStore(store,requsted_item);
 	int item_to_sell_quantity = itemGetQuantity(item_to_update);
 	if ( item_to_sell_quantity == 0 ) return STORE_OUT_OF_STOCK;
 	updateQuantity(item_to_update,SUB);
 	*sold_item = itemCopy(item_to_update);
 	if (*sold_item == NULL) return STORE_OUT_OF_MEM;
 	return STORE_SUCCESS;
+}
+
+int itemValueGet(Item item) {
+	assert(item);
+	return item->value;
+}
+
+ItemType itemTypeGet(Item item) {
+	assert(item);
+	return item->type;
 }

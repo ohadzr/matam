@@ -23,17 +23,17 @@ typedef struct store_t* Store;
  **************************************/
 typedef enum {ITEM_NULL_ARG,
 			  ITEM_EQUAL,
-			  ITEM_DIFFERENT} ItemResult;
+	          ITEM_DIFFERENT} ItemResult;
 
-typedef enum {TYPE_POTION,TYPE_CANDY} ItemType;
+typedef enum {Potion,Candy} ItemType;
 
 typedef enum {STORE_SUCCESS,
-			  STORE_NULL_ARG,
-			  STORE_ITEM_NULL_ARG,
-			  STORE_ITEM_NOT_EXIST,
-			  STORE_OUT_OF_STOCK,
-			  STORE_OUT_OF_MEM,
-			  STORE_DESTROY_LAST} StoreResult;
+	STORE_NULL_ARG,
+	STORE_ITEM_NULL_ARG,
+	STORE_ITEM_NOT_EXIST,
+	STORE_OUT_OF_STOCK,
+	STORE_OUT_OF_MEM,
+	STORE_DESTROY_LAST} StoreResult;
 
 /**************************************
  *      Functions declarations        *
@@ -81,4 +81,12 @@ StoreResult sellItem(Store store,Item requsted_item,Item* sold_item);
 /* return items quantity */
 int itemGetQuantity(Item item);
 
+/* return requested store-item address , return NULL if not exist */
+Item getItemFromStore(Store store,Item item);
+
+/* return item's value */
+int itemValueGet(Item item);
+
+/* return item's type */
+ItemType itemTypeGet(Item item);
 #endif /* STORE_H_ */
