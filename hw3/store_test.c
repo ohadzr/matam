@@ -11,7 +11,7 @@ static bool testCombo() {
 	Item  item2 = itemCreate(TYPE_POTION,20);
 	Item  item3 = itemCreate(TYPE_CANDY,20);
 	Item  item4_BadValue = itemCreate(TYPE_POTION,0);
-	Item  item5_badType = itemCreate(3,0);
+	Item  item5_badType = itemCreate(3,0); // TODO: remove this check before submission (warning == error)
 	Item  item6 = itemCreate(TYPE_CANDY,90);
 	Item  item1_copy = itemCopy(item1);
 	Store our_store = storeCreate(item6);
@@ -71,5 +71,6 @@ static bool testCombo() {
 }
 int main() {
 	RUN_TEST(testCombo); //TODO: should we have more test? for each function independently and not only combo?
+	//TESTING UPLOAD
 	return 0;
 }
