@@ -39,7 +39,7 @@ struct store_t {
  **************************************/
 
 /* return true if value > 0 */
-int static posetiveCheck(int value) {
+int static positiveCheck(int value) {
 	return (value > 0);
 }
 
@@ -74,7 +74,7 @@ StoreResult static updateNewItemInStore(Store store,Item item) {
 Item static getItemAddress(Store store,Item item) {
 	assert( store && item );
 	Item requested_item = store->items;
-	while ( itemCompare(requested_item,item) != ITEM_EOUAL ) {
+	while ( itemCompare(requested_item,item) != ITEM_EQUAL ) {
 		requested_item = requested_item->next_item;
 		 if ( !requested_item ) return NULL;
 	}
@@ -111,7 +111,7 @@ void static updateQuantity(Item item,int arithmeticFlag) {
 
 Item itemCreate(ItemType type,int value) {
 	if( !isValidType(type) ) return NULL;
-	if ( !posetiveCheck(value) ) return NULL;
+	if ( !positiveCheck(value) ) return NULL;
 	Item new_item = malloc(sizeof(*new_item));
 	if( !new_item ) return NULL;
 	new_item->type = type;
@@ -136,7 +136,7 @@ void itemDestroy(Item item) {
 ItemResult itemCompare(Item item1, Item item2) {
 	if ( !item1 || !item2) return ITEM_NULL_ARG;
 	if ( (item1->type == item2->type) &&
-		 (item1->value == item2->value) ) return ITEM_EOUAL;
+		 (item1->value == item2->value) ) return ITEM_EQUAL;
 	return ITEM_DIFFERENT;
 }
 
@@ -179,7 +179,7 @@ bool doesItemExistInStore(Store store,Item item) {
 	assert( store );
 	Item start_point = store->items;
 	while ( start_point ) {
-		if( itemCompare(item,start_point) == ITEM_EOUAL ) return true;
+		if( itemCompare(item,start_point) == ITEM_EQUAL ) return true;
 		start_point = start_point->next_item;
 	}
 	return false;
@@ -202,7 +202,7 @@ StoreResult destroyStoreItem(Store store,Item item) {
 		Item previous_item = store->items;
 		Item item_to_destroy = getItemAddress(store,item);
 		Item next_item = item_to_destroy->next_item;
-		while(itemCompare(previous_item->next_item,item_to_destroy)!=ITEM_EOUAL)
+		while(itemCompare(previous_item->next_item,item_to_destroy)!=ITEM_EQUAL)
 			previous_item = previous_item->next_item;
 		itemDestroy(item_to_destroy);
 		previous_item->next_item = next_item;
@@ -220,6 +220,6 @@ StoreResult sellItem(Store store,Item requsted_item,Item* sold_item) {
 	if ( item_to_sell_quantity == 0 ) return STORE_OUT_OF_STOCK;
 	updateQuantity(item_to_update,SUB);
 	*sold_item = itemCopy(item_to_update);
-	if ( !sold_item ) return STORE_OUT_OF_MEM;
+	if (*sold_item == NULL) return STORE_OUT_OF_MEM;
 	return STORE_SUCCESS;
 }

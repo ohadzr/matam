@@ -22,10 +22,10 @@ typedef struct store_t* Store;
  *         Enum declarations          *
  **************************************/
 typedef enum {ITEM_NULL_ARG,
-			  ITEM_EOUAL,
+			  ITEM_EQUAL,
 			  ITEM_DIFFERENT} ItemResult;
 
-typedef enum {Potion,Candy} ItemType;
+typedef enum {TYPE_POTION,TYPE_CANDY} ItemType;
 
 typedef enum {STORE_SUCCESS,
 			  STORE_NULL_ARG,
