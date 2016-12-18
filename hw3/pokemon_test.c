@@ -29,7 +29,8 @@ static bool testCombo() {
     TEST_EQUALS(result, pokemonCompare(pikachu, squirtle), POKEMON_DIFFERENT);
 	//TEST_EQUALS(result, pokemonCheckEvolution(pikachu)...???) //TODO: add when function is done
     pokemonDestroy(pikachu);
-	pokemonDestroy(squirtle);
+    pokemonDestroy(pikachu2);
+    pokemonDestroy(squirtle);
 	return result;
 
 }
@@ -213,8 +214,14 @@ static bool testPokemonCopy() {
 static bool testPokemonUpdateLevel() {
     bool result = true;
 
+    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
 
+    TEST_EQUALS(result, pokemonUpdateLevel(pikachu,3), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonGetLevel(pikachu), 4);
+    TEST_EQUALS(result, pokemonUpdateLevel(pikachu, -4),POKEMON_INVALID_VALUE);
+    TEST_EQUALS(result, pokemonUpdateLevel(NULL, 2), POKEMON_NULL_ARG);
 
+    pokemonDestroy(pikachu);
     return result;
 }
 
@@ -222,7 +229,16 @@ static bool testPokemonUpdateLevel() {
 static bool testPokemonUpdateHP() {
     bool result = true;
 
+    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
 
+    TEST_EQUALS(result, pokemonUpdateHP(pikachu,-30), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonGetHP(pikachu), 70);
+    TEST_EQUALS(result, pokemonUpdateHP(pikachu, 50),POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonGetHP(pikachu), 100);
+    TEST_EQUALS(result, pokemonUpdateHP(pikachu, -100),
+                POKEMON_NO_HEALTH_POINTS);
+
+    pokemonDestroy(pikachu);
 
     return result;
 }
@@ -230,11 +246,48 @@ static bool testPokemonUpdateHP() {
 static bool testPokemonUseItem() {
     bool result = true;
 
+    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
+    Item potion = itemCreate(TYPE_POTION, 50);
+    Item candy = itemCreate(TYPE_CANDY, 10);
+
+    TEST_EQUALS(result, pokemonUpdateHP(pikachu,-30), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonUseItem(pikachu, potion), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonUseItem(pikachu, candy), POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonGetHP(pikachu), 100);
+    TEST_EQUALS(result, pokemonGetCP(pikachu), 40);
+
+    TEST_EQUALS(result, pokemonUseItem(NULL, potion), POKEMON_NULL_ARG);
+    TEST_EQUALS(result, pokemonUseItem(pikachu, NULL), POKEMON_NULL_ARG);
+
+
+    itemDestroy(potion);
+    itemDestroy(candy);
+    pokemonDestroy(pikachu);
+
+
     return result;
 }
 
 static bool testPokemonCompare() {
     bool result = true;
+
+    Pokemon pikachu = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
+    Pokemon pikachu2 = pokemonCreate("Pikachu", TYPE_ELECTRIC, 30);
+    Pokemon pikachu3 = pokemonCreate("Pikachu", TYPE_NORMAL, 30);
+    Pokemon pikach = pokemonCreate("Pikach", TYPE_ELECTRIC, 30);
+
+    TEST_EQUALS(result, pokemonCompare(pikachu, pikachu2), POKEMON_EQUAL);
+    TEST_EQUALS(result, pokemonCompare(pikachu, pikachu3), POKEMON_DIFFERENT);
+    TEST_EQUALS(result, pokemonCompare(pikachu, pikach), POKEMON_DIFFERENT);
+    TEST_EQUALS(result, pokemonCompare(pikachu, NULL), POKEMON_NULL_ARG);
+    TEST_EQUALS(result, pokemonCompare(NULL, pikachu), POKEMON_NULL_ARG);
+
+
+
+    pokemonDestroy(pikachu3);
+    pokemonDestroy(pikachu2);
+    pokemonDestroy(pikachu);
+    pokemonDestroy(pikach);
 
     return result;
 }

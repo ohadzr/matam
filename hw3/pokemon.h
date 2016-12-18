@@ -29,7 +29,7 @@ typedef enum {
 	POKEMON_OUT_OF_MEM,
 	POKEMON_INVALID_TYPE,
     POKEMON_INVALID_VALUE,
-    POKEMON_CANT_EVOLVE,
+    //POKEMON_CANT_EVOLVE, //TODO: remove comment when working
 	POKEMON_INVALID_NAME,
     POKEMON_EQUAL,
     POKEMON_DIFFERENT,
@@ -43,9 +43,9 @@ typedef struct pokemon_t* Pokemon;
 */
 typedef struct pokemon_t {
 	char* name;
-	PokemonType type;
+	PokemonType type; //TODO: make this a set of types
 	int cp, cp_bonus, level;
-    double hp; //TODO: should be float?
+    double hp;
 	Pokemon* next_pokemon;
 };
 
@@ -163,7 +163,7 @@ PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon);
 *   POKEMON_OUT_OF_MEM - if faild allocating new name for the pokemon.
 * 	POKEMON_SUCCESS otherwise.
 */
-PokemonResult pokemonCheckEvolution(Pokemon pokemon);
-
+//PokemonResult pokemonCheckEvolution(Pokemon pokemon);
+//TODO: remove comment when working
 
 #endif // POKEMON_H_

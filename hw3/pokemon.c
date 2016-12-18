@@ -144,7 +144,7 @@ PokemonResult pokemonUpdateHP(Pokemon pokemon, int value) {
     if (pokemon == NULL) return POKEMON_NULL_ARG;
     pokemon->hp += value;
     if (pokemon->hp <= 0) {
-        pokemon->hp = 0;
+        pokemon->hp = 0; //TODO: should I destroy pokemon or trainer?
         return POKEMON_NO_HEALTH_POINTS;
     }
     if (pokemon->hp > DEFAULT_HP)
@@ -163,7 +163,7 @@ PokemonResult pokemonUseItem(Pokemon pokemon, Item item) { // TODO: does this fu
     ItemType item_type = itemGetType(item); //TODO: should be here?
     int value = itemGetValue(item);
 
-    if (item_type == TYPE_POTION) {
+    if (item_type == TYPE_POTION) { //TODO: can I use this enum?
         pokemonUpdateHP(pokemon, value);
     }
     if (item_type == TYPE_CANDY) {
@@ -183,7 +183,7 @@ PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) {
     return POKEMON_DIFFERENT;
 }
 
-
+/* TODO: remove this when pokedex is implemented
 PokemonResult pokemonCheckEvolution(Pokemon pokemon) {
     if (pokemon == NULL) return POKEMON_NULL_ARG;
     char* next_evolution = NULL;
@@ -204,3 +204,5 @@ PokemonResult pokemonCheckEvolution(Pokemon pokemon) {
     pokemon->cp = new_cp;
     return POKEMON_SUCCESS;
 }
+
+ */
