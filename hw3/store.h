@@ -25,7 +25,7 @@ typedef enum {ITEM_NULL_ARG,
 			  ITEM_EQUAL,
 	          ITEM_DIFFERENT} ItemResult;
 
-typedef enum {Potion,Candy} ItemType;
+typedef enum {TYPE_POTION,TYPE_CANDY} ItemType;
 
 typedef enum {STORE_SUCCESS,
 	STORE_NULL_ARG,
@@ -85,8 +85,8 @@ int itemGetQuantity(Item item);
 Item getItemFromStore(Store store,Item item);
 
 /* return item's value */
-int itemValueGet(Item item);
+int itemGetValue(Item item);
 
 /* return item's type */
-ItemType itemTypeGet(Item item);
+ItemType itemGetType(Item item);
 #endif /* STORE_H_ */

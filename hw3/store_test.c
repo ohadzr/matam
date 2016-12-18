@@ -7,11 +7,11 @@ static bool testCombo() {
 	bool result = true;
 /* -----------------------  initialization  ----------------------- */
 
-	Item  item1 = itemCreate(Potion,10);
-	Item  item2 = itemCreate(Potion,20);
-	Item  item3 = itemCreate(Candy,20);
-	Item  item4_BadValue = itemCreate(Potion,0);
-	Item  item6 = itemCreate(Candy,90);
+	Item  item1 = itemCreate(TYPE_POTION,10);
+	Item  item2 = itemCreate(TYPE_POTION,20);
+	Item  item3 = itemCreate(TYPE_CANDY,20);
+	Item  item4_BadValue = itemCreate(TYPE_POTION,0);
+	Item  item6 = itemCreate(TYPE_CANDY,90);
 	Item  item1_copy = itemCopy(item1);
 	Store our_store = storeCreate(item6);
 	Item item_bag1 = NULL;

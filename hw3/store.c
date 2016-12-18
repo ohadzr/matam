@@ -128,7 +128,7 @@ ItemResult itemCompare(Item item1, Item item2) {
 
 int itemPriceGet(Item item) {
 	assert( item );
-	return ( itemValueGet(item) * ( itemTypeGet(item) + 1 ) );
+	return (itemGetValue(item) * (itemGetType(item) + 1 ) );
 }
 
 Store storeCreate(Item first_item) {
@@ -210,12 +210,12 @@ StoreResult sellItem(Store store,Item requsted_item,Item* sold_item) {
 	return STORE_SUCCESS;
 }
 
-int itemValueGet(Item item) {
+int itemGetValue(Item item) {
 	assert(item);
 	return item->value;
 }
 
-ItemType itemTypeGet(Item item) {
+ItemType itemGetType(Item item) {
 	assert(item);
 	return item->type;
 }
