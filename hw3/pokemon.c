@@ -83,7 +83,7 @@ Pokemon pokemonCreate(char* name, PokemonType type, int cp) {
     pokemon->cp_bonus = DEFAULT_CP_BONUS;
     pokemon->level = DEFAULT_LEVEL;
     pokemon->hp = DEFAULT_HP;
-    pokemon->next_pokemon = NULL; //TODO: add pokemonGetNextPokemon function
+    pokemon->next_pokemon = NULL;
     pokemon->name = createName(name);
 
     if (pokemon->name == NULL) {
