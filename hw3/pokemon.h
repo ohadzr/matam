@@ -48,8 +48,8 @@ typedef struct pokemon_t* Pokemon;
 */
 struct pokemon_t {
     char *name;
-    PokemonType type; //TODO: make this a set of types
-    int cp, cp_bonus, level;
+    PokemonType type; //TODO: make this a set of types change pokemon create, destroy & copy
+    int cp, cp_bonus, level, id;
     double hp;
     Pokemon next_pokemon;
 };
@@ -173,12 +173,41 @@ PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon);
 //TODO: remove comment when working
 
 /**
+* Update the given pokemon ID.
+*
+* @return
+* 	POKEMON_NULL_ARG if pokemon is NULL.
+* 	POKEMON_SUCCESS otherwise.
+*/
+PokemonResult pokemonUpdateID(Pokemon pokemon, int new_id);
+
+
+/**
+* Get the pokemon's unique ID.
+*
+* @return
+* 	return int of the pokemon's id
+**/
+int pokemonGetID(Pokemon pokemon);
+
+/**
 * Get the next pokemon in linked list.
 * return the pointer to the next pokemon set in next_pokemon
 *
 * @return
 * 	return the pointer of the next pokemon in list.
 **/
-Pokemon pokemonGetNextPokemon(Pokemon pokemon);
+//Pokemon pokemonGetNextPokemon(Pokemon pokemon);
+
+/**
+* Update the given next pokemon in the linked list.
+*
+* @return
+* 	POKEMON_NULL_ARG if pokemon is NULL.
+* 	POKEMON_SUCCESS otherwise.
+*/
+//PokemonResult pokemonUpdateNextPokemon(Pokemon pokemon, Pokemon next_pokemon);
+
+
 
 #endif // POKEMON_H_

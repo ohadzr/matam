@@ -43,7 +43,7 @@ static bool isValidType(PokemonType type);
  ********************************/
 
 
-char* createName(char* name) {
+char* createName(char* name) { //TODO: should this function be in utils.c?
     char* dst_name = malloc(strlen(name)+1);
     if (dst_name != NULL) {
         strcpy(dst_name, name);
@@ -83,7 +83,7 @@ Pokemon pokemonCreate(char* name, PokemonType type, int cp) {
     pokemon->cp_bonus = DEFAULT_CP_BONUS;
     pokemon->level = DEFAULT_LEVEL;
     pokemon->hp = DEFAULT_HP;
-    pokemon->next_pokemon = NULL;
+    //pokemon->next_pokemon = NULL; //TODO:remove this
     pokemon->name = createName(name);
 
     if (pokemon->name == NULL) {
@@ -91,16 +91,14 @@ Pokemon pokemonCreate(char* name, PokemonType type, int cp) {
         return NULL;
     }
 
-    pokemon->next_pokemon = NULL;
-
     return pokemon;
 }
 
 void pokemonDestroy(Pokemon pokemon) {
     if (pokemon != NULL) {
         free(pokemon->name);
-        if (pokemon->next_pokemon != NULL)
-            free(pokemon->next_pokemon);
+        //if (pokemon->next_pokemon != NULL) //TODO: remove this
+        //    free(pokemon->next_pokemon);
         free(pokemon);
     }
 }
@@ -153,7 +151,7 @@ PokemonResult pokemonUpdateHP(Pokemon pokemon, int value) {
     return POKEMON_SUCCESS;
 }
 
-char* pokemonGetName(Pokemon pokemon) { //TODO: should be static?
+char* pokemonGetName(Pokemon pokemon) {
     assert(pokemon != NULL);
     return pokemon->name;
 }
@@ -173,12 +171,11 @@ PokemonResult pokemonUseItem(Pokemon pokemon, Item item) { // TODO: does this fu
     return POKEMON_SUCCESS;
 }
 
-PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) {
+PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) { //TODO: change in tests
     if (first_pokemon == NULL || second_pokemon == NULL)
         return POKEMON_NULL_ARG;
 
-    if (strcmp(first_pokemon->name, second_pokemon->name) == SAME_STRINGS &&
-        first_pokemon->type == second_pokemon->type)
+    if (first_pokemon->id == second_pokemon->id)
         return POKEMON_EQUAL;
 
     return POKEMON_DIFFERENT;
@@ -208,7 +205,44 @@ PokemonResult pokemonCheckEvolution(Pokemon pokemon) {
 
  */
 
+
+PokemonResult pokemonUpdateID(Pokemon pokemon, int new_id) { //TODO: add to tests
+    if (pokemon == NULL) return POKEMON_NULL_ARG;
+    pokemon->id = new_id;
+    return POKEMON_SUCCESS;
+}
+
+int pokemonGetID(Pokemon pokemon) {
+    assert(pokemon != NULL);
+    return pokemon->id;
+}
+
+
+//TODO: remove this:
+
+/*
 Pokemon pokemonGetNextPokemon(Pokemon pokemon) {
     assert(pokemon != NULL);
     return pokemon->next_pokemon;
 }
+
+
+PokemonResult pokemonUpdateNextPokemon(Pokemon pokemon, Pokemon next_pokemon) { //TODO: add to tests
+    if (pokemon == NULL || next_pokemon == NULL)
+        return POKEMON_NULL_ARG;
+
+    pokemon->next_pokemon = next_pokemon;
+
+    return POKEMON_SUCCESS
+
+}
+
+
+
+
+PokemonResult pokemonRemovePokemonFromList(Pokemon first_pokemon,
+                                           Pokemon pokemon_to_remove) {
+    Pokemon
+}
+
+ */

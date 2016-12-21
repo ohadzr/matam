@@ -26,7 +26,7 @@ static bool testCombo() {
 
 	TEST_EQUALS(result, itemCompare(item1,item1_copy),ITEM_EQUAL);
 	TEST_DIFFERENT(result, itemCompare(item1,item2),ITEM_EQUAL);
-	TEST_EQUALS(result, itemPriceGet(item1),10);
+	TEST_EQUALS(result, itemGetPrice(item1),10);
 	TEST_EQUALS(result, item4_BadValue,NULL);
 	TEST_EQUALS(result,getNumOfItems(our_store),4);
 	TEST_EQUALS(result,doesItemExistInStore(our_store,item6),true);

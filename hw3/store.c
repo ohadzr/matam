@@ -16,7 +16,7 @@
 #define MAX_TYPE_NUMBER 3
 #define NOT_FOR_SALE -1
 #define ADD 1
-#define SUB -1
+#define SUBTRACT -1
 
 /**************************************
  *              Structs               *
@@ -30,7 +30,7 @@ struct item_t { //TODO: should be in h. file
 };
 
 struct store_t {
-	Item items;
+	Item items; //TODO: should be Set
 };
 
 /**************************************
@@ -77,7 +77,7 @@ int itemGetQuantity(Item item) {
 
 /* update item's quantity, if item was not for sale update to 0 */
 void static updateQuantity(Item item,int arithmeticFlag) {
-	assert( item && ((arithmeticFlag == ADD) || (arithmeticFlag == SUB)) );
+	assert( item && ((arithmeticFlag == ADD) || (arithmeticFlag == SUBTRACT)) );
 	item->quantity += arithmeticFlag;
 }
 
@@ -126,7 +126,7 @@ ItemResult itemCompare(Item item1, Item item2) {
 	return ITEM_DIFFERENT;
 }
 
-int itemPriceGet(Item item) {
+int itemGetPrice(Item item) {
 	assert( item );
 	return (itemGetValue(item) * (itemGetType(item) + 1 ) );
 }
@@ -196,15 +196,15 @@ StoreResult destroyStoreItem(Store store,Item item) {
 	return STORE_SUCCESS;
 }
 
-StoreResult sellItem(Store store,Item requsted_item,Item* sold_item) {
+StoreResult sellItem(Store store,Item requested_item,Item* sold_item) {
 	*sold_item = NULL;
 	if ( !store ) return STORE_NULL_ARG;
-	if ( !requsted_item ) return STORE_ITEM_NULL_ARG;
-	if (!doesItemExistInStore(store,requsted_item)) return STORE_ITEM_NOT_EXIST;
-	Item item_to_update = getItemFromStore(store,requsted_item);
+	if ( !requested_item ) return STORE_ITEM_NULL_ARG;
+	if (!doesItemExistInStore(store,requested_item)) return STORE_ITEM_NOT_EXIST;
+	Item item_to_update = getItemFromStore(store,requested_item);
 	int item_to_sell_quantity = itemGetQuantity(item_to_update);
 	if ( item_to_sell_quantity == 0 ) return STORE_OUT_OF_STOCK;
-	updateQuantity(item_to_update,SUB);
+	updateQuantity(item_to_update,SUBTRACT);
 	*sold_item = itemCopy(item_to_update);
 	if (*sold_item == NULL) return STORE_OUT_OF_MEM;
 	return STORE_SUCCESS;

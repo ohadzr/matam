@@ -52,7 +52,7 @@ void itemDestroy(Item item);
 ItemResult itemCompare(Item item1, Item item2);
 
 /* return item price based on items type */
-int itemPriceGet(Item item);
+int itemGetPrice(Item item);
 
 /* create new store,condition for create is first item, return NULL if item
  * is NULL or allocation failed */
@@ -76,7 +76,7 @@ StoreResult addItemToStore(Store store,Item item);
 StoreResult destroyStoreItem(Store store,Item item);
 
 /* return item from store if it exist to buyer and update quantity in store */
-StoreResult sellItem(Store store,Item requsted_item,Item* sold_item);
+StoreResult sellItem(Store store,Item requested_item,Item* sold_item);
 
 /* return items quantity */
 int itemGetQuantity(Item item);
