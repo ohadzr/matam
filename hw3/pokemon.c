@@ -43,7 +43,7 @@ static bool isValidType(PokemonType type);
  ********************************/
 
 
-char* createName(char* name) { //TODO: should this function be in utils.c?
+char* createName(char* name) { //TODO: should this function be in utils.c? what is utils?
     char* dst_name = malloc(strlen(name)+1);
     if (dst_name != NULL) {
         strcpy(dst_name, name);
@@ -79,11 +79,11 @@ Pokemon pokemonCreate(char* name, PokemonType type, int cp) {
     if (pokemon == NULL) return NULL;
 
     pokemon->type = type;
-    pokemon->cp = cp; //TODO: get this from pokedex!
+    pokemon->cp = cp; //TODO: get this from pokedex! // agree
     pokemon->cp_bonus = DEFAULT_CP_BONUS;
     pokemon->level = DEFAULT_LEVEL;
     pokemon->hp = DEFAULT_HP;
-    //pokemon->next_pokemon = NULL; //TODO:remove this
+    //pokemon->next_pokemon = NULL; //TODO:remove this // agree
     pokemon->name = createName(name);
 
     if (pokemon->name == NULL) {
@@ -143,7 +143,7 @@ PokemonResult pokemonUpdateHP(Pokemon pokemon, int value) {
     if (pokemon == NULL) return POKEMON_NULL_ARG;
     pokemon->hp += value;
     if (pokemon->hp <= 0) {
-        pokemon->hp = 0; //TODO: should I destroy pokemon or trainer?
+        pokemon->hp = 0; //TODO: should I destroy pokemon or trainer? do separate function of destroy pokemon and destroy trainer
         return POKEMON_NO_HEALTH_POINTS;
     }
     if (pokemon->hp > DEFAULT_HP)
@@ -159,10 +159,10 @@ char* pokemonGetName(Pokemon pokemon) {
 
 PokemonResult pokemonUseItem(Pokemon pokemon, Item item) { // TODO: does this function need a different implementation? (not using Item but only bools)
     if (pokemon == NULL || item == NULL) return POKEMON_NULL_ARG;
-    ItemType item_type = itemGetType(item); //TODO: should be here?
+    ItemType item_type = itemGetType(item); //TODO: should be here? //why not? how else a dedicated func?
     int value = itemGetValue(item);
 
-    if (item_type == TYPE_POTION) { //TODO: can I use this enum?
+    if (item_type == TYPE_POTION) { //TODO: can I use this enum? yes if you do include to store.h
         pokemonUpdateHP(pokemon, value);
     }
     if (item_type == TYPE_CANDY) {
@@ -171,7 +171,7 @@ PokemonResult pokemonUseItem(Pokemon pokemon, Item item) { // TODO: does this fu
     return POKEMON_SUCCESS;
 }
 
-PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) { //TODO: change in tests
+PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) { //TODO: change in tests -?don't understand
     if (first_pokemon == NULL || second_pokemon == NULL)
         return POKEMON_NULL_ARG;
 
@@ -206,7 +206,7 @@ PokemonResult pokemonCheckEvolution(Pokemon pokemon) {
  */
 
 
-PokemonResult pokemonUpdateID(Pokemon pokemon, int new_id) { //TODO: add to tests
+PokemonResult pokemonUpdateID(Pokemon pokemon, int new_id) { //TODO: add to tests -> to think who is giving pokemon the id trainer/ pokadex?
     if (pokemon == NULL) return POKEMON_NULL_ARG;
     pokemon->id = new_id;
     return POKEMON_SUCCESS;
