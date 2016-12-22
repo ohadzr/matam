@@ -5,7 +5,9 @@
 #include <stdbool.h>
 #include "pokemon.h"
 #include "set.h"
+#include "list.h"
 #include "store.h"
+#include "print_utils.h"
 
 
 
@@ -13,7 +15,12 @@ typedef enum {
 	POKEMON_TRAINER_OUT_OF_MEM,
 	POKEMON_TRAINER_NULL_ARG,
     POKEMON_TRAINER_INSUFFICIENT_BUDGET,
-    POKEMON_TRAINER_NO_AVAILABLE_ITEM,
+    POKEMON_TRAINER_ITEM_OUT_OF_STOCK,
+    POKEMON_TRAINER_ALREADY_IN_LOCATION,
+    POKEMON_TRAINER_LOCATION_IS_NOT_REACHABLE,
+    POKEMON_TRAINER_POKEMON_DOESNT_EXIST,
+    POKEMON_TRAINER_INVALID_AGR,
+    POKEMON_TRAINER_POKEMON_HP_AT_MAX,
 	POKEMON_TRAINER_SUCCESS
 } PokemonTrainerResult;
 
@@ -21,7 +28,7 @@ typedef struct pokemon_trainer_t {
     char* name;
 	char* location;
     Set pokemon_set;
-    Set item_set;
+    List item_list;
 	double xp;
     int pokecoins;
 	int number_of_caught_pokemons;

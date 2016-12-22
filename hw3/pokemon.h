@@ -51,7 +51,6 @@ struct pokemon_t {
     PokemonType type; //TODO: make this a set of types change pokemon create, destroy & copy
     int cp, cp_bonus, level, id;
     double hp;
-    Pokemon next_pokemon;
 };
 
 
@@ -134,7 +133,7 @@ char* pokemonGetName(Pokemon pokemon);
 * 	POKEMON_NO_HEALTH_POINTS if HP is not positive.
 * 	POKEMON_SUCCESS otherwise.
 */
-PokemonResult pokemonUpdateHP(Pokemon pokemon, int value);
+PokemonResult pokemonUpdateHP(Pokemon pokemon, double value);
 
 /**
 * Use an item on a pokemon.

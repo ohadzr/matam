@@ -43,7 +43,7 @@ static bool isValidType(PokemonType type);
  ********************************/
 
 
-char* createName(char* name) { //TODO: should this function be in utils.c? what is utils?
+char* createName(char* name) { //TODO: should this function be in utils.c? what is utils? a file for all functions that we use many times in different files
     char* dst_name = malloc(strlen(name)+1);
     if (dst_name != NULL) {
         strcpy(dst_name, name);
@@ -139,7 +139,7 @@ double pokemonGetHP(Pokemon pokemon) {
     return pokemon->hp;
 }
 
-PokemonResult pokemonUpdateHP(Pokemon pokemon, int value) {
+PokemonResult pokemonUpdateHP(Pokemon pokemon, double value) {
     if (pokemon == NULL) return POKEMON_NULL_ARG;
     pokemon->hp += value;
     if (pokemon->hp <= 0) {
@@ -157,12 +157,12 @@ char* pokemonGetName(Pokemon pokemon) {
 }
 
 
-PokemonResult pokemonUseItem(Pokemon pokemon, Item item) { // TODO: does this function need a different implementation? (not using Item but only bools)
+PokemonResult pokemonUseItem(Pokemon pokemon, Item item) {
     if (pokemon == NULL || item == NULL) return POKEMON_NULL_ARG;
-    ItemType item_type = itemGetType(item); //TODO: should be here? //why not? how else a dedicated func?
+    ItemType item_type = itemGetType(item);
     int value = itemGetValue(item);
 
-    if (item_type == TYPE_POTION) { //TODO: can I use this enum? yes if you do include to store.h
+    if (item_type == TYPE_POTION) {
         pokemonUpdateHP(pokemon, value);
     }
     if (item_type == TYPE_CANDY) {
@@ -181,7 +181,7 @@ PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) { //
     return POKEMON_DIFFERENT;
 }
 
-/* TODO: remove this when pokedex is implemented
+/* TODO: remove this comment when pokedex is implemented
 PokemonResult pokemonCheckEvolution(Pokemon pokemon) {
     if (pokemon == NULL) return POKEMON_NULL_ARG;
     char* next_evolution = NULL;
@@ -206,7 +206,7 @@ PokemonResult pokemonCheckEvolution(Pokemon pokemon) {
  */
 
 
-PokemonResult pokemonUpdateID(Pokemon pokemon, int new_id) { //TODO: add to tests -> to think who is giving pokemon the id trainer/ pokadex?
+PokemonResult pokemonUpdateID(Pokemon pokemon, int new_id) { //TODO: add to tests -> to think who is giving pokemon the id trainer/ pokadex? // why not both?
     if (pokemon == NULL) return POKEMON_NULL_ARG;
     pokemon->id = new_id;
     return POKEMON_SUCCESS;
