@@ -186,7 +186,7 @@ void storePrintStock( Store store , FILE* output ) {
 	}
 }
 
-bool storeDoesItemExists(  Store store , Item item ) {
+bool storeDoesItemExist(  Store store , Item item ) {
     assert ( item && store );
     LIST_FOREACH( Item , current_item , store ) {
         if ( itemCompare( current_item , item ) ==  ITEMS_EQUAL ){
