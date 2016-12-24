@@ -23,7 +23,7 @@ typedef List Store;
  *         Enum declarations          *
  **************************************/
 
-typedef enum {Potion,Candy} ItemType;
+typedef enum {TYPE_CANDY,TYPE_POTION} ItemType;
 
 typedef enum {STORE_SUCCESS,
 			  STORE_NULL_ARG,
