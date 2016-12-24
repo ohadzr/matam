@@ -17,6 +17,7 @@
 #define ITEM_1_BIGGER 1
 #define ITEMS_EQUAL 0
 #define ITEM_2_BIGGER -1
+#define EMPTY 0
 #define STORE_FOREACH(type, iterator, list) LIST_FOREACH(type, iterator, list)
 
 
@@ -48,6 +49,15 @@ bool static isValidType( ItemType type ) {
 		if ( type == i ) return true;
 	}
 	return false;
+}
+
+char static*  convertTypeToString( Item item ) {
+	ItemType type = itemGetType( item );
+	assert( isValidType( type ) );
+	switch ( type ) {
+		case TYPE_POTION: return "potion";break;
+		case TYPE_CANDY: return "candy";break;
+	}
 }
 
 /**************************************
@@ -104,17 +114,18 @@ int itemCompare( Item item1 , Item item2 ) {
  *       Wrapper Item Functions       *
  **************************************/
 
-ItemElement itemCopyElement( ItemElement item ) {
+ItemElement static itemCopyElement( ItemElement item ) {
 	return itemCopy( (Item)item );
 }
 
-void itemFreeElement( ItemElement item ) {
+void static itemFreeElement( ItemElement item ) {
 	itemDestroy( (Item)item );
 }
 
-int itemCompareElement( ItemElement item1 , ItemElement item2 ) {
+int static itemCompareElement( ItemElement item1 , ItemElement item2 ) {
 	retrun itemCompare(  (Item)item1 , (Item)item2 );
 }
+
 /**************************************
  *           STORE Functions          *
  **************************************/
@@ -164,10 +175,19 @@ StoreResult storeSort( Store store ) {
 	retrun STORE_SUCCESS;
 }
 
-void storePrintStock( Store store , FILE* output) {
-
+void storePrintStock( Store store , FILE* output ) {
+	assert( store && output );
+	if( listGetSize( store ) != EMPTY ) {
+		Item item_index = (Item) listGetFirst(store);
+		int counter = 0;
+		LIST_FOREACH(Item, current_item, store) {
+			if (itemCompare(item_index, current_item) != ITEMS_EQUAL) {
+				item_index = (Item) listGetCurrent(store);
+				mtmPrintItem( output , convertTypeToString( current_item ),
+							 itemGetValue(current_item) , counter );
+				counter = 0;
+			}
+			counter++;
+		}
+	}
 }
-
-
-
-
