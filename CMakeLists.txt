@@ -5,7 +5,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -pedantic-error
 
 set (CMAKE_C_STANDARD 99)
 
-set(SOURCE_FILES hello_world.c)
+set(SOURCE_FILES ex2_bar.c)
 
 add_subdirectory(hw0/part1)
 add_subdirectory(hw0/part2)

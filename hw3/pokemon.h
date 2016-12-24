@@ -28,7 +28,8 @@ typedef enum {
 	POKEMON_NULL_ARG,
 	POKEMON_OUT_OF_MEM,
 	POKEMON_INVALID_TYPE,
-    POKEMON_CANT_EVOLVE,
+    POKEMON_INVALID_VALUE,
+    //POKEMON_CANT_EVOLVE, //TODO: remove comment when pokemonCheckEvolution is working
 	POKEMON_INVALID_NAME,
     POKEMON_EQUAL,
     POKEMON_DIFFERENT,
@@ -36,22 +37,26 @@ typedef enum {
 } PokemonResult;
 
 
+/**************************************
+ *        Structs declarations        *
+ **************************************/
+
 typedef struct pokemon_t* Pokemon;
+
 /*
 * The pokemon structure.
 */
-typedef struct pokemon_t {
-	char* name;
-    char* location;
-	PokemonType type;
-	int cp, cp_bonus, level;
-    double hp; //TODO: should be float?
-	Pokemon* next_pokemon;
+struct pokemon_t {
+    char *name;
+    PokemonType type; //TODO: make this a set of types change pokemon create, destroy & copy
+    int cp, cp_bonus, level, id;
+    double hp;
 };
+
 
 /**
 * Creates a new pokemon.
-* The name, type, location and cp are parameters set the corresponding
+* The name, type and cp are parameters set the corresponding
 * properties of the pokemon.
 * The pokemon is created at level 1 and 100 HP.
 *
@@ -60,7 +65,7 @@ typedef struct pokemon_t {
 * 	If name is NULL or empty, type is invalid, experience or max_number_of_moves
 *   is not positive, or in case of a memory allocation failure - return NULL.
 **/
-Pokemon pokemonCreate(char* name, char* location, PokemonType type, int cp);
+Pokemon pokemonCreate(char* name, PokemonType type, int cp);
 
 /**
 * Frees all memory allocated for the given pokemon.
@@ -86,6 +91,17 @@ Pokemon pokemonCopy(Pokemon pokemon);
 int pokemonGetLevel(Pokemon pokemon);
 
 /**
+* Changes the pokemon's level - by given value.
+* value must be >= 0
+*
+* @return
+* 	POKEMON_NULL_ARG if pokemon is NULL.
+* 	POKEMON_INVALID_VALUE - if value is < 0
+* 	POKEMON_SUCCESS otherwise.
+*/
+PokemonResult pokemonUpdateLevel(Pokemon pokemon, int added_value);
+
+/**
 * get the pokemon HP
 *
 * This function asserts (pokemon != NULL).
@@ -106,12 +122,6 @@ int pokemonGetCP(Pokemon pokemon);
 */
 char* pokemonGetName(Pokemon pokemon);
 
-/**
-* get the pointer to the pokemon's location
-*
-* This function asserts (pokemon != NULL).
-*/
-char* pokemonGetLocation(Pokemon pokemon);
 
 /**
 * Update the given pokemon HP by given value.
@@ -123,7 +133,7 @@ char* pokemonGetLocation(Pokemon pokemon);
 * 	POKEMON_NO_HEALTH_POINTS if HP is not positive.
 * 	POKEMON_SUCCESS otherwise.
 */
-PokemonResult pokemonUpdateHP(Pokemon pokemon, int value);
+PokemonResult pokemonUpdateHP(Pokemon pokemon, double value);
 
 /**
 * Use an item on a pokemon.
@@ -158,7 +168,45 @@ PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon);
 *   POKEMON_OUT_OF_MEM - if faild allocating new name for the pokemon.
 * 	POKEMON_SUCCESS otherwise.
 */
-PokemonResult pokemonCheckEvolution(Pokemon pokemon);
+//PokemonResult pokemonCheckEvolution(Pokemon pokemon);
+//TODO: remove comment when working
+
+/**
+* Update the given pokemon ID.
+*
+* @return
+* 	POKEMON_NULL_ARG if pokemon is NULL.
+* 	POKEMON_SUCCESS otherwise.
+*/
+PokemonResult pokemonUpdateID(Pokemon pokemon, int new_id);
+
+
+/**
+* Get the pokemon's unique ID.
+*
+* @return
+* 	return int of the pokemon's id
+**/
+int pokemonGetID(Pokemon pokemon);
+
+/**
+* Get the next pokemon in linked list.
+* return the pointer to the next pokemon set in next_pokemon
+*
+* @return
+* 	return the pointer of the next pokemon in list.
+**/
+//Pokemon pokemonGetNextPokemon(Pokemon pokemon);
+
+/**
+* Update the given next pokemon in the linked list.
+*
+* @return
+* 	POKEMON_NULL_ARG if pokemon is NULL.
+* 	POKEMON_SUCCESS otherwise.
+*/
+//PokemonResult pokemonUpdateNextPokemon(Pokemon pokemon, Pokemon next_pokemon);
+
 
 
 #endif // POKEMON_H_

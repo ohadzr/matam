@@ -7,11 +7,11 @@ static bool testCombo() {
 	bool result = true;
 /* -----------------------  initialization  ----------------------- */
 
-	Item  item1 = itemCreate(Potion,10);
-	Item  item2 = itemCreate(Potion,20);
-	Item  item3 = itemCreate(Candy,20);
-	Item  item4_BadValue = itemCreate(Potion,0);
-	Item  item6 = itemCreate(Candy,90);
+	Item  item1 = itemCreate(TYPE_POTION,10);
+	Item  item2 = itemCreate(TYPE_POTION,20);
+	Item  item3 = itemCreate(TYPE_CANDY,20);
+	Item  item4_BadValue = itemCreate(TYPE_POTION,0);
+	Item  item6 = itemCreate(TYPE_CANDY,90);
 	Item  item1_copy = itemCopy(item1);
 	Store our_store = storeCreate(item6);
 	Item item_bag1 = NULL;
@@ -26,7 +26,7 @@ static bool testCombo() {
 
 	TEST_EQUALS(result, itemCompare(item1,item1_copy),ITEM_EQUAL);
 	TEST_DIFFERENT(result, itemCompare(item1,item2),ITEM_EQUAL);
-	TEST_EQUALS(result, itemPriceGet(item1),10);
+	TEST_EQUALS(result, itemGetPrice(item1),10);
 	TEST_EQUALS(result, item4_BadValue,NULL);
 	TEST_EQUALS(result,getNumOfItems(our_store),4);
 	TEST_EQUALS(result,doesItemExistInStore(our_store,item6),true);
