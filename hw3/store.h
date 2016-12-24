@@ -66,6 +66,6 @@ Item storeSellItem( Store store , Item item );
 
 StoreResult storeSort( Store store );
 
-void storePrintStock( Store store , FILE* output )
+void storePrintStock( Store store , FILE* output );
 
 #endif /* STORE_H_ */
