@@ -198,7 +198,7 @@ PokemonTrainerResult pokemonTrainerRemovePokemonAux(
 
     Pokemon pokemon = pokemonTrainerGetPokemonAux(trainer, pokemon_index,
                                                   is_local);
-    if (pokemon == NULL) return POKEMON_TRAINER_OUT_OF_MEM;
+    if (pokemon == NULL) return POKEMON_TRAINER_OUT_OF_MEMORY;
 
     pokemonDestroy(pokemon);
 
@@ -230,7 +230,7 @@ PokemonTrainerResult pokemonTrainerDepositOrWithdrawPokemon(
         return POKEMON_TRAINER_PARTY_FULL;
     Pokemon pokemon = pokemonCopy(pokemonTrainerGetPokemonAux(trainer,
                                                    pokemon_index, is_deposit));
-    if (pokemon == NULL) return POKEMON_TRAINER_OUT_OF_MEM;
+    if (pokemon == NULL) return POKEMON_TRAINER_OUT_OF_MEMORY;
     // no need to check remove result because of validation
     pokemonTrainerRemovePokemonAux(trainer,pokemon_index, is_deposit);
     if (is_deposit) {
@@ -407,7 +407,7 @@ PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
     trainer->pokemons_local[trainer->num_of_pokemons_local] = \
             pokemonCopy(pokemon);
     if (trainer->pokemons_local[trainer->num_of_pokemons_local] == NULL)
-        return POKEMON_TRAINER_OUT_OF_MEM;
+        return POKEMON_TRAINER_OUT_OF_MEMORY;
 
     trainer->num_of_pokemons_local++;
 
@@ -512,12 +512,12 @@ PokemonTrainerResult pokemonTrainerPrintEnumeration(
         fprintf(file, "%s",trainer->name);
         fprintf(file, ": ");
         result = pokemonPrintName(trainer->pokemons_local[i],file);
-        if (result == POKEMON_OUT_OF_MEM) return POKEMON_TRAINER_OUT_OF_MEM;
+        if (result == POKEMON_OUT_OF_MEMORY) return POKEMON_TRAINER_OUT_OF_MEMORY;
         fprintf(file, "\n");
         pokemonPrintName(trainer->pokemons_local[i],file);
         fprintf(file, ": ");
         result = pokemonPrintVoice(trainer->pokemons_local[i],file);
-        if (result == POKEMON_OUT_OF_MEM) return POKEMON_TRAINER_OUT_OF_MEM;
+        if (result == POKEMON_OUT_OF_MEMORY) return POKEMON_TRAINER_OUT_OF_MEMORY;
         fprintf(file, "\n");
     }
 

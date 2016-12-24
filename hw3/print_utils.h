@@ -157,7 +157,7 @@ void mtmPrintPokemon(FILE* output_channel,
                      int id,
                      char* species,
                      double hp,
-										 int cp,
+					 int cp,
                      int level);
 
 /**

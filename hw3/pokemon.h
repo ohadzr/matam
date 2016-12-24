@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "store.h"
+#include "set.h"
+#include "utilities.h"
 
 typedef enum {
 	TYPE_BUG,
@@ -26,13 +28,11 @@ typedef enum {
 typedef enum {
 	POKEMON_SUCCESS,
 	POKEMON_NULL_ARG,
-	POKEMON_OUT_OF_MEM,
+	POKEMON_OUT_OF_MEMORY,
 	POKEMON_INVALID_TYPE,
     POKEMON_INVALID_VALUE,
-    //POKEMON_CANT_EVOLVE, //TODO: remove comment when pokemonCheckEvolution is working
+    POKEMON_CANT_EVOLVE,
 	POKEMON_INVALID_NAME,
-    POKEMON_EQUAL,
-    POKEMON_DIFFERENT,
 	POKEMON_NO_HEALTH_POINTS,
 } PokemonResult;
 
@@ -48,11 +48,11 @@ typedef struct pokemon_t* Pokemon;
 */
 struct pokemon_t {
     char *name;
-    PokemonType type; //TODO: make this a set of types change pokemon create, destroy & copy
     int cp, cp_bonus, level, id;
     double hp;
 };
 
+typedef void* PokemonElement;
 
 /**
 * Creates a new pokemon.
@@ -65,7 +65,7 @@ struct pokemon_t {
 * 	If name is NULL or empty, type is invalid, experience or max_number_of_moves
 *   is not positive, or in case of a memory allocation failure - return NULL.
 **/
-Pokemon pokemonCreate(char* name, PokemonType type, int cp);
+Pokemon pokemonCreate(char* name);
 
 /**
 * Frees all memory allocated for the given pokemon.
@@ -147,14 +147,13 @@ PokemonResult pokemonUpdateHP(Pokemon pokemon, double value);
 PokemonResult pokemonUseItem(Pokemon pokemon, Item item);
 
 /**
-* compare between two pokemons and return a bool. check if has the same name
-* and if the type is the same type.
+* compare between two pokemons and return an int. compare between the
+* pokemons ids
 *
 * @return
-*   POKEMON_EQUAL - if the same.
-* 	POKEMON_DIFFERENT - if one of the pokemons is NULL or if not same.
+*   int: 0 - if the same, -1 if first is lower, 1 if first is bigger.
 */
-PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon);
+int pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon);
 
 /**
 * Check if a pokemon should get evolved. If so, evolves the given pokemon.
@@ -168,8 +167,7 @@ PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon);
 *   POKEMON_OUT_OF_MEM - if faild allocating new name for the pokemon.
 * 	POKEMON_SUCCESS otherwise.
 */
-//PokemonResult pokemonCheckEvolution(Pokemon pokemon);
-//TODO: remove comment when working
+PokemonResult pokemonCheckEvolution(Pokemon pokemon);
 
 /**
 * Update the given pokemon ID.
@@ -189,24 +187,19 @@ PokemonResult pokemonUpdateID(Pokemon pokemon, int new_id);
 **/
 int pokemonGetID(Pokemon pokemon);
 
+
 /**
-* Get the next pokemon in linked list.
-* return the pointer to the next pokemon set in next_pokemon
+* Wrapping the @pokemonCopy for @listCreate (lish.h) with void* element
 *
 * @return
-* 	return the pointer of the next pokemon in list.
+* 	PokemonElement (void*)
 **/
-//Pokemon pokemonGetNextPokemon(Pokemon pokemon);
+PokemonElement pokemonCopyElement( PokemonElement pokemon );
 
 /**
-* Update the given next pokemon in the linked list.
+* Wrapping the @pokemonDestroy for @listCreate (lish.h)
 *
-* @return
-* 	POKEMON_NULL_ARG if pokemon is NULL.
-* 	POKEMON_SUCCESS otherwise.
-*/
-//PokemonResult pokemonUpdateNextPokemon(Pokemon pokemon, Pokemon next_pokemon);
-
-
+**/
+void pokemonFreeElement( PokemonElement pokemon );
 
 #endif // POKEMON_H_

@@ -12,22 +12,15 @@
 #define DEFAULT_LEVEL 1
 #define DEFAULT_HP 100.0
 #define DEFAULT_CP_BONUS 0
+#define POKEMON_EQUAL 0
+#define LEFT_POKEMON 1
+#define RIGHT_POKEMON -1
 
 
 /********************************
  * Helper Function Declarations *
  ********************************/
 
-
-/**
-* This function allocate new memory for given pokemon name / move name
-* then copy (deep copy) the name into the pokemon / move
-* Name must not be NULL or empty string
-*
-* @return
-*   chr* - return the pointer of name if success, otherwise NULL
-*/
-static char* createName(char* name);
 
 /**
 * This function checks if given type is valid
@@ -43,16 +36,6 @@ static bool isValidType(PokemonType type);
  ********************************/
 
 
-char* createName(char* name) { //TODO: should this function be in utils.c? what is utils? a file for all functions that we use many times in different files
-    char* dst_name = malloc(strlen(name)+1);
-    if (dst_name != NULL) {
-        strcpy(dst_name, name);
-        dst_name[strlen(name)] = '\0';
-        return dst_name;
-    }
-    return NULL;
-}
-
 bool isValidType(PokemonType type) {
     bool is_valid = false;
     if (type == TYPE_NORMAL || type == TYPE_FIRE || type == TYPE_GRASS \
@@ -65,29 +48,28 @@ bool isValidType(PokemonType type) {
     return is_valid;
 }
 
+
+
+
 /********************************
  *          Pokemon Funcs       *
  ********************************/
 
-Pokemon pokemonCreate(char* name, PokemonType type, int cp) {
+Pokemon pokemonCreate(char* name) {
     Pokemon pokemon = NULL;
-    if (name == NULL || strcmp(name,"")== SAME_STRINGS || cp <=0)
+    if (name == NULL || strcmp(name,"")== SAME_STRINGS)
         return NULL;
-    if (!isValidType(type)) return NULL;
 
     pokemon = malloc(sizeof(*pokemon));
     if (pokemon == NULL) return NULL;
-
-    pokemon->type = type;
-    pokemon->cp = cp; //TODO: get this from pokedex! // agree
+    pokemon->cp = pokedexGetCP(name);
     pokemon->cp_bonus = DEFAULT_CP_BONUS;
     pokemon->level = DEFAULT_LEVEL;
     pokemon->hp = DEFAULT_HP;
-    //pokemon->next_pokemon = NULL; //TODO:remove this // agree
-    pokemon->name = createName(name);
+    pokemon->name = stringCopy(name);
 
     if (pokemon->name == NULL) {
-        free(pokemon);
+        pokemonDestroy(pokemon);
         return NULL;
     }
 
@@ -97,8 +79,6 @@ Pokemon pokemonCreate(char* name, PokemonType type, int cp) {
 void pokemonDestroy(Pokemon pokemon) {
     if (pokemon != NULL) {
         free(pokemon->name);
-        //if (pokemon->next_pokemon != NULL) //TODO: remove this
-        //    free(pokemon->next_pokemon);
         free(pokemon);
     }
 }
@@ -107,10 +87,11 @@ void pokemonDestroy(Pokemon pokemon) {
 Pokemon pokemonCopy(Pokemon pokemon) {
     if (pokemon == NULL) return NULL;
     Pokemon new_pokemon = NULL;
-    new_pokemon = pokemonCreate(pokemon->name,pokemon->type,pokemon->cp);
+    new_pokemon = pokemonCreate(pokemon->name);
     if (new_pokemon != NULL) {
             new_pokemon->hp = pokemon->hp;
             new_pokemon->level = pokemon->level;
+            new_pokemon->cp_bonus = pokemon->cp_bonus;
     }
     return new_pokemon;
 }
@@ -143,7 +124,7 @@ PokemonResult pokemonUpdateHP(Pokemon pokemon, double value) {
     if (pokemon == NULL) return POKEMON_NULL_ARG;
     pokemon->hp += value;
     if (pokemon->hp <= 0) {
-        pokemon->hp = 0; //TODO: should I destroy pokemon or trainer? do separate function of destroy pokemon and destroy trainer
+        pokemon->hp = 0;
         return POKEMON_NO_HEALTH_POINTS;
     }
     if (pokemon->hp > DEFAULT_HP)
@@ -171,42 +152,42 @@ PokemonResult pokemonUseItem(Pokemon pokemon, Item item) {
     return POKEMON_SUCCESS;
 }
 
-PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) { //TODO: change in tests -?don't understand
-    if (first_pokemon == NULL || second_pokemon == NULL)
-        return POKEMON_NULL_ARG;
+int pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) {
+    assert(first_pokemon != NULL);
+    assert(second_pokemon != NULL);
 
     if (first_pokemon->id == second_pokemon->id)
         return POKEMON_EQUAL;
 
-    return POKEMON_DIFFERENT;
+    if (first_pokemon->id < second_pokemon->id)
+        return LEFT_POKEMON;
+
+    return RIGHT_POKEMON;
 }
 
-/* TODO: remove this comment when pokedex is implemented
 PokemonResult pokemonCheckEvolution(Pokemon pokemon) {
     if (pokemon == NULL) return POKEMON_NULL_ARG;
-    char* next_evolution = NULL;
-    int new_cp = pokemon->cp;
-    PokedexResult result = pokedexCheckNextEvolution(pokemon); //TODO: add pokedex function
-    if (result == POKEDEX_POKEMON_EVOLVE) {
-        next_evolution = pokedexGetNextEvolutionName(pokemon);
-        new_cp = pokedexGetNextEvolutionCP(pokemon);
-        if (next_evolution == NULL) return POKEMON_CANT_EVOLVE;
-    }
 
-    if (next_evolution != NULL) {
-        free(pokemon->name);
-        pokemon->name = createName(next_evolution);
-    }
-    if (pokemon->name == NULL) return POKEMON_OUT_OF_MEM;
+    int new_cp = pokemon->cp;
+    char* next_evolution = pokedexFindNextEvolution(pokemon); //TODO: return the last evolution (A>B , B>C) will return C
+
+    if (next_evolution == NULL) return POKEMON_CANT_EVOLVE;
+
+    new_cp = pokedexGetCP(next_evolution);
+    stringDestroy(pokemon->name);
 
     pokemon->cp = new_cp;
+    pokemon->name = stringCopy(next_evolution);
+
+    if (pokemon->name == NULL) return POKEMON_OUT_OF_MEMORY;
+
     return POKEMON_SUCCESS;
 }
 
- */
 
 
-PokemonResult pokemonUpdateID(Pokemon pokemon, int new_id) { //TODO: add to tests -> to think who is giving pokemon the id trainer/ pokadex? // why not both?
+
+PokemonResult pokemonUpdateID(Pokemon pokemon, int new_id) {
     if (pokemon == NULL) return POKEMON_NULL_ARG;
     pokemon->id = new_id;
     return POKEMON_SUCCESS;
@@ -218,31 +199,10 @@ int pokemonGetID(Pokemon pokemon) {
 }
 
 
-//TODO: remove this:
-
-/*
-Pokemon pokemonGetNextPokemon(Pokemon pokemon) {
-    assert(pokemon != NULL);
-    return pokemon->next_pokemon;
+PokemonElement pokemonCopyElement( PokemonElement pokemon ) {
+    return pokemonCopy( (Pokemon)pokemon );
 }
 
-
-PokemonResult pokemonUpdateNextPokemon(Pokemon pokemon, Pokemon next_pokemon) { //TODO: add to tests
-    if (pokemon == NULL || next_pokemon == NULL)
-        return POKEMON_NULL_ARG;
-
-    pokemon->next_pokemon = next_pokemon;
-
-    return POKEMON_SUCCESS
-
+void pokemonFreeElement( PokemonElement pokemon ) {
+    pokemonDestroy( (Pokemon)pokemon );
 }
-
-
-
-
-PokemonResult pokemonRemovePokemonFromList(Pokemon first_pokemon,
-                                           Pokemon pokemon_to_remove) {
-    Pokemon
-}
-
- */
