@@ -22,6 +22,7 @@
 
 typedef ItemElement (*CopyFunction)(ItemElement);
 typedef void (*FreeFunction)(ItemElement);
+typedef int(*CompareFunction)(ItemElement, ItemElement);
 
 /**************************************
  *              Structs               *
@@ -111,6 +112,9 @@ void itemFreeElement( ItemElement item ) {
 	itemDestroy( (Item)item );
 }
 
+int itemCompareElement( ItemElement item1 , ItemElement item2 ) {
+	retrun itemCompare(  (Item)item1 , (Item)item2 );
+}
 /**************************************
  *           STORE Functions          *
  **************************************/
@@ -153,11 +157,16 @@ Item storeSellItem( Store store , Item item ) {
     return NULL;
 }
 
+StoreResult storeSort( Store store ) {
+	ListResult result = listSort( store , itemCompareElement );
+	if ( result == LIST_NULL_ARGUMENT ) return STORE_NULL_ARGUMENT;
+	if ( result == LIST_OUT_OF_MEMORY ) return STORE_OUT_OF_MEMORY;
+	retrun STORE_SUCCESS;
+}
 
+void storePrintStock( Store store , FILE* output) {
 
-
-
-
+}
 
 
 
