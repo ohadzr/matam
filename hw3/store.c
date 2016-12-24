@@ -18,10 +18,6 @@
 #define ITEM_2_BIGGER -1
 #define EMPTY 0
 
-typedef ItemElement (*CopyFunction)(ItemElement);
-typedef void (*FreeFunction)(ItemElement);
-typedef int(*CompareFunction)(ItemElement, ItemElement);
-
 /**************************************
  *              Structs               *
  **************************************/
@@ -52,9 +48,10 @@ char static*  convertTypeToString( Item item ) {
 	ItemType type = itemGetType( item );
 	assert( isValidType( type ) );
 	switch ( type ) {
-		case TYPE_POTION: return "potion";break;
-		case TYPE_CANDY: return "candy";break;
+		case TYPE_POTION: return "potion";
+		case TYPE_CANDY: return "candy";
 	}
+    return NULL;
 }
 
 /**************************************
