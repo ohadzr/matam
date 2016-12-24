@@ -301,7 +301,7 @@ PokemonResult pokemonTeachMove(Pokemon pokemon, char* move_name,
     if (result != POKEMON_SUCCESS) return result;
 
     PokemonMove move = malloc(sizeof(*move));
-    if (move == NULL) return POKEMON_OUT_OF_MEM;
+    if (move == NULL) return POKEMON_OUT_OF_MEMORY;
 
     move->type = type;
     move->max_power_points = max_power_points;
@@ -311,7 +311,7 @@ PokemonResult pokemonTeachMove(Pokemon pokemon, char* move_name,
     move->name = createName(move_name);
     if (move->name == NULL) {
         free(move);
-        return POKEMON_OUT_OF_MEM;
+        return POKEMON_OUT_OF_MEMORY;
     }
     if (pokemon->number_of_moves < pokemon->max_number_of_moves) {
         pokemon->moves[pokemon->number_of_moves] = move;
@@ -423,7 +423,7 @@ PokemonResult pokemonEvolve(Pokemon pokemon, char* new_name) {
 
     free(pokemon->name);
     pokemon->name = createName(new_name);
-    if(pokemon->name == NULL) return POKEMON_OUT_OF_MEM;
+    if(pokemon->name == NULL) return POKEMON_OUT_OF_MEMORY;
 
     int experience = CALC_MIN_EXPERIENCE(pokemonGetLevel(pokemon));
     pokemon->experience = experience;
@@ -443,7 +443,7 @@ PokemonResult pokemonPrintVoice(Pokemon pokemon, FILE* file) {
     if (pokemon == NULL || file == NULL) return POKEMON_NULL_ARG;
 
     char* pokemon_voice = malloc(sizeof(char)*strlen(pokemon->name));
-    if (pokemon_voice == NULL) return POKEMON_OUT_OF_MEM;
+    if (pokemon_voice == NULL) return POKEMON_OUT_OF_MEMORY;
     int pokemon_name_size=0, index=0;
 
     while(pokemon->name[index] != '\0') {

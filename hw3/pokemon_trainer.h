@@ -7,12 +7,13 @@
 #include "set.h"
 #include "list.h"
 #include "store.h"
+#include "utilities.h"
 #include "print_utils.h"
 
 
 
 typedef enum {
-	POKEMON_TRAINER_OUT_OF_MEM,
+	POKEMON_TRAINER_OUT_OF_MEMORY,
 	POKEMON_TRAINER_NULL_ARG,
     POKEMON_TRAINER_INSUFFICIENT_BUDGET,
     POKEMON_TRAINER_ITEM_OUT_OF_STOCK,
@@ -27,8 +28,8 @@ typedef enum {
 typedef struct pokemon_trainer_t {
     char* name;
 	char* location;
-    Set pokemon_set;
-    List item_list;
+    List pokemon_list;
+    Store item_list;
 	double xp;
     int pokecoins;
 	int number_of_caught_pokemons;
@@ -67,16 +68,27 @@ void pokemonTrainerDestroy(PokemonTrainer trainer);
 PokemonTrainer pokemonTrainerCopy(PokemonTrainer trainer);
 
 /**
-* Add the a pokemon to the pokemon set of a given trainer.
+* Add the a pokemon to the pokemon list of a given trainer.
 * The new pokemon is a copy of given pokemon.
 *
 * @return
 * 	POKEMON_TRAINER_NULL_ARG if trainer or pokemon is NULL.
- * 	POKEMON_TRAINER_OUT_OF_MEM if set had a memory allocation error.
+ * 	POKEMON_TRAINER_OUT_OF_MEMORY if set had a memory allocation error.
 * 	POKEMON_SUCCESS otherwise.
 */
 PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
 	Pokemon pokemon);
 
+
+/**
+* Add a given item to the mini-store(item list) of a given trainer.
+* The new item is a copy of given item.
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer or item is NULL.
+ * 	POKEMON_TRAINER_OUT_OF_MEMORY if set had a memory allocation error.
+* 	POKEMON_SUCCESS otherwise.
+*/
+PokemonTrainerResult pokemonTrainerAddItem(PokemonTrainer trainer, Item item);
 
 #endif // POKEMON_TRAINER_H_
