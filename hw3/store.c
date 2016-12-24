@@ -8,7 +8,6 @@
 #include <string.h>
 #include <assert.h>
 #include "store.h"
-#include "list.h"
 
 /**************************************
  *              Defines               *
@@ -18,8 +17,6 @@
 #define ITEMS_EQUAL 0
 #define ITEM_2_BIGGER -1
 #define EMPTY 0
-#define STORE_FOREACH(type, iterator, list) LIST_FOREACH(type, iterator, list)
-
 
 typedef ItemElement (*CopyFunction)(ItemElement);
 typedef void (*FreeFunction)(ItemElement);
@@ -123,7 +120,7 @@ void static itemFreeElement( ItemElement item ) {
 }
 
 int static itemCompareElement( ItemElement item1 , ItemElement item2 ) {
-	retrun itemCompare(  (Item)item1 , (Item)item2 );
+	return itemCompare(  (Item)item1 , (Item)item2 );
 }
 
 /**************************************
@@ -172,7 +169,7 @@ StoreResult storeSort( Store store ) {
 	ListResult result = listSort( store , itemCompareElement );
 	if ( result == LIST_NULL_ARGUMENT ) return STORE_NULL_ARGUMENT;
 	if ( result == LIST_OUT_OF_MEMORY ) return STORE_OUT_OF_MEMORY;
-	retrun STORE_SUCCESS;
+	return STORE_SUCCESS;
 }
 
 void storePrintStock( Store store , FILE* output ) {

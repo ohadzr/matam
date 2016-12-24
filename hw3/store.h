@@ -13,6 +13,12 @@
 #include "print_utils.h"
 #include "list.h"
 
+#define STORE_FOREACH(type,iterator,list) \
+	for(type iterator = listGetFirst(list) ; \
+		iterator ;\
+		iterator = listGetNext(list))
+
+
 /**************************************
  *        Structs declarations        *
  **************************************/
