@@ -44,14 +44,36 @@ bool static isValidType( ItemType type ) {
 	return false;
 }
 
+/* convert items type name to string return NULL if item NULL */
 char static*  convertTypeToString( Item item ) {
-	ItemType type = itemGetType( item );
-	assert( isValidType( type ) );
-	switch ( type ) {
-		case TYPE_POTION: return "potion";
-		case TYPE_CANDY: return "candy";
-	}
+    if ( item ) {
+        ItemType type = itemGetType(item);
+        assert(isValidType(type));
+        switch (type) {
+            case TYPE_POTION: return "potion";
+            case TYPE_CANDY: return "candy";
+        }
+    }
     return NULL;
+}
+
+/**************************************
+ *       Wrapper Item Functions       *
+ **************************************/
+
+/* wrapper function to itemCopy so it will be possible to work with List GDT */
+ItemElement static itemCopyElement( ItemElement item ) {
+    return itemCopy( (Item)item );
+}
+
+/*wrapper function to itemDestroy so it will be possible to work with List GDT*/
+void static itemFreeElement( ItemElement item ) {
+    itemDestroy( (Item)item );
+}
+
+/*wrapper function to itemCompare so it will be possible to work with List GDT*/
+int static itemCompareElement( ItemElement item1 , ItemElement item2 ) {
+    return itemCompare(  (Item)item1 , (Item)item2 );
 }
 
 /**************************************
@@ -102,22 +124,6 @@ int itemCompare( Item item1 , Item item2 ) {
 	if( itemGetValue( item1 ) >  itemGetValue( item2 ) ) return ITEM_1_BIGGER;
 	if( itemGetValue( item1 ) <  itemGetValue( item2 ) ) return ITEM_2_BIGGER;
 	return ITEMS_EQUAL;
-}
-
-/**************************************
- *       Wrapper Item Functions       *
- **************************************/
-
-ItemElement static itemCopyElement( ItemElement item ) {
-	return itemCopy( (Item)item );
-}
-
-void static itemFreeElement( ItemElement item ) {
-	itemDestroy( (Item)item );
-}
-
-int static itemCompareElement( ItemElement item1 , ItemElement item2 ) {
-	return itemCompare(  (Item)item1 , (Item)item2 );
 }
 
 /**************************************
