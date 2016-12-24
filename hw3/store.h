@@ -74,4 +74,6 @@ StoreResult storeSort( Store store );
 
 void storePrintStock( Store store , FILE* output );
 
+bool storeDoesItemExists(  Store store , Item item );
+
 #endif /* STORE_H_ */
