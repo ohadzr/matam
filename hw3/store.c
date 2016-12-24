@@ -17,11 +17,11 @@
 #define ITEM_1_BIGGER 1
 #define ITEMS_EQUAL 0
 #define ITEM_2_BIGGER -1
+#define STORE_FOREACH(type, iterator, list) LIST_FOREACH(type, iterator, list)
 
-typedef void* ItemElement;
+
 typedef ItemElement (*CopyFunction)(ItemElement);
 typedef void (*FreeFunction)(ItemElement);
-typedef LIST_FOREACH  STORE_FOREACH
 
 /**************************************
  *              Structs               *
@@ -128,15 +128,30 @@ Store storeCopy( Store store ) {
 }
 
 StoreResult storeAddItem ( Store store , Item item ) {
-	listInsertLast( store , item );
-
+    if ( !item ) return STORE_NULL_ARGUMENT;
+    ListResult add_result = listInsertLast( store , item );
+    if ( add_result == LIST_NULL_ARGUMENT ) return STORE_NULL_ARGUMENT;
+    if ( add_result == LIST_OUT_OF_MEMORY ) return STORE_OUT_OF_MEMORY;
+    return STORE_SUCCESS;
 }
 
+StoreResult storeRemoveItem( Store store , Item item ) {
+    if ( !item || !store ) return STORE_NULL_ARGUMENT;
+    LIST_FOREACH( Item , current_item , store ) {
+        if ( itemCompare( current_item , item ) ==  ITEMS_EQUAL ){
+            listRemoveCurrent( store );
+            return STORE_SUCCESS;
+        }
+    }
+    return STORE_ITEM_NOT_EXIST;
+}
 
-
-
-
-
+Item storeSellItem( Store store , Item item ) {
+    assert( item && store );
+    StoreResult result = storeRemoveItem( store , item );
+    if ( result == STORE_SUCCESS ) return itemCopy( item );
+    return NULL;
+}
 
 
 

@@ -18,6 +18,7 @@
 
 typedef struct item_t* Item;
 typedef List Store;
+typedef void* ItemElement;
 
 /**************************************
  *         Enum declarations          *
@@ -26,10 +27,10 @@ typedef List Store;
 typedef enum {TYPE_CANDY,TYPE_POTION} ItemType;
 
 typedef enum {STORE_SUCCESS,
-			  STORE_NULL_ARG,
+              STORE_NULL_ARGUMENT,
 	          STORE_ITEM_NOT_EXIST,
 	          STORE_OUT_OF_STOCK,
-	          STORE_OUT_OF_MEM,
+	          STORE_OUT_OF_MEMORY,
 	          STORE_DESTROY_LAST} StoreResult;
 
 /**************************************
