@@ -12,9 +12,7 @@
 #define DEFAULT_LEVEL 1
 #define DEFAULT_HP 100.0
 #define DEFAULT_CP_BONUS 0
-#define POKEMON_EQUAL 0
-#define LEFT_POKEMON 1
-#define RIGHT_POKEMON -1
+
 
 
 /********************************
@@ -152,17 +150,14 @@ PokemonResult pokemonUseItem(Pokemon pokemon, Item item) {
     return POKEMON_SUCCESS;
 }
 
-int pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) {
-    assert(first_pokemon != NULL);
-    assert(second_pokemon != NULL);
+PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) {
+    if (first_pokemon == NULL || second_pokemon == NULL)
+        return POKEMON_NULL_ARG;
 
     if (first_pokemon->id == second_pokemon->id)
         return POKEMON_EQUAL;
 
-    if (first_pokemon->id < second_pokemon->id)
-        return LEFT_POKEMON;
-
-    return RIGHT_POKEMON;
+    return POKEMON_DIFFERENT;
 }
 
 PokemonResult pokemonCheckEvolution(Pokemon pokemon) {

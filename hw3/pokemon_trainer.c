@@ -8,6 +8,19 @@
 #include "pokemon_trainer.h"
 
 
+typedef struct pokemon_trainer_t {
+    char* name;
+    char* location;
+    List pokemon_list;
+    Store item_list;
+    double xp;
+    int pokecoins;
+    int number_of_caught_pokemons;
+
+};
+
+
+
 #define SAME_STRINGS 0
 #define DEFUALT_XP 1.0
 #define DEFAULT_HP 100.0
@@ -115,12 +128,12 @@ int pokemonTrainerGetMaxValueItem(PokemonTrainer trainer, ItemType item_type) {
 
 void pokemonTrainerRemovePokemon(PokemonTrainer trainer,
                                                  Pokemon pokemon) {
-    assert(trainer == NULL);
-    assert(pokemon == NULL);
+    assert(trainer != NULL);
+    assert(pokemon != NULL);
 
     LIST_FOREACH(Pokemon, pokemon_iter, trainer->pokemon_list) {
 
-        if (pokemonGetID(pokemon) == pokemonGetID(pokemon))
+        if (pokemonCompare(pokemon_iter, pokemon) == POKEMON_EQUAL)
             listRemoveCurrent(trainer->pokemon_list);
     }
 }
@@ -162,8 +175,8 @@ PokemonTrainer pokemonTrainerCreate(char* name, char* location, int budget) {
 
 void pokemonTrainerDestroy(PokemonTrainer trainer) {
     if (trainer != NULL) {
-        free(trainer->name);
-        free(trainer->location);
+        stringDestroy(trainer->name);
+        stringDestroy(trainer->location);
 
         storeDestroy(trainer->item_list);
         listDestroy(trainer->pokemon_list);
@@ -208,6 +221,8 @@ PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
 
     ListResult result = listInsertLast(trainer->pokemon_list, new_pokemon);
     trainer->number_of_caught_pokemons++;
+    trainer->pokecoins +=
+            pokedexGetStarBonus(pokemonGetName(new_pokemon));
 
     if (result == LIST_OUT_OF_MEMORY) {
         return POKEMON_TRAINER_OUT_OF_MEMORY;
@@ -221,7 +236,7 @@ PokemonTrainerResult pokemonTrainerAddItem(PokemonTrainer trainer,
                                               Item item) {
     if (trainer == NULL || item == NULL) return POKEMON_TRAINER_NULL_ARG;
 
-    StoreResult result = storeAddItem(trainer->item_list, new_item);
+    StoreResult result = storeAddItem(trainer->item_list, item);
 
     if (result == STORE_OUT_OF_MEMORY) {
         return POKEMON_TRAINER_OUT_OF_MEMORY;
@@ -254,9 +269,7 @@ PokemonTrainerResult pokemonTrainerBuyItem(PokemonTrainer trainer, Item item,
     int price = itemGetPrice(item);
     if (trainer->pokecoins < price) return POKEMON_TRAINER_INSUFFICIENT_BUDGET;
 
-    StoreResult result = storeDoesItemExist(store, item);
-
-    if (result == STORE_OUT_OF_STOCK) //TODO: add more errors here?
+    if (!storeDoesItemExist(store, item))
         return POKEMON_TRAINER_ITEM_OUT_OF_STOCK;
 
     Item new_item = storeSellItem(store, item);
@@ -264,6 +277,8 @@ PokemonTrainerResult pokemonTrainerBuyItem(PokemonTrainer trainer, Item item,
 
     PokemonTrainerResult pokemon_result =
             pokemonTrainerAddItem(trainer, new_item);
+
+    trainer->pokecoins -= price;
 
     return pokemon_result;
 }
@@ -277,7 +292,7 @@ PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
     if (strcmp(trainer->location, location) == SAME_STRINGS)
         return POKEMON_TRAINER_ALREADY_IN_LOCATION;
 
-    if (worldMapIsLocationReachable(from, dest, map) == false) //TODO: is bool? should be result?
+    if (!worldMapIsLocationReachable(trainer->location, location, world_map)) //TODO: is bool? should be result?
         return POKEMON_TRAINER_LOCATION_IS_NOT_REACHABLE;
 
     stringDestroy(trainer->location);
@@ -395,13 +410,13 @@ PokemonTrainerResult pokemonTrainerTrainPokemon(PokemonTrainer trainer,
 PokemonTrainerResult pokemonTrainerReport(PokemonTrainer trainer,
                                           FILE* output) {
     if (trainer == NULL) return POKEMON_TRAINER_NULL_ARG;
-    storeResult result = storeSort(trainer->item_list);
-    if (result == STORE_OUT_OF_MEM) return POKEMON_TRAINER_OUT_OF_MEMORY;
+    StoreResult result = storeSort(trainer->item_list);
+    if (result == STORE_OUT_OF_MEMORY) return POKEMON_TRAINER_OUT_OF_MEMORY;
 
     mtmPrintTrainerHeader(output,trainer->name,trainer->location,
                           trainer->pokecoins, trainer->xp);
     mtmPrintItemsHeaderForTrainer(output);
-    storePrintStock(output, trainer->item_list);
+    storePrintStock(trainer->item_list , output);
     mtmPrintPokemonsHeaderForTrainer(output);
     LIST_FOREACH(Pokemon, pokemon, trainer->pokemon_list) {
         mtmPrintPokemon(output, pokemonGetID(pokemon), pokemonGetName(pokemon),
