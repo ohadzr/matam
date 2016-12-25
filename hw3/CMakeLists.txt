@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c99 -Wall -Werror -pedantic-errors 
 
 set(LIBMTM libmtm.a)
 
-set(STORE_FILES store.c store.h store_test.c aux_macros.h location.c location.h location_test.c location_test.h)
+set(STORE_FILES store.c store.h store_test.c aux_macros.h location.c location.h location_test.c)
 add_executable(hw3_store_test ${STORE_FILES})
 target_link_libraries(hw3_store_test ${LIBMTM})
 
