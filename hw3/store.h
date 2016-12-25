@@ -35,11 +35,9 @@ typedef void* ItemElement;
 typedef enum {TYPE_CANDY,TYPE_POTION} ItemType;
 
 typedef enum {STORE_SUCCESS,
-              STORE_NULL_ARGUMENT,
-	          STORE_ITEM_NOT_EXIST,
-	          STORE_OUT_OF_STOCK,
-	          STORE_OUT_OF_MEMORY,
-	          STORE_DESTROY_LAST} StoreResult;
+    STORE_NULL_ARGUMENT,
+    STORE_ITEM_NOT_EXIST,
+    STORE_OUT_OF_MEMORY} StoreResult;
 
 /**************************************
  *      Functions declarations        *

@@ -48,15 +48,15 @@ bool static isValidType( ItemType type ) {
 
 /* convert items type name to string return NULL if item NULL */
 char static*  convertTypeToString( Item item ) {
-    if ( item ) {
-        ItemType type = itemGetType(item);
-        assert(isValidType(type));
-        switch (type) {
-            case TYPE_POTION: return "potion";
-            case TYPE_CANDY: return "candy";
-        }
-    }
-    return NULL;
+	if ( item ) {
+		ItemType type = itemGetType(item);
+		assert(isValidType(type));
+		switch (type) {
+			case TYPE_POTION: return "potion";
+			case TYPE_CANDY: return "candy";
+		}
+	}
+	return NULL;
 }
 
 /**************************************
@@ -65,17 +65,17 @@ char static*  convertTypeToString( Item item ) {
 
 /* wrapper function to itemCopy so it will be possible to work with List GDT */
 ItemElement static itemCopyElement( ItemElement item ) {
-    return itemCopy( (Item)item );
+	return itemCopy( (Item)item );
 }
 
 /*wrapper function to itemDestroy so it will be possible to work with List GDT*/
 void static itemFreeElement( ItemElement item ) {
-    itemDestroy( (Item)item );
+	itemDestroy( (Item)item );
 }
 
 /*wrapper function to itemCompare so it will be possible to work with List GDT*/
 int static itemCompareElement( ItemElement item1 , ItemElement item2 ) {
-    return itemCompare(  (Item)item1 , (Item)item2 );
+	return itemCompare(  (Item)item1 , (Item)item2 );
 }
 
 /**************************************
@@ -145,29 +145,29 @@ Store storeCopy( Store store ) {
 }
 
 StoreResult storeAddItem ( Store store , Item item ) {
-    if ( !item ) return STORE_NULL_ARGUMENT;
-    ListResult add_result = listInsertLast( store , item );
-    if ( add_result == LIST_NULL_ARGUMENT ) return STORE_NULL_ARGUMENT;
-    if ( add_result == LIST_OUT_OF_MEMORY ) return STORE_OUT_OF_MEMORY;
-    return STORE_SUCCESS;
+	if ( !item ) return STORE_NULL_ARGUMENT;
+	ListResult add_result = listInsertLast( store , item );
+	if ( add_result == LIST_NULL_ARGUMENT ) return STORE_NULL_ARGUMENT;
+	if ( add_result == LIST_OUT_OF_MEMORY ) return STORE_OUT_OF_MEMORY;
+	return STORE_SUCCESS;
 }
 
 StoreResult storeRemoveItem( Store store , Item item ) {
-    if ( !item || !store ) return STORE_NULL_ARGUMENT;
-    LIST_FOREACH( Item , current_item , store ) {
-        if ( itemCompare( current_item , item ) ==  ITEMS_EQUAL ){
-            listRemoveCurrent( store );
-            return STORE_SUCCESS;
-        }
-    }
-    return STORE_ITEM_NOT_EXIST;
+	if ( !item || !store ) return STORE_NULL_ARGUMENT;
+	LIST_FOREACH( Item , current_item , store ) {
+		if ( itemCompare( current_item , item ) ==  ITEMS_EQUAL ){
+			listRemoveCurrent( store );
+			return STORE_SUCCESS;
+		}
+	}
+	return STORE_ITEM_NOT_EXIST;
 }
 
 Item storeSellItem( Store store , Item item ) {
-    assert( item && store );
-    StoreResult result = storeRemoveItem( store , item );
-    if ( result == STORE_SUCCESS ) return itemCopy( item );
-    return NULL;
+	assert( item && store );
+	StoreResult result = storeRemoveItem( store , item );
+	if ( result == STORE_SUCCESS ) return itemCopy( item );
+	return NULL;
 }
 
 StoreResult storeSort( Store store ) {
@@ -186,7 +186,7 @@ void storePrintStock( Store store , FILE* output ) {
 			if (itemCompare(item_index, current_item) != ITEMS_EQUAL) {
 				item_index = (Item) listGetCurrent(store);
 				mtmPrintItem( output , convertTypeToString( current_item ),
-							 itemGetValue(current_item) , counter );
+							  itemGetValue(current_item) , counter );
 				counter = 0;
 			}
 			counter++;
@@ -195,11 +195,11 @@ void storePrintStock( Store store , FILE* output ) {
 }
 
 bool storeDoesItemExist(  Store store , Item item ) {
-    assert ( item && store );
-    LIST_FOREACH( Item , current_item , store ) {
-        if ( itemCompare( current_item , item ) ==  ITEMS_EQUAL ){
-            return true;
-        }
-    }
-    return false;
+	assert ( item && store );
+	LIST_FOREACH( Item , current_item , store ) {
+		if ( itemCompare( current_item , item ) ==  ITEMS_EQUAL ){
+			return true;
+		}
+	}
+	return false;
 }
