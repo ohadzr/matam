@@ -8,10 +8,12 @@
 #include <string.h>
 #include <assert.h>
 #include "store.h"
+#include "list.h"
 
 /**************************************
  *              Defines               *
  **************************************/
+
 #define MAX_TYPE_NUMBER 2
 #define ITEM_1_BIGGER 1
 #define ITEMS_EQUAL 0
