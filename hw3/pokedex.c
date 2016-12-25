@@ -242,5 +242,8 @@ pokedexTypeToChar;
 
 pokedexCharToType;
 
+pokedexCreateTypeSet();
+
+pokedexAddType();
 
 
