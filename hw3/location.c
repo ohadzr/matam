@@ -125,11 +125,11 @@ NearLocation nearLocationCreate(char* location_name) {
     return stringCopy ( location_name );
 }
 
-void nearLocationDestroy(char* location_name){
+void nearLocationDestroy(NearLocation location_name){
     stringDestroy( location_name );
 }
 
-NearLocation nearLocationCopy( char* location_to_copy ){
+NearLocation nearLocationCopy( NearLocation location_to_copy ){
     return nearLocationCreate ( location_to_copy );
 }
 
@@ -209,6 +209,15 @@ LocationResult locationAddNearLocation(  Location location ,
     if ( (!location) || (!near_location) ) return LOCATION_NULL_ARGUMENT;
     SetResult result = setAdd(location->near_locations , near_location);
     if ( result == SET_OUT_OF_MEMORY ) return LOCATION_OUT_OF_MEMORY;
+    return LOCATION_SUCCESS;
+}
+
+LocationResult locationRemoveNearLocation( Location location ,
+                                           NearLocation near_location ) {
+    if ( (!location) || (!near_location) ) return LOCATION_NULL_ARGUMENT;
+    SetResult result = setRemove( location->near_locations , near_location );
+    if( result == SET_ITEM_DOES_NOT_EXIST )
+        return LOCATION_NEAR_LOCATION_NOT_EXIST;
     return LOCATION_SUCCESS;
 }
 

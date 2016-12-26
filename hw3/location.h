@@ -32,6 +32,7 @@ typedef enum {LOCATION_SUCCESS,
     LOCATION_NULL_ARGUMENT,
     LOCATION_NOT_EXIST,
     LOCATION_POKEMON_NOT_EXIST,
+    LOCATION_NEAR_LOCATION_NOT_EXIST,
     LOCATION_OUT_OF_MEMORY} LocationResult;
 
 typedef enum {WORLD_MAP_SUCCESS,
@@ -109,6 +110,14 @@ LocationResult locationRemovePokemon( Location location , Pokemon pokemon );
 LocationResult locationAddNearLocation( Location location ,
                                         NearLocation near_location );
 
+/* remove NearLocation from location.
+ * return:
+ * LOCATION_NULL_ARGUMENT: if location or near_location equal NULL ;
+ * LOCATION_POKEMON_NOT_EXIST: if near_location wasn't in location ;
+ * LOCATION_SUCCESS: if near_location was removed successfully; */
+LocationResult locationRemoveNearLocation( Location location ,
+                                           NearLocation near_location );
+
 /* if destination is a NearLocation to location then return true, false else.
  * to be used only by legal parameters */
 bool locationIsNearDestination( Location location , char* destination );
@@ -121,21 +130,45 @@ Pokemon locationGetPokemonInLocation( Location location );
 *        WORLD_MAP Functions         *
 **************************************/
 
-/* */
+/* return new worldMap return NULL if memory allocation failed */
 WorldMap worldMapCreate();
 
+/* free all memory allocated to world_map, if world_map is NULL do noting */
 void worldMapDestroy( WorldMap world_map );
 
+/* added new Location to map.
+ * return:
+ * WORLD_MAP_NULL_ARGUMENT:	if world_map or location NULL;
+ * WORLD_MAP_LOCATION_ALREADY_EXISTS: if location already exists;
+ * WORLD_MAP_OUT_OF_MEMORY: if memory allocation failed ;
+ * WORLD_MAP_SUCCESS: if location was added to world map successfully; */
 WorldMapResult worldMapAddLocation( WorldMap world_map , Location location );
 
+/* remove location from world_map.
+ * return:
+ * WORLD_MAP_NULL_ARGUMENT: if location or world_map equal NULL ;
+ * WORLD_MAP_LOCATION_NOT_EXIST: if location wasn't in world_map ;
+ * WORLD_MAP_SUCCESS: if location was removed successfully; */
 WorldMapResult worldMapRemoveLocation( WorldMap world_map , Location location );
 
+/* return number of locations in map - to be used only by legal parameters */
 int worldMapGetSize( WorldMap world_map );
 
+/* return location with the same name as loation_name from world map.
+ * return NULL if world_map or loation_name are NULL or if location by that name
+ * does not exist */
 Location worldMapGetLocation( WorldMap world_map , char* loation_name );
 
+/* sort world map by lexicographical order.
+ * return:
+ * WORLD_MAP_NULL_ARGUMENT: if world_map is NULL;
+ * WORLD_MAP_OUT_OF_MEMORY: if memory allocation failed;
+ * WORLD_MAP_SUCCESS: if world map was sorted successfully;
+}*/
 WorldMapResult worldMapSort( WorldMap world_map );
 
+/* print world map by lexicographical order and pokemons in each location - to
+ *  be used only by legal parameters*/
 void worldMapPrintReport( WorldMap world_map , FILE* output_channel);
 
 #endif /* LOCATION_H_ */
