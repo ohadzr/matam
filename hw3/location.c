@@ -43,6 +43,8 @@ struct location_t {
  *         Static Functions           *
  **************************************/
 
+/* compare if 2 names equal - if so return 0 , if the first bigger return 1 and
+ *  if the second bigger return -1. - to be used only by legal parameters */
 int static locationNameCompare( char* location1 , char* location2 ){
     assert( location1 && location2 );
     int result = strcmp( location1 , location2 );
@@ -51,6 +53,8 @@ int static locationNameCompare( char* location1 , char* location2 ){
     return LOCATIONS_EQAUL;
 }
 
+/* if location exist in map return true , false otherwise - to be used only by
+ *  legal parameters */
 bool static worldMapDoesLocationExist( WorldMap world_map , Location location ){
     assert( world_map && location );
     LIST_FOREACH( Location , current_location , world_map ) {
@@ -60,6 +64,7 @@ bool static worldMapDoesLocationExist( WorldMap world_map , Location location ){
     return false;
 }
 
+/* return location name - to be used only by legal parameters */
 char static* locationGetName( Location location ) {
     assert( location );
     return location->name;
@@ -124,8 +129,8 @@ void nearLocationDestroy(char* location_name){
     stringDestroy( location_name );
 }
 
-NearLocation nearLocationCopy( char* location_name_to_copy ){
-    return nearLocationCreate ( location_name_to_copy );
+NearLocation nearLocationCopy( char* location_to_copy ){
+    return nearLocationCreate ( location_to_copy );
 }
 
 int nearLocationCompare( NearLocation location1 , NearLocation location2 ) {
@@ -184,7 +189,6 @@ int locationCompare( Location location1 , Location location2 ) {
 LocationResult locationAddPokemon( Location location , Pokemon pokemon ){
     if ( (!location) || (!pokemon) ) return LOCATION_NULL_ARGUMENT;
     ListResult result = listInsertLast( location->pokemons , pokemon );
-    if ( result ==  LIST_NULL_ARGUMENT )return LOCATION_NULL_ARGUMENT;
     if ( result == LIST_OUT_OF_MEMORY ) return LOCATION_OUT_OF_MEMORY;
     return LOCATION_SUCCESS;
 }
@@ -204,7 +208,6 @@ LocationResult locationAddNearLocation(  Location location ,
                                          NearLocation near_location ){
     if ( (!location) || (!near_location) ) return LOCATION_NULL_ARGUMENT;
     SetResult result = setAdd(location->near_locations , near_location);
-    if ( result == SET_NULL_ARGUMENT ) return LOCATION_NULL_ARGUMENT;
     if ( result == SET_OUT_OF_MEMORY ) return LOCATION_OUT_OF_MEMORY;
     return LOCATION_SUCCESS;
 }
@@ -263,6 +266,17 @@ int worldMapGetSize( WorldMap world_map ) {
     return listGetSize( world_map );
 }
 
+Location worldMapGetLocation( WorldMap world_map , char* loation_name ) {
+    if ( (!loation_name) || (strlen(loation_name)== EMPTY_STRING) ) return NULL;
+    LIST_FOREACH( Location , current_location , world_map ) {
+        if (locationNameCompare(locationGetName(current_location),loation_name)
+            == LOCATIONS_EQAUL ) {
+            return current_location;
+        }
+    }
+    return NULL;
+}
+
 WorldMapResult worldMapSort( WorldMap world_map ) {
     ListResult result = listSort( world_map , locationCompareElement );
     if ( result == LIST_NULL_ARGUMENT ) return WORLD_MAP_NULL_ARGUMENT;
@@ -281,5 +295,3 @@ void worldMapPrintReport( WorldMap world_map , FILE* output_channel) {
         }
     }
 }
-
-
