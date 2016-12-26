@@ -1,5 +1,4 @@
 #include <stdbool.h>
-#include <string.h>
 #include "aux_macros.h"
 #include "pokedex.h"
 
@@ -10,11 +9,14 @@ static bool testCombo() {
     TEST_DIFFERENT(result, pokedex, NULL);
 
     PokemonInfo pikachu_info = pokedexPokemonInfoCreate("Pikachu", 10);
+    PokemonInfo raichu_info = pokedexPokemonInfoCreate("Raichu", 50);
     PokemonInfo squirtel_info = pokedexPokemonInfoCreate("Squirtel", 30);
 
 
 
     TEST_EQUALS(result, pokedexAddPokemonInfo(pokedex, pikachu_info),
+                POKEDEX_SUCCESS);
+    TEST_EQUALS(result, pokedexAddPokemonInfo(pokedex, raichu_info),
                 POKEDEX_SUCCESS);
     TEST_EQUALS(result, pokedexAddPokemonInfo(pokedex, squirtel_info),
                 POKEDEX_SUCCESS);
@@ -45,6 +47,7 @@ static bool testCombo() {
 
     TEST_EQUALS(result, pokedexGetInitialCP(pokedex, "Pikachu"), 10);
 
+    pokedexPokemonInfoDestroy(raichu_info);
     pokedexPokemonInfoDestroy(squirtel_info);
     pokedexPokemonInfoDestroy(pikachu_info);
     pokedexDestroy(pokedex);

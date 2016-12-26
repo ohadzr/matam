@@ -2,7 +2,6 @@
 // Created by ohad on 24-Dec-16.
 //
 
-#include <stdlib.h>
 #include "pokedex.h"
 
 

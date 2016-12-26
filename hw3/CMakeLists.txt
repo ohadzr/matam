@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c99 -Wall -Werror -pedantic-errors 
 
 set(LIBMTM libmtm.a)
 
-set(POKEDEX_FILES utilities.c pokedex.c pokedex_test.c utilities.h aux_macros.h set.h)
+set(POKEDEX_FILES utilities.c pokedex.c pokedex_test.c)
 add_executable(hw3_pokedex_test ${POKEDEX_FILES})
 target_link_libraries(hw3_pokedex_test ${LIBMTM})
 
