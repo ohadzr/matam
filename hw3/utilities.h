@@ -12,7 +12,7 @@
  *   NULL if str is NULL or memory allocation failed.
  *   copy of the str otherwise
  */
-char* stringCopy(const char* str);
+char* stringCopy(char* str);
 
 /**
  * Free the given str

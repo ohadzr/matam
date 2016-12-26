@@ -9,8 +9,9 @@
 #include "store.h"
 #include "utilities.h"
 #include "print_utils.h"
+#include "pokedex.h"
 
-
+typedef struct pokemon_trainer_t* PokemonTrainer;
 
 typedef enum {
 	POKEMON_TRAINER_OUT_OF_MEMORY,
@@ -25,16 +26,6 @@ typedef enum {
 	POKEMON_TRAINER_SUCCESS
 } PokemonTrainerResult;
 
-typedef struct pokemon_trainer_t {
-    char* name;
-	char* location;
-    List pokemon_list;
-    Store item_list;
-	double xp;
-    int pokecoins;
-	int number_of_caught_pokemons;
-
-} *PokemonTrainer;
 
 /**
 * Creates a new pokemon trainer.

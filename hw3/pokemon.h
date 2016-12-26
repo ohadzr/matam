@@ -9,23 +9,6 @@
 #include "utilities.h"
 
 typedef enum {
-	TYPE_BUG,
-    TYPE_FIRE,
-    TYPE_GRASS,
-    TYPE_NORMAL,
-    TYPE_ROCK,
-    TYPE_ELECTRIC,
-    TYPE_FLYING,
-    TYPE_GROUND,
-    TYPE_POISON,
-    TYPE_WATER,
-    TYPE_FAIRY,
-    TYPE_GHOST,
-    TYPE_ICE,
-    TYPE_PSYCHIC
-} PokemonType;
-
-typedef enum {
 	POKEMON_SUCCESS,
 	POKEMON_NULL_ARG,
 	POKEMON_OUT_OF_MEMORY,
@@ -33,6 +16,8 @@ typedef enum {
     POKEMON_INVALID_VALUE,
     POKEMON_CANT_EVOLVE,
 	POKEMON_INVALID_NAME,
+	POKEMON_EQUAL,
+	POKEMON_DIFFERENT,
 	POKEMON_NO_HEALTH_POINTS,
 } PokemonResult;
 
@@ -147,13 +132,14 @@ PokemonResult pokemonUpdateHP(Pokemon pokemon, double value);
 PokemonResult pokemonUseItem(Pokemon pokemon, Item item);
 
 /**
-* compare between two pokemons and return an int. compare between the
-* pokemons ids
+* compare between two pokemons and return a bool. check if has the same name
+* and if the type is the same type.
 *
 * @return
-*   int: 0 - if the same, -1 if first is lower, 1 if first is bigger.
+*   POKEMON_EQUAL - if the same.
+* 	POKEMON_DIFFERENT - if one of the pokemons is NULL or if not same.
 */
-int pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon);
+PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon);
 
 /**
 * Check if a pokemon should get evolved. If so, evolves the given pokemon.
