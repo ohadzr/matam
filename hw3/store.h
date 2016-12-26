@@ -10,7 +10,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include "print_utils.h"
 #include "list.h"
 
 // TODO: find better way to access list macro
@@ -35,9 +34,9 @@ typedef void* ItemElement;
 typedef enum {TYPE_CANDY,TYPE_POTION} ItemType;
 
 typedef enum {STORE_SUCCESS,
-    STORE_NULL_ARGUMENT,
-    STORE_ITEM_NOT_EXIST,
-    STORE_OUT_OF_MEMORY} StoreResult;
+	STORE_NULL_ARGUMENT,
+	STORE_ITEM_NOT_EXIST,
+	STORE_OUT_OF_MEMORY} StoreResult;
 
 /**************************************
  *      Functions declarations        *
@@ -91,13 +90,14 @@ StoreResult storeRemoveItem( Store store , Item item );
 /* if item exist in store return item to buyer, return NULL if out of memory */
 Item storeSellItem( Store store , Item item );
 
+
+/* return true if item exist in store, false else*/
+bool storeDoesItemExist(  Store store , Item item );
+
 /* sort store items by type and for each type by value */
 StoreResult storeSort( Store store );
 
 /* print to output store stack one of each item and it's quantity */
 void storePrintStock( Store store , FILE* output );
-
-/* return true if item exist in store, false else*/
-bool storeDoesItemExist(  Store store , Item item );
 
 #endif /* STORE_H_ */

@@ -2,6 +2,7 @@
  *       Header files include         *
  **************************************/
 
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -11,8 +12,8 @@
 #include "set.h"
 #include "list.h"
 #include "print_utils.h"
-#include "utilities.h"
 #include "pokemon.h"
+#include "utilities.h"
 
 /**************************************
  *              Defines               *

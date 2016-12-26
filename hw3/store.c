@@ -9,6 +9,8 @@
 #include <assert.h>
 #include "store.h"
 #include "list.h"
+#include "print_utils.h"
+
 
 /**************************************
  *              Defines               *
@@ -170,6 +172,16 @@ Item storeSellItem( Store store , Item item ) {
 	return NULL;
 }
 
+bool storeDoesItemExist(  Store store , Item item ) {
+	assert ( item && store );
+	LIST_FOREACH( Item , current_item , store ) {
+		if ( itemCompare( current_item , item ) ==  ITEMS_EQUAL ){
+			return true;
+		}
+	}
+	return false;
+}
+
 StoreResult storeSort( Store store ) {
 	ListResult result = listSort( store , itemCompareElement );
 	if ( result == LIST_NULL_ARGUMENT ) return STORE_NULL_ARGUMENT;
@@ -196,12 +208,4 @@ void storePrintStock( Store store , FILE* output_channel ) {
 	}
 }
 
-bool storeDoesItemExist(  Store store , Item item ) {
-	assert ( item && store );
-	LIST_FOREACH( Item , current_item , store ) {
-		if ( itemCompare( current_item , item ) ==  ITEMS_EQUAL ){
-			return true;
-		}
-	}
-	return false;
-}
+

@@ -12,9 +12,7 @@
 #include <string.h>
 #include "set.h"
 #include "list.h"
-#include "print_utils.h"
 #include "pokemon.h"
-#include "utilities.h"
 
 
 /**************************************
