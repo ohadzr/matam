@@ -7,22 +7,14 @@
 #include <assert.h>
 #include "pokemon.h"
 
+/********************************
+ *          Defines             *
+ ********************************/
 
 #define SAME_STRINGS 0
 #define DEFAULT_LEVEL 1
 #define DEFAULT_HP 100.0
 #define DEFAULT_CP_BONUS 0
-
-
-
-/********************************
- * Helper Function Declarations *
- ********************************/
-
-
-/********************************
- *    Assistent Pokemon Funcs   *
- ********************************/
 
 
 /********************************
@@ -147,9 +139,10 @@ PokemonResult pokemonCheckEvolution(Pokemon pokemon, Pokedex pokedex) {
     if (pokemon == NULL) return POKEMON_NULL_ARG;
 
     char* next_evolution = pokedexGetNextEvolution(pokedex, pokemon->name,
-                                                   pokemon->level); //TODO: return the last evolution (A>B , B>C) will return C
+                                                   pokemon->level);
 
-    if (next_evolution == NULL) return POKEMON_CANT_EVOLVE;
+    if (strcmp(next_evolution, pokemon->name) == SAME_STRINGS)
+        return POKEMON_CANT_EVOLVE;
 
     int new_cp = pokedexGetInitialCP(pokedex, next_evolution);
     stringDestroy(pokemon->name);
@@ -177,10 +170,10 @@ int pokemonGetID(Pokemon pokemon) {
 }
 
 
-PokemonElement pokemonCopyElement( PokemonElement pokemon ) {
-    return pokemonCopy( (Pokemon)pokemon );
+PokemonElement pokemonCopyElement(PokemonElement pokemon) {
+    return pokemonCopy((Pokemon)pokemon);
 }
 
-void pokemonFreeElement( PokemonElement pokemon ) {
-    pokemonDestroy( (Pokemon)pokemon );
+void pokemonFreeElement(PokemonElement pokemon) {
+    pokemonDestroy((Pokemon)pokemon);
 }

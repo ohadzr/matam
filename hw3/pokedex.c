@@ -19,6 +19,10 @@
 #define NO_NEXT_EVOLUTION -1
 
 
+/**************************************
+ *        Structs declarations        *
+ **************************************/
+
 /*
 * The pokemon in pokedex structure.
 */
@@ -151,11 +155,9 @@ PokemonInfo pokedexPokemonInfoCopy(PokemonInfo pokemon_info) {
     new_pokemon_info->pokecoin_bonus = pokemon_info->pokecoin_bonus;
 
     if (pokemon_info->next_evolution != NULL) {
-        PokedexResult result = pokedexPokemonInfoUpdateNextEvolution(
-                new_pokemon_info,
-                pokemon_info->next_evolution,
-                pokemon_info->evolution_level);
-        if (result == POKEDEX_OUT_OF_MEMORY) {
+        new_pokemon_info->next_evolution =
+                stringCopy(pokemon_info->next_evolution);
+        if (new_pokemon_info->next_evolution == NULL) {
             pokedexPokemonInfoDestroy(new_pokemon_info);
             return NULL;
         }
@@ -171,12 +173,13 @@ void pokedexPokemonInfoDestroy(PokemonInfo pokemon_info) {
     }
 }
 
-PokedexResult pokedexPokemonInfoUpdateNextEvolution(PokemonInfo pokemon_info,
-                                                    char* next_evolution,
-                                                    int evolution_level) {
-    if (pokemon_info == NULL || next_evolution == NULL)
+PokedexResult pokedexUpdateNextEvolution(Pokedex pokedex, char* pokemon_name,
+                                   char* next_evolution, int evolution_level) {
+    if (pokedex == NULL || pokemon_name == NULL || next_evolution == NULL)
         return POKEDEX_NULL_ARG;
     if (evolution_level <= 0) return POKEDEX_IVALID_ARG;
+
+    PokemonInfo pokemon_info = pokedexGetPokemonInfo(pokedex, pokemon_name);
 
     pokemon_info->next_evolution = stringCopy(next_evolution);
     if (pokemon_info->next_evolution == NULL)

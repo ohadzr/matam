@@ -7,18 +7,24 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 #include "set.h"
-#include "list.h"
 #include "utilities.h"
-#include "string.h"
 
-/**************************************
- *        Structs declarations        *
- **************************************/
+/********************************
+ *          Defines             *
+ ********************************/
 
 typedef Set Pokedex;
 
 typedef struct pokemon_info_t* PokemonInfo;
+
+typedef void* PokemonInfoElement;
+
+
+/**************************************
+ *        Structs declarations        *
+ **************************************/
 
 typedef enum {
     POKEDEX_OUT_OF_MEMORY,
@@ -27,8 +33,10 @@ typedef enum {
     POKEDEX_SUCCESS
 } PokedexResult;
 
-typedef void* PokemonInfoElement;
 
+/**************************************
+ *        Functions declarations      *
+ **************************************/
 
 
 PokemonInfo pokedexPokemonInfoCreate(char *name, int cp_initial);
@@ -41,9 +49,6 @@ int pokedexPokemonInfoCompare(PokemonInfo pokemon_info1,
                               PokemonInfo pokemon_info2);
 
 
-PokedexResult pokedexPokemonInfoUpdateNextEvolution(PokemonInfo pokemon_info,
-                                                    char* next_evolution,
-                                                    int evolution_level);
 
 
 
@@ -56,11 +61,14 @@ PokedexResult pokedexAddPokemonInfo(Pokedex pokedex, PokemonInfo pokemon_info);
 char* pokedexGetNextEvolution(Pokedex pokedex, char* pokemon_name,
                               int pokemon_level);
 
-int pokedexGetEvolutionLevel(Pokedex pokedex, char* pokemon_name);
-
 int pokedexGetInitialCP(Pokedex pokedex, char* pokemon_name);
 
 int pokedexGetStarBonus(Pokedex pokedex, char* pokemon_name);
 
+PokedexResult pokedexAddType(Pokedex pokedex, char* pokemon_name,
+                             char* type_name);
+
+PokedexResult pokedexUpdateNextEvolution(Pokedex pokedex, char* pokemon_name,
+                                   char* next_evolution, int evolution_level);
 
 #endif //MATAM_POKEDEX_H

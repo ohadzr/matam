@@ -41,6 +41,12 @@ struct pokemon_t {
 
 typedef void* PokemonElement;
 
+
+/**************************************
+ *        Functions declarations      *
+ **************************************/
+
+
 /**
 * Creates a new pokemon.
 * The name, type and cp are parameters set the corresponding
@@ -182,12 +188,12 @@ int pokemonGetID(Pokemon pokemon);
 * @return
 * 	PokemonElement (void*)
 **/
-PokemonElement pokemonCopyElement( PokemonElement pokemon );
+PokemonElement pokemonCopyElement(PokemonElement pokemon);
 
 /**
 * Wrapping the @pokemonDestroy for @listCreate (lish.h)
 *
 **/
-void pokemonFreeElement( PokemonElement pokemon );
+void pokemonFreeElement(PokemonElement pokemon);
 
 #endif // POKEMON_H_
