@@ -20,47 +20,23 @@
  ********************************/
 
 
-/**
-* This function checks if given type is valid
-*
-* @return
-*   bool - if valid return true, otherwise false
-*/
-static bool isValidType(PokemonType type);
-
-
 /********************************
  *    Assistent Pokemon Funcs   *
  ********************************/
-
-
-bool isValidType(PokemonType type) {
-    bool is_valid = false;
-    if (type == TYPE_NORMAL || type == TYPE_FIRE || type == TYPE_GRASS \
-       || type == TYPE_WATER || type == TYPE_ELECTRIC || type == TYPE_BUG \
-       || type == TYPE_ROCK || type == TYPE_FLYING || type == TYPE_GROUND \
-       || type == TYPE_POISON || type == TYPE_FAIRY || type == TYPE_GHOST \
-       || type == TYPE_ICE || type == TYPE_PSYCHIC) {
-        is_valid = true;
-    }
-    return is_valid;
-}
-
-
 
 
 /********************************
  *          Pokemon Funcs       *
  ********************************/
 
-Pokemon pokemonCreate(char* name) {
+Pokemon pokemonCreate(char* name, Pokedex pokedex) {
     Pokemon pokemon = NULL;
-    if (name == NULL || strcmp(name,"")== SAME_STRINGS)
+    if (name == NULL || strcmp(name,"")== SAME_STRINGS || pokedex == NULL)
         return NULL;
 
     pokemon = malloc(sizeof(*pokemon));
     if (pokemon == NULL) return NULL;
-    pokemon->cp = pokedexGetCP(name);
+    pokemon->cp = pokedexGetInitialCP(pokedex, name);
     pokemon->cp_bonus = DEFAULT_CP_BONUS;
     pokemon->level = DEFAULT_LEVEL;
     pokemon->hp = DEFAULT_HP;
@@ -84,12 +60,19 @@ void pokemonDestroy(Pokemon pokemon) {
 
 Pokemon pokemonCopy(Pokemon pokemon) {
     if (pokemon == NULL) return NULL;
-    Pokemon new_pokemon = NULL;
-    new_pokemon = pokemonCreate(pokemon->name);
+    Pokemon new_pokemon = malloc(sizeof(*pokemon));
+
     if (new_pokemon != NULL) {
             new_pokemon->hp = pokemon->hp;
             new_pokemon->level = pokemon->level;
             new_pokemon->cp_bonus = pokemon->cp_bonus;
+            new_pokemon->cp = pokemon->cp;
+            new_pokemon->id = pokemon->id;
+            new_pokemon->name = stringCopy(pokemon->name);
+            if (new_pokemon->name == NULL) {
+                pokemonDestroy(new_pokemon);
+                return NULL;
+            }
     }
     return new_pokemon;
 }
@@ -160,15 +143,15 @@ PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) {
     return POKEMON_DIFFERENT;
 }
 
-PokemonResult pokemonCheckEvolution(Pokemon pokemon) {
+PokemonResult pokemonCheckEvolution(Pokemon pokemon, Pokedex pokedex) {
     if (pokemon == NULL) return POKEMON_NULL_ARG;
 
-    int new_cp = pokemon->cp;
-    char* next_evolution = pokedexFindNextEvolution(pokemon); //TODO: return the last evolution (A>B , B>C) will return C
+    char* next_evolution = pokedexGetNextEvolution(pokedex, pokemon->name,
+                                                   pokemon->level); //TODO: return the last evolution (A>B , B>C) will return C
 
     if (next_evolution == NULL) return POKEMON_CANT_EVOLVE;
 
-    new_cp = pokedexGetCP(next_evolution);
+    int new_cp = pokedexGetInitialCP(pokedex, next_evolution);
     stringDestroy(pokemon->name);
 
     pokemon->cp = new_cp;

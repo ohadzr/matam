@@ -7,6 +7,8 @@
 #include "store.h"
 #include "set.h"
 #include "utilities.h"
+#include "pokedex.h"
+
 
 typedef enum {
 	POKEMON_SUCCESS,
@@ -50,7 +52,7 @@ typedef void* PokemonElement;
 * 	If name is NULL or empty, type is invalid, experience or max_number_of_moves
 *   is not positive, or in case of a memory allocation failure - return NULL.
 **/
-Pokemon pokemonCreate(char* name);
+Pokemon pokemonCreate(char* name, Pokedex pokedex);
 
 /**
 * Frees all memory allocated for the given pokemon.
@@ -150,10 +152,10 @@ PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon);
 * 	POKEMON_NULL_ARG if pokemon or new_name is NULL.
 *   POKEMON_CANNOT_EVOLVE if the pokemon level is not enough or no next
 *   evolution.
-*   POKEMON_OUT_OF_MEM - if faild allocating new name for the pokemon.
+*   POKEMON_OUT_OF_MEMORY - if faild allocating new name for the pokemon.
 * 	POKEMON_SUCCESS otherwise.
 */
-PokemonResult pokemonCheckEvolution(Pokemon pokemon);
+PokemonResult pokemonCheckEvolution(Pokemon pokemon, Pokedex pokedex);
 
 /**
 * Update the given pokemon ID.

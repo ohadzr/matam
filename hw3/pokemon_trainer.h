@@ -10,6 +10,7 @@
 #include "utilities.h"
 #include "print_utils.h"
 #include "pokedex.h"
+#include "location.h"
 
 typedef struct pokemon_trainer_t* PokemonTrainer;
 
@@ -68,7 +69,8 @@ PokemonTrainer pokemonTrainerCopy(PokemonTrainer trainer);
 * 	POKEMON_SUCCESS otherwise.
 */
 PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
-	Pokemon pokemon);
+                                              Pokemon pokemon,
+                                              Pokedex pokedex);
 
 
 /**
@@ -83,4 +85,3 @@ PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
 PokemonTrainerResult pokemonTrainerAddItem(PokemonTrainer trainer, Item item);
 
 #endif // POKEMON_TRAINER_H_
-''

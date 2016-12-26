@@ -77,7 +77,7 @@ static void pokemonTrainerRemovePokemon(PokemonTrainer trainer,
  *    Assistent Pokemon Trainer Funcs   *
  ****************************************/
 
-void pokemonTrainerFightAux(PokemonTrainer trainer1, Pokemon pokemon1, //TODO: check if there is a prettier way?
+void pokemonTrainerFightAux(PokemonTrainer trainer1, Pokemon pokemon1,
                                   PokemonTrainer trainer2, Pokemon pokemon2,
                                   int* old_cp1, double* old_hp1,
                                   int* old_level1, double* old_xp1,
@@ -211,7 +211,8 @@ PokemonTrainer pokemonTrainerCopy(PokemonTrainer trainer) {
 
 
 PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
-                                              Pokemon pokemon) {
+                                              Pokemon pokemon,
+                                              Pokedex pokedex) {
     if (trainer == NULL || pokemon == NULL) return POKEMON_TRAINER_NULL_ARG;
 
     Pokemon new_pokemon = pokemonCopy(pokemon);
@@ -222,7 +223,7 @@ PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
     ListResult result = listInsertLast(trainer->pokemon_list, new_pokemon);
     trainer->number_of_caught_pokemons++;
     trainer->pokecoins +=
-            pokedexGetStarBonus(pokemonGetName(new_pokemon));
+            pokedexGetStarBonus(pokedex, pokemonGetName(new_pokemon));
 
     if (result == LIST_OUT_OF_MEMORY) {
         return POKEMON_TRAINER_OUT_OF_MEMORY;
@@ -285,7 +286,7 @@ PokemonTrainerResult pokemonTrainerBuyItem(PokemonTrainer trainer, Item item,
 
 PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
                                           char* location, WorldMap world_map,
-                                          FILE* output) {
+                                          Pokedex pokedex, FILE* output) {
     if (trainer == NULL || location == NULL)
         return POKEMON_TRAINER_NULL_ARG;
 
@@ -308,7 +309,8 @@ PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
         return POKEMON_TRAINER_SUCCESS;
     }
 
-    PokemonTrainerResult result = pokemonTrainerAddPokemon(trainer, pokemon);
+    PokemonTrainerResult result = pokemonTrainerAddPokemon(trainer, pokemon,
+                                                           pokedex);
     if (result == POKEMON_TRAINER_SUCCESS) {
         mtmPrintCatchResult(output, trainer->name,
                             pokemonGetName(pokemon), location);
@@ -320,7 +322,8 @@ PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
 PokemonTrainerResult pokemonTrainerFight(PokemonTrainer trainer1,
                                          PokemonTrainer trainer2,
                                          int pokemon1_id,
-                                         int pokemon2_id, FILE* output) {
+                                         int pokemon2_id, Pokedex pokedex,
+                                         FILE* output) {
     if (trainer1 == NULL || trainer2 == NULL) return POKEMON_TRAINER_NULL_ARG;
     Pokemon pokemon1 = pokemonTrainerGetPokemon(trainer1,pokemon1_id);
     Pokemon pokemon2 = pokemonTrainerGetPokemon(trainer2,pokemon2_id);
@@ -342,8 +345,8 @@ PokemonTrainerResult pokemonTrainerFight(PokemonTrainer trainer1,
              old_level2, pokemonGetLevel(pokemon1), pokemonGetLevel(pokemon2),
              old_xp1, old_xp2, trainer1->xp, trainer2->xp, is_dead1, is_dead2);
 
-    PokemonResult result1 = pokemonCheckEvolution(pokemon1);
-    PokemonResult result2 = pokemonCheckEvolution(pokemon2);
+    PokemonResult result1 = pokemonCheckEvolution(pokemon1, pokedex);
+    PokemonResult result2 = pokemonCheckEvolution(pokemon2, pokedex);
     if (result1 == POKEMON_OUT_OF_MEMORY || result2 == POKEMON_OUT_OF_MEMORY)
         return POKEMON_TRAINER_OUT_OF_MEMORY;
 
