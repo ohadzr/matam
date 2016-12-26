@@ -177,16 +177,18 @@ StoreResult storeSort( Store store ) {
 	return STORE_SUCCESS;
 }
 
-void storePrintStock( Store store , FILE* output ) {
-	assert( store && output );
+void storePrintStock( Store store , FILE* output_channel ) {
+	assert( store && output_channel );
+	mtmPrintStockHeader( output_channel );
 	if( listGetSize( store ) != EMPTY ) {
-		Item item_index = (Item) listGetFirst(store);
+		storeSort( store );
+		Item item_index = listGetFirst(store);
 		int counter = 0;
-		LIST_FOREACH(Item, current_item, store) {
-			if (itemCompare(item_index, current_item) != ITEMS_EQUAL) {
-				item_index = (Item) listGetCurrent(store);
-				mtmPrintItem( output , convertTypeToString( current_item ),
-							  itemGetValue(current_item) , counter );
+		LIST_FOREACH( Item , current_item , store ) {
+			if ( itemCompare( item_index , current_item ) != ITEMS_EQUAL ) {
+				item_index = listGetCurrent(store);
+				mtmPrintItem(output_channel , convertTypeToString(current_item),
+							 itemGetValue(current_item) , counter);
 				counter = 0;
 			}
 			counter++;

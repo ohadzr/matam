@@ -7,7 +7,7 @@
 
 
 
-char* stringCopy(const char* str) {
+char* stringCopy(char* str) {
     char* dst_str = malloc(strlen(str)+1);
     if (dst_str != NULL) {
         strcpy(dst_str, str);

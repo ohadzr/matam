@@ -92,3 +92,4 @@ PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
 PokemonTrainerResult pokemonTrainerAddItem(PokemonTrainer trainer, Item item);
 
 #endif // POKEMON_TRAINER_H_
+''
