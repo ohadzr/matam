@@ -17,12 +17,13 @@
 /**************************************
  *              Defines               *
  **************************************/
-#define EMPTY_STRING 0
-typedef struct location_t* Location;
+
 typedef List WorldMap;
 typedef void* LocationElement;
 typedef void* NearLocationElement;
 typedef char* NearLocation;
+#define EMPTY_STRING 0
+typedef struct location_t* Location;
 
 /**************************************
  *         Enum declarations          *
@@ -33,7 +34,8 @@ typedef enum {LOCATION_SUCCESS,
     LOCATION_NOT_EXIST,
     LOCATION_POKEMON_NOT_EXIST,
     LOCATION_NEAR_LOCATION_NOT_EXIST,
-    LOCATION_OUT_OF_MEMORY} LocationResult;
+    LOCATION_OUT_OF_MEMORY,
+    LOCATION_ALREADY_IN_LOCATION} LocationResult;
 
 typedef enum {WORLD_MAP_SUCCESS,
     WORLD_MAP_NULL_ARGUMENT,
@@ -88,6 +90,9 @@ Location locationCopy( Location location );
  *  return -1. to be used only by legal parameters */
 int locationCompare( Location location1 , Location location2 );
 
+/* return location name - to be used only by legal parameters */
+char* locationGetName( Location location );
+
 /* add new Pokemon to location.
  * return:
  * LOCATION_NULL_ARGUMENT: if location or pokemon equal NULL ;
@@ -104,6 +109,7 @@ LocationResult locationRemovePokemon( Location location , Pokemon pokemon );
 
 /* add new NearLocation to location.
  * return:
+ * LOCATION_ALREADY_IN_LOCATION: if tries to add the location to itself ;
  * LOCATION_NULL_ARGUMENT: if location or near_location equal NULL ;
  * LOCATION_OUT_OF_MEMORY: if memory allocation failed ;
  * LOCATION_SUCCESS: if near_location was added successfully; */
@@ -157,7 +163,7 @@ int worldMapGetSize( WorldMap world_map );
 /* return location with the same name as loation_name from world map.
  * return NULL if world_map or loation_name are NULL or if location by that name
  * does not exist */
-Location worldMapGetLocation( WorldMap world_map , char* loation_name );
+Location worldMapGetLocation( WorldMap world_map , char* location_name );
 
 /* sort world map by lexicographical order.
  * return:

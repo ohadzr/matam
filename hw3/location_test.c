@@ -154,11 +154,88 @@ static bool testWorldMapCombo() {
     bool result = true;
 
     /* -----------------------  initialization  ----------------------- */
-
+    NearLocation nearLocation1 = nearLocationCreate("Israel");
+    NearLocation nearLocation2 = nearLocationCreate("USA");
+    NearLocation nearLocation3 = nearLocationCreate("Japan");
+    NearLocation nearLocation4 = nearLocationCreate("France");
+    NearLocation nearLocation5 = nearLocationCopy(nearLocation4);
+    NearLocation nearLocation6 = NULL;
+    Pokedex pokedex = pokedexCreate();
+    PokemonInfo pokemon_info1 = pokedexPokemonInfoCreate("Pikachu", 30);
+    PokemonInfo pokemon_info2 = pokedexPokemonInfoCreate("Balbazur", 20);
+    PokemonInfo pokemon_info3 = pokedexPokemonInfoCreate("Togopi", 20);
+    Pokemon pokemon1 = pokemonCreate("Pikacho", pokedex);
+    Pokemon pokemon2 = pokemonCreate("Balbazur", pokedex);
+    Pokemon pokemon3 = pokemonCreate("Togopi", pokedex);
+    Pokemon pokemon4 = NULL;
+    Location location1 = locationCreate("Israel");
+    Location location2 = locationCreate("USA");
+    Location location3 = locationCreate("Japan");
+    Location location4 = NULL;
+    Location location5 = locationCopy(location1);
+    locationAddPokemon(location1, pokemon1);
+    locationAddPokemon(location1, pokemon2);
+    locationAddPokemon(location1, pokemon1);
+    locationAddPokemon(location2, pokemon3);
+    locationAddPokemon(location2, pokemon2);
+    locationAddPokemon(location3, pokemon1);
+    locationAddPokemon(location5, pokemon3);
+    locationAddPokemon(location5, pokemon3);
+    locationAddNearLocation(location1, nearLocation2);
+    locationAddNearLocation(location1, nearLocation3);
+    locationAddNearLocation(location2, nearLocation1);
+    locationAddNearLocation(location3, nearLocation1);
+    WorldMap world_map = worldMapCreate();
     /* ----------------------------- tests ---------------------------- */
+    TEST_EQUALS(result, worldMapGetSize(world_map), 0);
+    TEST_EQUALS(result, worldMapAddLocation(world_map, location1),
+                WORLD_MAP_SUCCESS);
+    TEST_EQUALS(result, worldMapAddLocation(world_map, location1),
+                WORLD_MAP_LOCATION_ALREADY_EXISTS);
+    TEST_EQUALS(result, worldMapAddLocation(world_map, location3),
+                WORLD_MAP_SUCCESS);
+    TEST_EQUALS(result, worldMapAddLocation(world_map, location4),
+                WORLD_MAP_NULL_ARGUMENT);
+    TEST_EQUALS(result, worldMapAddLocation(world_map, location5),
+                WORLD_MAP_SUCCESS);
+    TEST_EQUALS(result, worldMapRemoveLocation(world_map, location2),
+                WORLD_MAP_LOCATION_NOT_EXIST);
+    TEST_EQUALS(result, worldMapRemoveLocation(world_map, location3),
+                WORLD_MAP_SUCCESS);
+    TEST_EQUALS(result, worldMapGetSize(world_map), 2);
+    TEST_EQUALS(result, worldMapRemoveLocation(world_map, location4),
+                WORLD_MAP_NULL_ARGUMENT);
+    TEST_EQUALS(result, worldMapAddLocation(world_map, location2),
+                WORLD_MAP_SUCCESS);
+    TEST_EQUALS(result, worldMapGetSize(world_map), 3);
+    TEST_EQUALS(result,locationCompare(worldMapGetLocation(world_map,locationGetName(location1)),location1),0);
+    TEST_EQUALS(result,worldMapGetLocation(world_map,locationGetName(location3)),NULL);
+    TEST_EQUALS(result,worldMapGetLocation(world_map,""),NULL);
+    TEST_EQUALS(result,worldMapGetLocation(world_map,NULL),NULL);
+    worldMapSort(world_map);
+    TEST_EQUALS(result, worldMapGetSize(world_map), 3);
 
     /* ------------------------  destruction  ------------------------- */
-
+    nearLocationDestroy( nearLocation1);
+    nearLocationDestroy(nearLocation2);
+    nearLocationDestroy(nearLocation3);
+    nearLocationDestroy(nearLocation4);
+    nearLocationDestroy(nearLocation5);
+    nearLocationDestroy(nearLocation6);
+    locationDestroy(location1);
+    locationDestroy(location2);
+    locationDestroy(location3);
+    locationDestroy(location4);
+    locationDestroy(location5);
+    pokedexDestroy(pokedex);
+    pokedexPokemonInfoDestroy(pokemon_info1);
+    pokedexPokemonInfoDestroy(pokemon_info2);
+    pokedexPokemonInfoDestroy(pokemon_info3);
+    pokemonDestroy(pokemon1);
+    pokemonDestroy(pokemon2);
+    pokemonDestroy(pokemon3);
+    pokemonDestroy(pokemon4);
+    worldMapDestroy(world_map);
 
     return result;
 }
@@ -167,6 +244,5 @@ int main() {
     RUN_TEST(testNearLocationCombo);
     RUN_TEST(testLocationCombo);
     RUN_TEST(testWorldMapCombo);
-
     return 0;
 }

@@ -2,7 +2,6 @@
  *       Header files include         *
  **************************************/
 
-
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -62,12 +61,6 @@ bool static worldMapDoesLocationExist( WorldMap world_map , Location location ){
             return true;
     }
     return false;
-}
-
-/* return location name - to be used only by legal parameters */
-char static* locationGetName( Location location ) {
-    assert( location );
-    return location->name;
 }
 
 /**************************************
@@ -186,6 +179,11 @@ int locationCompare( Location location1 , Location location2 ) {
     return locationNameCompare( location1->name , location2->name );
 }
 
+char* locationGetName( Location location ) {
+    assert( location );
+    return location->name;
+}
+
 LocationResult locationAddPokemon( Location location , Pokemon pokemon ){
     if ( (!location) || (!pokemon) ) return LOCATION_NULL_ARGUMENT;
     ListResult result = listInsertLast( location->pokemons , pokemon );
@@ -207,6 +205,8 @@ LocationResult locationRemovePokemon( Location location , Pokemon pokemon ){
 LocationResult locationAddNearLocation(  Location location ,
                                          NearLocation near_location ){
     if ( (!location) || (!near_location) ) return LOCATION_NULL_ARGUMENT;
+    if ( locationNameCompare( location->name , near_location ) == 0 )
+        return LOCATION_ALREADY_IN_LOCATION;
     SetResult result = setAdd(location->near_locations , near_location);
     if ( result == SET_OUT_OF_MEMORY ) return LOCATION_OUT_OF_MEMORY;
     return LOCATION_SUCCESS;
@@ -275,10 +275,10 @@ int worldMapGetSize( WorldMap world_map ) {
     return listGetSize( world_map );
 }
 
-Location worldMapGetLocation( WorldMap world_map , char* loation_name ) {
-    if ( (!loation_name) || (strlen(loation_name)== EMPTY_STRING) ) return NULL;
+Location worldMapGetLocation( WorldMap world_map , char* location_name ) {
+    if ( (!location_name) || (strlen(location_name)== EMPTY_STRING) ) return NULL;
     LIST_FOREACH( Location , current_location , world_map ) {
-        if (locationNameCompare(locationGetName(current_location),loation_name)
+        if (locationNameCompare(locationGetName(current_location),location_name)
             == LOCATIONS_EQAUL ) {
             return current_location;
         }
