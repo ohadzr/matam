@@ -12,6 +12,9 @@
 #include "pokedex.h"
 #include "location.h"
 
+typedef Set Trainers;
+typedef void* PokemonTrainerElement;
+
 typedef struct pokemon_trainer_t* PokemonTrainer;
 
 typedef enum {
@@ -24,6 +27,7 @@ typedef enum {
     POKEMON_TRAINER_POKEMON_DOESNT_EXIST,
     POKEMON_TRAINER_INVALID_AGR,
     POKEMON_TRAINER_POKEMON_HP_AT_MAX,
+	POKEMON_TRAINER_ALREADY_EXIST,
 	POKEMON_TRAINER_SUCCESS
 } PokemonTrainerResult;
 
@@ -83,5 +87,45 @@ PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
 * 	POKEMON_SUCCESS otherwise.
 */
 PokemonTrainerResult pokemonTrainerAddItem(PokemonTrainer trainer, Item item);
+
+
+/**
+* Creates a new set of trainers.
+*
+* @return
+* 	A new allocated pokemon trainers set.
+* 	NULL - if allocation fails is NULL.
+* 	Set - Otherwise
+*
+**/
+Trainers trainersCreate();
+
+/**
+* Add a trainer to set of trainers. Using @setAdd
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer or trainers are NULL.
+* 	POKEMON_TRAINER_OUT_OF_MEMORY if set had a memory allocation error.
+* 	POKEMON_SUCCESS otherwise.
+*
+**/
+PokemonTrainerResult trainersAddTrainer(Trainers trainers,
+										PokemonTrainer trainer);
+/**
+* Frees all memory allocated for the given pokemon trainers set.
+* This function can receive NULL. In this case, no action will be taken.
+*/
+void trainersDestroy(Trainers trainers);
+
+
+/**
+* Find and return a trainer from a trainers set by name comparing.
+*
+* @return
+* 	A pointer to the PokemonTrainer from set.
+* 	NULL if trainer doesn't exists in set.
+*
+**/
+PokemonTrainer trainersGetTrainer(Trainers trainers, char* trainer_name);
 
 #endif // POKEMON_TRAINER_H_

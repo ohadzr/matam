@@ -73,6 +73,32 @@ static int pokemonTrainerGetMaxValueItem(PokemonTrainer trainer,
 static void pokemonTrainerRemovePokemon(PokemonTrainer trainer,
                                                         Pokemon pokemon);
 
+
+/* wrapper function to pokemonTrainerCopy so it
+ * will be possible to work with Set GDT */
+PokemonTrainerElement static pokemonTrainerCopyElement(
+        PokemonTrainerElement trainer);
+
+/*wrapper function to pokemonTrainerDestroy so it
+ * will be possible to work with Set GDT*/
+void static pokemonTrainerFreeElement(PokemonTrainerElement trainer);
+
+/*wrapper function to pokemonTrainerCompare so it
+ * will be possible to work with Set GDT*/
+int static pokemonTrainerCompareElement(PokemonTrainerElement trainer1 ,
+                                     PokemonTrainerElement trainer2);
+
+/**
+* compare between two pokemon trainers and return an int.
+* check if has the same name
+*
+* @return
+*   0 - if the same.
+* 	strcmp result - otherwise.
+*/
+int pokemonTrainerCompare(PokemonTrainer trainer1, PokemonTrainer pokemon2);
+
+
 /****************************************
  *    Assistent Pokemon Trainer Funcs   *
  ****************************************/
@@ -139,6 +165,30 @@ void pokemonTrainerRemovePokemon(PokemonTrainer trainer,
 }
 
 
+PokemonTrainerElement pokemonTrainerCopyElement(
+        PokemonTrainerElement trainer) {
+    return pokemonTrainerCopy( (PokemonTrainer)trainer );
+}
+
+
+void pokemonTrainerFreeElement( PokemonTrainerElement trainer ) {
+    pokemonTrainerDestroy( (PokemonTrainer)trainer );
+}
+
+
+int  pokemonTrainerCompareElement( PokemonTrainerElement trainer1 ,
+                                PokemonTrainerElement trainer2 ) {
+    return pokemonTrainerCompare((PokemonTrainer)trainer1 ,
+                                     (PokemonTrainer)trainer2 );
+}
+
+
+int pokemonTrainerCompare(PokemonTrainer trainer1 ,PokemonTrainer trainer2) {
+    assert(trainer1 != NULL);
+    assert(trainer2 != NULL);
+
+    return strcmp(trainer1->name, trainer2->name);
+}
 
 
 /********************************
@@ -431,3 +481,36 @@ PokemonTrainerResult pokemonTrainerReport(PokemonTrainer trainer,
 }
 
 
+Trainers trainersCreate(){
+    return setCreate(pokemonTrainerCopyElement, pokemonTrainerFreeElement,
+                     pokemonTrainerCompareElement);
+}
+
+PokemonTrainerResult trainersAddTrainer(Trainers trainers,
+                                        PokemonTrainer trainer) {
+    if (trainer == NULL) return POKEMON_TRAINER_NULL_ARG;
+
+    SetResult result = setAdd(trainers, trainer);
+
+    if (result == SET_OUT_OF_MEMORY)
+            return POKEMON_TRAINER_OUT_OF_MEMORY;
+
+    if (result == SET_ITEM_ALREADY_EXISTS)
+            return POKEMON_TRAINER_ALREADY_EXIST;
+
+    return POKEMON_TRAINER_SUCCESS;
+}
+
+void trainersDestroy(Trainers trainers) {
+    if (trainers != NULL)
+        setDestroy(trainers);
+}
+
+PokemonTrainer trainersGetTrainer(Trainers trainers, char* trainer_name) {
+    SET_FOREACH(PokemonTrainer, trainer, trainers) {
+        if (strcmp(trainer->name, trainer_name) == SAME_STRINGS)
+            return trainer;
+    }
+
+    return NULL;
+}

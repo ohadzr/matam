@@ -43,7 +43,6 @@ PokemonInfoElement static pokemonInfoCopyElement(
         PokemonInfoElement pokemon_info);
 
 /*wrapper function to pokedexPokemonInfoDestroy so it
-/*wrapper function to pokedexPokemonInfoDestroy so it
  * will be possible to work with Set GDT*/
 void static pokemonInfoFreeElement(PokemonInfoElement pokemon_info);
 
