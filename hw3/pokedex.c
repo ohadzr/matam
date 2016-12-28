@@ -16,6 +16,7 @@
 #define ONE_STAR_BONUS 20
 #define TWO_STARS_BONUS 30
 #define NO_NEXT_EVOLUTION -1
+#define NO_SUCH_POKEMON 0
 
 
 /**************************************
@@ -172,6 +173,8 @@ PokedexResult pokedexUpdateNextEvolution(Pokedex pokedex, char* pokemon_name,
     if (evolution_level <= 0) return POKEDEX_IVALID_ARG;
 
     PokemonInfo pokemon_info = pokedexGetPokemonInfo(pokedex, pokemon_name);
+    if (pokemon_info == NULL)
+        return POKEDEX_POKEMON_NOT_IN_POKEDEX;
 
     pokemon_info->next_evolution = stringCopy(next_evolution);
     if (pokemon_info->next_evolution == NULL)
@@ -239,6 +242,8 @@ int pokedexGetInitialCP(Pokedex pokedex, char* pokemon_name) {
     assert (pokemon_name!= NULL);
 
     PokemonInfo pokemon_info = pokedexGetPokemonInfo(pokedex, pokemon_name);
+    if (pokemon_info == NULL)
+        return NO_SUCH_POKEMON;
 
     return pokemon_info->cp_initial;
 }
@@ -248,6 +253,8 @@ int pokedexGetStarBonus(Pokedex pokedex, char* pokemon_name) {
     assert(pokemon_name != NULL);
 
     PokemonInfo pokemon_info = pokedexGetPokemonInfo(pokedex, pokemon_name);
+    if (pokemon_info == NULL)
+        return NO_SUCH_POKEMON;
 
     return pokemon_info->pokecoin_bonus;
 }
@@ -255,6 +262,7 @@ int pokedexGetStarBonus(Pokedex pokedex, char* pokemon_name) {
 PokedexResult pokedexAddType(Pokedex pokedex, char* pokemon_name,
                              char* type_name) {
     PokemonInfo pokemon_info = pokedexGetPokemonInfo(pokedex, pokemon_name);
+    if (pokemon_info == NULL) return POKEDEX_POKEMON_NOT_IN_POKEDEX;
 
     if (pokemon_info->pokecoin_bonus < typeToBonus(type_name))
         pokemon_info->pokecoin_bonus = typeToBonus(type_name);

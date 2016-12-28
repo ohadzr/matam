@@ -229,7 +229,16 @@ static bool testPokemonCheckEvolution() {
     TEST_EQUALS(result, pokemonCheckEvolution(pikachu, pokedex),
                 POKEMON_SUCCESS);
     TEST_EQUALS(result, strcmp(pokemonGetName(pikachu),"Raichu") , 0);
+    TEST_EQUALS(result, pokemonUpdateLevel(pikachu,5),POKEMON_SUCCESS);
+    TEST_EQUALS(result, pokemonCheckEvolution(pikachu, pokedex),
+                POKEMON_SUCCESS);
+    TEST_EQUALS(result, strcmp(pokemonGetName(pikachu),"BigRaichu") , 0);
 
+    pokedexPokemonInfoDestroy(big_raichu_info);
+    pokedexPokemonInfoDestroy(raichu_info);
+    pokedexPokemonInfoDestroy(pikachu_info);
+    pokemonDestroy(pikachu);
+    pokedexDestroy(pokedex);
 
 	return result;
 }
