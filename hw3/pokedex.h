@@ -72,4 +72,6 @@ PokedexResult pokedexAddType(Pokedex pokedex, char* pokemon_name,
 PokedexResult pokedexUpdateNextEvolution(Pokedex pokedex, char* pokemon_name,
                                    char* next_evolution, int evolution_level);
 
+PokemonInfo pokedexGetPokemonInfo(Pokedex pokedex, char* name);
+
 #endif //MATAM_POKEDEX_H

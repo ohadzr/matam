@@ -26,6 +26,9 @@ Pokemon pokemonCreate(char* name, Pokedex pokedex) {
     if (name == NULL || strcmp(name,"")== SAME_STRINGS || pokedex == NULL)
         return NULL;
 
+    PokemonInfo pokemon_info = pokedexGetPokemonInfo(pokedex, name);
+    if (pokemon_info == NULL) return NULL;
+
     pokemon = malloc(sizeof(*pokemon));
     if (pokemon == NULL) return NULL;
     pokemon->cp = pokedexGetInitialCP(pokedex, name);

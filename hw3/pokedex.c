@@ -53,8 +53,6 @@ int static pokemonInfoCompareElement(PokemonInfoElement pokemon_info1 ,
 
 static int typeToBonus(char* type_name);
 
-static PokemonInfo pokedexGetPokemonInfo(Pokedex pokedex, char* name);
-
 static int pokedexGetEvolutionLevel(Pokedex pokedex, char* pokemon_name);
 
 /****************************************
@@ -96,16 +94,6 @@ int typeToBonus(char* type_name) {
     if (strcmp(type_name, "POISON") == SAME_STRINGS) return TWO_STARS_BONUS;
     if (strcmp(type_name, "FIRE") == SAME_STRINGS) return TWO_STARS_BONUS;
     return NO_BONUS;
-}
-
-PokemonInfo pokedexGetPokemonInfo(Pokedex pokedex, char* pokemon_name) {
-    if (pokedex == NULL || pokemon_name == NULL) return NULL;
-
-    SET_FOREACH(PokemonInfo, pokemon_info, pokedex) {
-        if (strcmp(pokemon_info->name, pokemon_name) == SAME_STRINGS)
-            return pokemon_info;
-    }
-    return NULL;
 }
 
 
@@ -275,4 +263,13 @@ PokedexResult pokedexAddType(Pokedex pokedex, char* pokemon_name,
 }
 
 
+PokemonInfo pokedexGetPokemonInfo(Pokedex pokedex, char* pokemon_name) {
+    if (pokedex == NULL || pokemon_name == NULL) return NULL;
+
+    SET_FOREACH(PokemonInfo, pokemon_info, pokedex) {
+        if (strcmp(pokemon_info->name, pokemon_name) == SAME_STRINGS)
+            return pokemon_info;
+    }
+    return NULL;
+}
 
