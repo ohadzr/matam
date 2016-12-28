@@ -128,10 +128,6 @@ LocationResult locationRemoveNearLocation( Location location ,
  * to be used only by legal parameters */
 bool locationIsNearDestination( Location location , char* destination );
 
-/* retrieve the available pokemon that can be hunted in location. return NULL if
- * location out of pokemons - to be used only by legal parameters */
-Pokemon locationGetPokemonInLocation( Location location );
-
 /**************************************
 *        WORLD_MAP Functions         *
 **************************************/
@@ -164,6 +160,16 @@ int worldMapGetSize( WorldMap world_map );
  * return NULL if world_map or loation_name are NULL or if location by that name
  * does not exist */
 Location worldMapGetLocation( WorldMap world_map , char* location_name );
+
+/* retrieve the available pokemon that can be hunted in location. return NULL if
+ * location out of pokemons - to be used only by legal parameters */
+Pokemon worldMapGetPokemonInLocation( WorldMap world_map,char* location_name );
+
+/* return true if destination_location can be reached by trainer by one step
+ * from current_location - to be used only by legal parameters
+ * ( real location names in map && parameters not NULL or empty strings )*/
+bool worldMapIsLocationReacable( WorldMap world_map , char* current_location ,
+                                 char* destination_location);
 
 /* sort world map by lexicographical order.
  * return:
