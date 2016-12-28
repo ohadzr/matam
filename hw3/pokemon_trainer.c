@@ -157,7 +157,7 @@ void pokemonTrainerRemovePokemon(PokemonTrainer trainer,
 
     LIST_FOREACH(Pokemon, pokemon_iter, trainer->pokemon_list) {
 
-        if (pokemonCompare(pokemon_iter, pokemon) == POKEMON_EQUAL)
+        if (pokemonCompareByID(pokemon_iter, pokemon) == POKEMON_EQUAL)
             listRemoveCurrent(trainer->pokemon_list);
     }
 }

@@ -128,7 +128,7 @@ PokemonResult pokemonUseItem(Pokemon pokemon, Item item) {
     return POKEMON_SUCCESS;
 }
 
-PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) {
+PokemonResult pokemonCompareByID(Pokemon first_pokemon, Pokemon second_pokemon) {
     if (first_pokemon == NULL || second_pokemon == NULL)
         return POKEMON_NULL_ARG;
 
@@ -136,6 +136,18 @@ PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon) {
         return POKEMON_EQUAL;
 
     return POKEMON_DIFFERENT;
+}
+
+
+PokemonResult pokemonCompareByName(Pokemon first_pokemon,
+                                   Pokemon second_pokemon) {
+    if (first_pokemon == NULL || second_pokemon == NULL)
+        return POKEMON_NULL_ARG;
+
+    if (strcmp(first_pokemon->name, second_pokemon->name))
+        return POKEMON_DIFFERENT;
+
+    return POKEMON_EQUAL;
 }
 
 PokemonResult pokemonCheckEvolution(Pokemon pokemon, Pokedex pokedex) {

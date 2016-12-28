@@ -140,14 +140,24 @@ PokemonResult pokemonUpdateHP(Pokemon pokemon, double value);
 PokemonResult pokemonUseItem(Pokemon pokemon, Item item);
 
 /**
-* compare between two pokemons and return a bool. check if has the same name
-* and if the type is the same type.
+* compare between two pokemons. check if has the same ID.
 *
 * @return
 *   POKEMON_EQUAL - if the same.
 * 	POKEMON_DIFFERENT - if one of the pokemons is NULL or if not same.
 */
-PokemonResult pokemonCompare(Pokemon first_pokemon, Pokemon second_pokemon);
+PokemonResult pokemonCompareByID(Pokemon first_pokemon, Pokemon second_pokemon);
+
+
+/**
+* compare between two pokemons and return a bool. check if has the same name
+*
+* @return
+*   POKEMON_EQUAL - if the same.
+* 	POKEMON_DIFFERENT - if one of the pokemons is NULL or if not same.
+*/
+PokemonResult pokemonCompareByName(Pokemon first_pokemon,
+                                   Pokemon second_pokemon);
 
 /**
 * Check if a pokemon should get evolved. If so, evolves the given pokemon.
