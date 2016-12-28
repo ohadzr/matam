@@ -114,6 +114,8 @@ int pokedexGetEvolutionLevel(Pokedex pokedex, char* pokemon_name) {
     assert(pokemon_name != NULL);
 
     PokemonInfo pokemon_info = pokedexGetPokemonInfo(pokedex, pokemon_name);
+    if (pokemon_info == NULL) return NO_NEXT_EVOLUTION;
+
     if (pokemon_info->next_evolution != NULL)
         return pokemon_info->evolution_level;
 
@@ -131,6 +133,10 @@ PokemonInfo pokedexPokemonInfoCreate(char *name, int cp_initial) {
     PokemonInfo pokemon_info = malloc(sizeof(*pokemon_info));
     if (pokemon_info == NULL) return NULL;
 
+    if (cp_initial <= 0) {
+        free(pokemon_info);
+        return NULL;
+    }
     pokemon_info->cp_initial = cp_initial;
     pokemon_info->pokecoin_bonus = 0;
     pokemon_info->next_evolution = NULL;

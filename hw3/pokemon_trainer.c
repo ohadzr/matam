@@ -2,13 +2,11 @@
 // Created by ohad on 27-Nov-16.
 //
 
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
+
 #include "pokemon_trainer.h"
 
 
-typedef struct pokemon_trainer_t {
+struct pokemon_trainer_t {
     char* name;
     char* location;
     List pokemon_list;
@@ -17,7 +15,7 @@ typedef struct pokemon_trainer_t {
     int pokecoins;
     int number_of_caught_pokemons;
 
-};
+} ;
 
 
 
@@ -343,7 +341,7 @@ PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
     if (strcmp(trainer->location, location) == SAME_STRINGS)
         return POKEMON_TRAINER_ALREADY_IN_LOCATION;
 
-    if (!worldMapIsLocationReachable(trainer->location, location, world_map)) //TODO: is bool? should be result?
+    if (!worldMapIsLocationReachable(world_map, trainer->location, location))
         return POKEMON_TRAINER_LOCATION_IS_NOT_REACHABLE;
 
     stringDestroy(trainer->location);
@@ -352,7 +350,7 @@ PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
     if (trainer->location == NULL)
         return POKEMON_TRAINER_OUT_OF_MEMORY;
 
-    Pokemon pokemon = worldMapGetPokemonFromLocation(world_map, location);
+    Pokemon pokemon = worldMapGetPokemonInLocation(world_map, location);
 
     if (pokemon == NULL) {
         mtmPrintCatchResult(output, trainer->name, NULL, location);

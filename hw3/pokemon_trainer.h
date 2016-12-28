@@ -12,10 +12,14 @@
 #include "pokedex.h"
 #include "location.h"
 
+
+typedef struct pokemon_trainer_t* PokemonTrainer;
+
+
 typedef Set Trainers;
 typedef void* PokemonTrainerElement;
 
-typedef struct pokemon_trainer_t* PokemonTrainer;
+
 
 typedef enum {
 	POKEMON_TRAINER_OUT_OF_MEMORY,

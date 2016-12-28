@@ -1,8 +1,8 @@
-//#include <stdbool.h>
-//#include <string.h>
-//#include "aux_macros.h"
-//#include "pokemon.h"
-//#include "pokemon_trainer.h"
+#include <stdbool.h>
+#include <string.h>
+#include "aux_macros.h"
+#include "pokemon.h"
+#include "pokemon_trainer.h"
 
 //static bool testCombo() {
 //	bool result = true;

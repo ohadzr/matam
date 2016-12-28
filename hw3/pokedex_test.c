@@ -199,15 +199,17 @@ static bool testPokedexGetStarBonus() {
 static bool testPokedexUpdateNextEvolution() {
     bool result = true;
 
-    PokemonInfo pokemon_info = pokedexPokemonInfoCreate("Pikachu", 10);
+    PokemonInfo pikachu_info = pokedexPokemonInfoCreate("Pikachu", 10);
+    PokemonInfo raichu_info = pokedexPokemonInfoCreate("Raichu", 40);
 
     Pokedex pokedex = pokedexCreate();
-    pokedexAddPokemonInfo(pokedex, pokemon_info);
+    pokedexAddPokemonInfo(pokedex, pikachu_info);
+    pokedexAddPokemonInfo(pokedex, raichu_info);
 
     TEST_EQUALS(result, pokedexUpdateNextEvolution(pokedex, "Pikachu",
                                                    "Raichu", 6),
                 POKEDEX_SUCCESS);
-    TEST_EQUALS(result, pokedexUpdateNextEvolution(pokedex, "Pikachu",
+    TEST_EQUALS(result, pokedexUpdateNextEvolution(pokedex, "Raichu",
                                                    "BigRaichu", 10),
                 POKEDEX_SUCCESS);
 
@@ -223,13 +225,15 @@ static bool testPokedexUpdateNextEvolution() {
     TEST_DIFFERENT(result, strcmp("Raichu", pokedexGetNextEvolution(pokedex,
                                                    "Pikachu", 5)), 0);
 
-    pokedexPokemonInfoDestroy(pokemon_info);
+    pokedexPokemonInfoDestroy(pikachu_info);
+    pokedexPokemonInfoDestroy(raichu_info);
     pokedexDestroy(pokedex);
 
     return result;
 }
 
 int main() {
+
     RUN_TEST(testCombo);
     RUN_TEST(testPokedexPokemonInfoCreateDestroy);
     RUN_TEST(testPokedexPokemonInfoCopy);

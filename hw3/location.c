@@ -288,7 +288,7 @@ Pokemon worldMapGetPokemonInLocation( WorldMap world_map,char* location_name ){
     return huntedPokemon;
 }
 
-bool worldMapIsLocationReacable( WorldMap world_map , char* current_location ,
+bool worldMapIsLocationReachable( WorldMap world_map , char* current_location ,
                                  char* destination_location) {
     assert( destination_location && current_location && world_map);
     assert( strlen(current_location)  &&  strlen(destination_location) );
