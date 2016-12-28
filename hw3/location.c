@@ -268,7 +268,10 @@ int worldMapGetSize( WorldMap world_map ) {
 }
 
 Location worldMapGetLocation( WorldMap world_map , char* location_name ) {
+    if ( !world_map ) return NULL;
     if ((!location_name) || (strlen(location_name)==EMPTY_STRING)) return NULL;
+    Location location = worldMapGetLocation(world_map,location_name);
+    if ( worldMapDoesLocationExist(world_map,location) == false ) return NULL;
     LIST_FOREACH( Location , current_location , world_map ) {
         if (locationNameCompare(locationGetName(current_location),location_name)
             == LOCATIONS_EQAUL ) {
@@ -279,7 +282,7 @@ Location worldMapGetLocation( WorldMap world_map , char* location_name ) {
 }
 
 Pokemon worldMapGetPokemonInLocation( WorldMap world_map,char* location_name ){
-    assert( location_name );
+    if (!(world_map) || !(location_name) ) return NULL;
     Location location = worldMapGetLocation( world_map ,location_name);
     if (worldMapDoesLocationExist( world_map , location ) == false) return NULL;
     Pokemon huntedPokemon = listGetFirst( location->pokemons );
@@ -289,7 +292,7 @@ Pokemon worldMapGetPokemonInLocation( WorldMap world_map,char* location_name ){
 }
 
 bool worldMapIsLocationReachable( WorldMap world_map , char* current_location ,
-                                 char* destination_location) {
+                                  char* destination_location) {
     assert( destination_location && current_location && world_map);
     assert( strlen(current_location)  &&  strlen(destination_location) );
     Location location = worldMapGetLocation(world_map,current_location);
