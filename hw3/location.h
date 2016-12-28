@@ -166,10 +166,11 @@ Location worldMapGetLocation( WorldMap world_map , char* location_name );
 Pokemon worldMapGetPokemonInLocation( WorldMap world_map,char* location_name );
 
 /* return true if destination_location can be reached by trainer by one step
- * from current_location - to be used only by legal parameters
- * ( real location names in map && parameters not NULL or empty strings )*/
+ * from current_location - if legal parameters : real location names in map &&
+ *  parameters not NULL or empty strings or if location isn't in map -
+ *   return NULL)*/
 bool worldMapIsLocationReachable( WorldMap world_map , char* current_location ,
-                                 char* destination_location);
+                                  char* destination_location);
 
 /* sort world map by lexicographical order.
  * return:
