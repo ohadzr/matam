@@ -57,7 +57,7 @@ static int typeToBonus(char* type_name);
 static int pokedexGetEvolutionLevel(Pokedex pokedex, char* pokemon_name);
 
 /****************************************
- *    Assistent Pokemon Trainer Funcs   *
+ *    Assistent Pokedex Funcs           *
  ****************************************/
 
 
