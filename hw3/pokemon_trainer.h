@@ -164,4 +164,13 @@ void trainersDestroy(Trainers trainers);
 **/
 PokemonTrainer trainersGetTrainer(Trainers trainers, char* trainer_name);
 
+/**
+* Check if a trainer exists in a trainers set.
+*
+* @return
+* 	true - if exists.
+* 	false - if not.
+**/
+bool trainersDoesTrainerExist(Trainers trainers, char* trainer_name);
+
 #endif // POKEMON_TRAINER_H_

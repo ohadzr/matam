@@ -32,7 +32,9 @@
 
 static int countArgsInCommand( char* command );
 
+static MtmErrorCode handlePokemonTrainerResult(PokemonTrainerResult result);
 
+static int charToInt(char* int_as_char);
 
 /****************************************
  *    Assistent PokemonGO Funcs         *
@@ -48,6 +50,43 @@ int countArgsInCommand( char* command ) {
         counter++;
     }
     return counter;
+}
+
+
+MtmErrorCode handlePokemonTrainerResult(PokemonTrainerResult result) {
+    switch (result) {
+        case POKEMON_TRAINER_NULL_ARG:
+            return MTM_INVALID_ARGUMENT;
+        case POKEMON_TRAINER_POKEMON_DOESNT_EXIST:
+            return MTM_TRAINER_DOES_NOT_EXIST;
+        case POKEMON_TRAINER_OUT_OF_MEMORY:
+            return MTM_OUT_OF_MEMORY;
+        case POKEMON_TRAINER_ITEM_OUT_OF_STOCK:
+            return MTM_ITEM_OUT_OF_STOCK;
+        case POKEMON_TRAINER_INSUFFICIENT_BUDGET:
+            return MTM_BUDGET_IS_NOT_SUFFICIENT;
+        case POKEMON_TRAINER_ALREADY_IN_LOCATION:
+            return MTM_TRAINER_ALREADY_IN_LOCATION;
+        case POKEMON_TRAINER_LOCATION_IS_NOT_REACHABLE:
+            MTM_LOCATION_IS_NOT_REACHABLE;
+        case POKEMON_TRAINER_INVALID_AGR:
+            MTM_INVALID_ARGUMENT;
+        case POKEMON_TRAINER_POKEMON_HP_AT_MAX:
+            MTM_HP_IS_AT_MAX;
+        case POKEMON_TRAINER_ALREADY_EXIST:
+            MTM_TRAINER_NAME_ALREADY_EXISTS;
+        case POKEMON_TRAINER_SUCCESS:MTM_SUCCESS;
+    }
+    return MTM_SUCCESS;
+}
+
+int charToInt(char* int_as_char) {
+    assert(int_as_char != NULL);
+
+    int num;
+    sscanf(int_as_char, "%d", &num);
+
+    return num;
 }
 
 /********************************
@@ -170,6 +209,51 @@ void destroyPokemonGo(Trainers trainers, Store store, WorldMap world_map,
 }
 
 
+MtmErrorCode pokemonGoTrainerBattle(Pokedex pokedex, Trainers trainers) {
+
+
+}
+
+MtmErrorCode pokemonGoPokemonHeal(Trainers trainers, FILE* output) {
+    if (trainers == NULL) return MTM_OUT_OF_MEMORY;
+    if (output == NULL) return MTM_CANNOT_OPEN_FILE;
+
+    char* trainer_name = strtok(NULL, SPACE_DELIMITER); //TODO: dup with next - please fix
+    char* pokemon_id_char = strtok(NULL, SPACE_DELIMITER);
+    int pokemon_id = charToInt(pokemon_id_char);
+
+
+    if (!trainersDoesTrainerExist(trainers, trainer_name))
+        return MTM_TRAINER_DOES_NOT_EXIST;
+
+    PokemonTrainer trainer = trainersGetTrainer(trainers,trainer_name);
+
+    PokemonTrainerResult result = pokemonTrainerHealPokemon(trainer,
+                                                             pokemon_id);
+    return handlePokemonTrainerResult(result);
+
+}
+
+MtmErrorCode pokemonGoPokemonTrain(Trainers trainers, FILE* output) {
+    if (trainers == NULL) return MTM_OUT_OF_MEMORY;
+    if (output == NULL) return MTM_CANNOT_OPEN_FILE;
+
+    char* trainer_name = strtok(NULL, SPACE_DELIMITER);
+    char* pokemon_id_char = strtok(NULL, SPACE_DELIMITER);
+    int pokemon_id = charToInt(pokemon_id_char);
+
+
+    if (!trainersDoesTrainerExist(trainers, trainer_name))
+        return MTM_TRAINER_DOES_NOT_EXIST;
+
+    PokemonTrainer trainer = trainersGetTrainer(trainers,trainer_name);
+
+    PokemonTrainerResult result = pokemonTrainerTrainPokemon(trainer,
+                                                             pokemon_id);
+    return handlePokemonTrainerResult(result);
+
+}
+
 
 MtmErrorCode pokemonGoTrainerReport(Trainers trainers, FILE* output) {
     if (trainers == NULL) return MTM_OUT_OF_MEMORY;
@@ -177,11 +261,14 @@ MtmErrorCode pokemonGoTrainerReport(Trainers trainers, FILE* output) {
 
     char* trainer_name = strtok(NULL, SPACE_DELIMITER);
 
+    if (!trainersDoesTrainerExist(trainers, trainer_name))
+        return MTM_TRAINER_DOES_NOT_EXIST;
+
     PokemonTrainer trainer = trainersGetTrainer(trainers,trainer_name);
 
-    if (trainer == NULL) return MTM_TRAINER_DOES_NOT_EXIST;
+    PokemonTrainerResult result = pokemonTrainerReport(trainer, output);
 
-    pokemonTrainerReport(trainer, output);
+    return handlePokemonTrainerResult(result);
 }
 
 
@@ -223,9 +310,9 @@ bool pokemonGoProcessCommand(char* command, Trainers trainers,
     if (COMMAND_HANDLE(section, "battle",action,"fight", arg_counter, 6))
         return pokemonGoTrainerBattle();
     if (COMMAND_HANDLE(section, "pokemon",action, "heal", arg_counter,4))
-        return pokemonGoPokemonHeal();
+        return pokemonGoPokemonHeal(trainers, output);
     if (COMMAND_HANDLE(section,"pokemon",action,"train",arg_counter, 4))
-        return pokemonGoPokemonTrain();
+        return pokemonGoPokemonTrain(trainers, output);
     if (COMMAND_HANDLE(section,"report",action,"trainer",arg_counter, 3))
         return pokemonGoTrainerReport(trainers, output);
     if (COMMAND_HANDLE(section,"report",action,"locations",arg_counter,2))

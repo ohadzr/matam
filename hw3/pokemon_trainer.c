@@ -536,3 +536,15 @@ PokemonTrainer trainersGetTrainer(Trainers trainers, char* trainer_name) {
 
     return NULL;
 }
+
+//TODO: add to tests!
+bool trainersDoesTrainerExist(Trainers trainers, char* trainer_name) {
+    assert(trainers != NULL);
+    assert(trainer_name != NULL);
+
+    PokemonTrainer trainer = trainersGetTrainer(trainers, trainer_name);
+    if (trainer == NULL) return false;
+
+    return true;
+
+}
