@@ -504,7 +504,7 @@ Trainers trainersCreate(){
 
 PokemonTrainerResult trainersAddTrainer(Trainers trainers,
                                         PokemonTrainer trainer) {
-    if (trainer == NULL) return POKEMON_TRAINER_NULL_ARG;
+    if (trainers == NULL || trainer == NULL) return POKEMON_TRAINER_NULL_ARG;
 
     SetResult result = setAdd(trainers, trainer);
 
