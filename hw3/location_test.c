@@ -50,10 +50,10 @@ static bool testLocationCombo() {
     PokemonInfo pokemon_info1 = pokedexPokemonInfoCreate("Pikachu", 30);
     PokemonInfo pokemon_info2 = pokedexPokemonInfoCreate("Balbazur", 20);
     PokemonInfo pokemon_info3 = pokedexPokemonInfoCreate("Togopi", 20);
-    pokedexAddPokemonInfo(pokedex,pokemon_info1);
-    pokedexAddPokemonInfo(pokedex,pokemon_info2);
-    pokedexAddPokemonInfo(pokedex,pokemon_info3);
-    Pokemon pokemon1 = pokemonCreate("Pikacho", pokedex);
+    pokedexAddPokemonInfo(pokedex, pokemon_info1);
+    pokedexAddPokemonInfo(pokedex, pokemon_info2);
+    pokedexAddPokemonInfo(pokedex, pokemon_info3);
+    Pokemon pokemon1 = pokemonCreate("Pikachu", pokedex);
     Pokemon pokemon2 = pokemonCreate("Balbazur", pokedex);
     Pokemon pokemon3 = pokemonCreate("Togopi", pokedex);
     Pokemon pokemon4 = NULL;
@@ -69,7 +69,7 @@ static bool testLocationCombo() {
     locationAddPokemon(location2, pokemon3);
     locationAddPokemon(location2, pokemon2);
     locationAddPokemon(location3, pokemon1);
-    locationAddPokemon(location6, pokemon3);
+    //locationAddPokemon(location6, pokemon3);
     locationAddNearLocation(location1, nearLocation2);
     locationAddNearLocation(location1, nearLocation3);
     locationAddNearLocation(location2, nearLocation1);
@@ -77,10 +77,9 @@ static bool testLocationCombo() {
     locationAddNearLocation(location3, nearLocation1);
     /* ----------------------------- tests ---------------------------- */
     TEST_DIFFERENT(result, location1, NULL);
-    TEST_DIFFERENT(result, location6, NULL);
-    TEST_EQUALS(result, locationCompare(location1, location6), 0);
+    //TEST_DIFFERENT(result, location6, NULL);
+    //TEST_EQUALS(result, locationCompare(location1, location6), 0);
     TEST_DIFFERENT(result, locationCompare(location1, location2), 0);
-    TEST_EQUALS(result, locationGetName(location1), locationGetName(location6));
     TEST_EQUALS(result, locationIsNearDestination(location1, nearLocation1),
                 false);
     TEST_EQUALS(result, locationIsNearDestination(location1, nearLocation2),
@@ -101,20 +100,19 @@ static bool testLocationCombo() {
                 LOCATION_SUCCESS);
     TEST_EQUALS(result, locationIsNearDestination(location3, nearLocation1),
                 false);
-    TEST_EQUALS(result, locationIsNearDestination(location3, nearLocation5),
-                false);
-    TEST_EQUALS(result,locationAddNearLocation(location3, nearLocation5),
+    TEST_EQUALS(result, locationAddNearLocation(location3, nearLocation5),
                 LOCATION_NULL_ARGUMENT);
     TEST_EQUALS(result, locationRemoveNearLocation(location3, nearLocation5),
                 LOCATION_NULL_ARGUMENT);
-    TEST_EQUALS(result, locationIsNearDestination(location6, nearLocation1),
-                false);
+    //TEST_EQUALS(result, locationIsNearDestination(location6, nearLocation1),
+    //		false);
     TEST_EQUALS(result, locationAddNearLocation(location4, nearLocation5),
                 LOCATION_NULL_ARGUMENT);
     TEST_EQUALS(result, locationAddPokemon(location4, pokemon3),
                 LOCATION_SUCCESS);
-    TEST_EQUALS(result, locationIsNearDestination(location6,
-                                                  locationGetName(location1)),LOCATION_SUCCESS);
+    //TEST_EQUALS(result,
+    //		locationIsNearDestination(location6, locationGetName(location1)),
+    //		false);
     /* ------------------------  destruction  ------------------------- */
     nearLocationDestroy(nearLocation1);
     nearLocationDestroy(nearLocation2);
@@ -155,9 +153,9 @@ static bool testWorldMapCombo() {
     PokemonInfo pokemon_info1 = pokedexPokemonInfoCreate("Pikachu", 30);
     PokemonInfo pokemon_info2 = pokedexPokemonInfoCreate("Balbazur", 20);
     PokemonInfo pokemon_info3 = pokedexPokemonInfoCreate("Togopi", 20);
-    pokedexAddPokemonInfo(pokedex,pokemon_info1);
-    pokedexAddPokemonInfo(pokedex,pokemon_info2);
-    pokedexAddPokemonInfo(pokedex,pokemon_info3);
+    pokedexAddPokemonInfo(pokedex, pokemon_info1);
+    pokedexAddPokemonInfo(pokedex, pokemon_info2);
+    pokedexAddPokemonInfo(pokedex, pokemon_info3);
     Pokemon pokemon1 = pokemonCreate("Pikacho", pokedex);
     Pokemon pokemon2 = pokemonCreate("Balbazur", pokedex);
     Pokemon pokemon3 = pokemonCreate("Togopi", pokedex);
@@ -199,7 +197,6 @@ static bool testWorldMapCombo() {
     TEST_EQUALS(result, worldMapRemoveLocation(world_map, location3),
                 WORLD_MAP_SUCCESS);
     TEST_EQUALS(result, worldMapGetSize(world_map), 1);
-
     TEST_EQUALS(result, worldMapRemoveLocation(world_map, location5),
                 WORLD_MAP_NULL_ARGUMENT);
     TEST_EQUALS(result, worldMapAddLocation(world_map, location2),
@@ -207,24 +204,32 @@ static bool testWorldMapCombo() {
     TEST_EQUALS(result, worldMapGetSize(world_map), 2);
     TEST_EQUALS(result, worldMapGetLocation(world_map, ""), NULL);
     TEST_EQUALS(result, worldMapGetLocation(world_map,NULL), NULL);
-    Location location_test = worldMapGetLocation(world_map,"Israel");
-    TEST_EQUALS(result, locationCompare(location_test,location1), 0);
-    location_test = worldMapGetLocation(world_map,"Japan");
-    TEST_EQUALS(result,location_test, NULL);
-    Pokemon pokemon_test = worldMapGetPokemonInLocation(world_map,"Israel");
-    TEST_EQUALS(result,pokemonCompare(pokemon_test,pokemon2), 0);
-    pokemon_test = worldMapGetPokemonInLocation(world_map,"USA");
-    TEST_EQUALS(result,pokemonCompare(pokemon_test,pokemon3), 0);
-    pokemon_test = worldMapGetPokemonInLocation(world_map,"France");
-    TEST_EQUALS(result,pokemonCompare(pokemon_test,NULL), 0);
-    TEST_EQUALS(result,worldMapIsLocationReachable(world_map,"Israel","Japan"),false);
-    TEST_EQUALS(result,worldMapIsLocationReachable(world_map,"Israel","USA"),true);
-    TEST_EQUALS(result,worldMapIsLocationReachable(world_map,"USA","Israel"),true);
-    TEST_EQUALS(result,worldMapIsLocationReachable(world_map,"France","Israel"),false);
-    TEST_EQUALS(result,worldMapIsLocationReachable(world_map,"USA","France"),false);
+    Location location_test = worldMapGetLocation(world_map, "Israel");
+    TEST_EQUALS(result, locationCompare(location_test, location1), 0);
+    location_test = worldMapGetLocation(world_map, "Japan");
+    TEST_EQUALS(result, location_test, NULL);
+    Pokemon pokemon_test = worldMapGetPokemonInLocation(world_map, "Israel");
+    TEST_EQUALS(result, pokemonCompareByName(pokemon_test, pokemon2),
+                POKEMON_EQUAL);
+    pokemon_test = worldMapGetPokemonInLocation(world_map, "USA");
+    TEST_EQUALS(result, pokemonCompareByName(pokemon_test, pokemon3),
+                POKEMON_EQUAL);
+    pokemon_test = worldMapGetPokemonInLocation(world_map, "France");
+    TEST_EQUALS(result, pokemonCompareByName(pokemon_test,NULL),
+                POKEMON_NULL_ARG);
+    TEST_EQUALS(result,
+                worldMapIsLocationReachable(world_map, "Israel", "Japan"), false);
+    TEST_EQUALS(result, worldMapIsLocationReachable(world_map, "Israel", "USA"),
+                true);
+    TEST_EQUALS(result, worldMapIsLocationReachable(world_map, "USA", "Israel"),
+                true);
+    TEST_EQUALS(result,
+                worldMapIsLocationReachable(world_map, "France", "Israel"), false);
+    TEST_EQUALS(result, worldMapIsLocationReachable(world_map, "USA", "France"),
+                false);
 
     worldMapSort(world_map);
-    TEST_EQUALS(result, worldMapGetSize(world_map), 3);
+    TEST_EQUALS(result, worldMapGetSize(world_map), 2);
 
     /* ------------------------  destruction  ------------------------- */
     nearLocationDestroy(nearLocation1);
@@ -238,6 +243,7 @@ static bool testWorldMapCombo() {
     locationDestroy(location3);
     locationDestroy(location4);
     locationDestroy(location5);
+    locationDestroy(location6);
     pokedexDestroy(pokedex);
     pokedexPokemonInfoDestroy(pokemon_info1);
     pokedexPokemonInfoDestroy(pokemon_info2);
