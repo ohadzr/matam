@@ -194,7 +194,7 @@ LocationResult locationAddPokemon( Location location , Pokemon pokemon ){
 LocationResult locationRemovePokemon( Location location , Pokemon pokemon ){
     if ( (!location) || (!pokemon) ) return LOCATION_NULL_ARGUMENT;
     LIST_FOREACH( Pokemon , current_pokemon , location->pokemons ) {
-        if ( pokemonCompare( current_pokemon , pokemon ) ==  0 ) {
+        if ( pokemonCompareByID( current_pokemon , pokemon ) ==  0 ) {
             listRemoveCurrent( location->pokemons );
             return LOCATION_SUCCESS;
         }
