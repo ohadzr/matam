@@ -31,7 +31,6 @@ typedef struct location_t* Location;
 
 typedef enum {LOCATION_SUCCESS,
     LOCATION_NULL_ARGUMENT,
-    LOCATION_NOT_EXIST,
     LOCATION_POKEMON_NOT_EXIST,
     LOCATION_NEAR_LOCATION_NOT_EXIST,
     LOCATION_OUT_OF_MEMORY,
@@ -166,9 +165,9 @@ Location worldMapGetLocation( WorldMap world_map , char* location_name );
 Pokemon worldMapGetPokemonInLocation( WorldMap world_map,char* location_name );
 
 /* return true if destination_location can be reached by trainer by one step
- * from current_location - if legal parameters : real location names in map &&
- *  parameters not NULL or empty strings or if location isn't in map -
- *   return NULL)*/
+ * from current_location - if not legal parameters : real location names in map
+ *  && parameters not NULL or empty strings or if location isn't in map -
+ *  return false)*/
 bool worldMapIsLocationReachable( WorldMap world_map , char* current_location ,
                                   char* destination_location);
 

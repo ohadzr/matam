@@ -135,7 +135,7 @@ int nearLocationCompare( NearLocation location1 , NearLocation location2 ) {
  **************************************/
 
 Location locationCreate( char* location_name ) {
-    if ( !location_name ) return NULL;
+    if ( (!location_name) || (!strlen(location_name)) ) return NULL;
     Location new_location = malloc( sizeof(*new_location) );
     if ( !new_location ) return NULL;
     new_location->name = stringCopy( location_name );
@@ -161,16 +161,12 @@ Location locationCopy( Location location ) {
     if ( !location ) return NULL;
     Location copyed_location = locationCreate( locationGetName( location ) );
     if ( !copyed_location ) return NULL;
-    if ( !(location->pokemons) ) copyed_location->pokemons = NULL;
-    else {
-        copyed_location->pokemons = listCopy( location->pokemons );
-        RELEALSE_TREATMENT( copyed_location->pokemons , copyed_location );
-    }
-    if ( !(location->near_locations) ) copyed_location->near_locations = NULL;
-    else {
-        copyed_location->near_locations = setCopy(location->near_locations);
-        RELEALSE_TREATMENT( copyed_location->near_locations , copyed_location );
-    }
+    listDestroy(copyed_location->pokemons);
+    copyed_location->pokemons = listCopy( location->pokemons );
+    RELEALSE_TREATMENT( copyed_location->pokemons , copyed_location );
+    setDestroy(copyed_location->near_locations);
+    copyed_location->near_locations = setCopy(location->near_locations);
+    RELEALSE_TREATMENT( copyed_location->near_locations , copyed_location );
     return copyed_location;
 }
 
@@ -194,7 +190,7 @@ LocationResult locationAddPokemon( Location location , Pokemon pokemon ){
 LocationResult locationRemovePokemon( Location location , Pokemon pokemon ){
     if ( (!location) || (!pokemon) ) return LOCATION_NULL_ARGUMENT;
     LIST_FOREACH( Pokemon , current_pokemon , location->pokemons ) {
-        if ( pokemonCompareByID( current_pokemon , pokemon ) ==  0 ) {
+        if ( pokemonCompareByName(current_pokemon,pokemon) ==  POKEMON_EQUAL) {
             listRemoveCurrent( location->pokemons );
             return LOCATION_SUCCESS;
         }
@@ -270,8 +266,6 @@ int worldMapGetSize( WorldMap world_map ) {
 Location worldMapGetLocation( WorldMap world_map , char* location_name ) {
     if ( !world_map ) return NULL;
     if ((!location_name) || (strlen(location_name)==EMPTY_STRING)) return NULL;
-    Location location = worldMapGetLocation(world_map,location_name);
-    if ( worldMapDoesLocationExist(world_map,location) == false ) return NULL;
     LIST_FOREACH( Location , current_location , world_map ) {
         if (locationNameCompare(locationGetName(current_location),location_name)
             == LOCATIONS_EQAUL ) {
@@ -282,12 +276,11 @@ Location worldMapGetLocation( WorldMap world_map , char* location_name ) {
 }
 
 Pokemon worldMapGetPokemonInLocation( WorldMap world_map,char* location_name ){
-    if (!(world_map) || !(location_name) ) return NULL;
+    if ( (!world_map) || (!location_name) ) return NULL;
     Location location = worldMapGetLocation( world_map ,location_name);
+    if ( !location ) return NULL;
     if (worldMapDoesLocationExist( world_map , location ) == false) return NULL;
     Pokemon huntedPokemon = listGetFirst( location->pokemons );
-    if ( !huntedPokemon ) return NULL;
-    listRemoveCurrent( location->pokemons );
     return huntedPokemon;
 }
 
@@ -297,8 +290,10 @@ bool worldMapIsLocationReachable( WorldMap world_map , char* current_location ,
     assert( strlen(current_location)  &&  strlen(destination_location) );
     Location location = worldMapGetLocation(world_map,current_location);
     Location destination = worldMapGetLocation(world_map,destination_location);
-    assert(worldMapDoesLocationExist(world_map,location) &&
-           worldMapDoesLocationExist(world_map,destination) );
+    if ( !location || !destination ) return false;
+    if ( (!worldMapDoesLocationExist(world_map,location)) ||
+         !(worldMapDoesLocationExist(world_map,destination)) )
+        return false;
     return locationIsNearDestination(location,destination_location);
 }
 
