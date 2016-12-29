@@ -94,8 +94,19 @@ int static pokemonTrainerCompareElement(PokemonTrainerElement trainer1 ,
 *   0 - if the same.
 * 	strcmp result - otherwise.
 */
-int pokemonTrainerCompare(PokemonTrainer trainer1, PokemonTrainer pokemon2);
+static int pokemonTrainerCompare(PokemonTrainer trainer1, PokemonTrainer pokemon2);
 
+
+/**
+* Add a given item to the mini-store(item list) of a given trainer.
+* The new item is a copy of given item. related to @pokemonTrainerBuyItem
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer or item is NULL.
+ * 	POKEMON_TRAINER_OUT_OF_MEMORY if set had a memory allocation error.
+* 	POKEMON_SUCCESS otherwise.
+*/
+static PokemonTrainerResult pokemonTrainerAddItem(PokemonTrainer trainer, Item item);
 
 /****************************************
  *    Assistent Pokemon Trainer Funcs   *
@@ -189,14 +200,33 @@ int pokemonTrainerCompare(PokemonTrainer trainer1 ,PokemonTrainer trainer2) {
 }
 
 
+PokemonTrainerResult pokemonTrainerAddItem(PokemonTrainer trainer,
+                                           Item item) {
+    if (trainer == NULL || item == NULL) return POKEMON_TRAINER_NULL_ARG;
+
+    StoreResult result = storeAddItem(trainer->item_list, item);
+
+    if (result == STORE_OUT_OF_MEMORY) {
+        return POKEMON_TRAINER_OUT_OF_MEMORY;
+    }
+
+    return POKEMON_TRAINER_SUCCESS;
+}
+
 /********************************
  *    Pokemon Trainer Funcs     *
  ********************************/
 
+bool pokemonTrainerIsValidArgs(char* name, char* location, int budget) {
+    if (name == NULL || location == NULL) return false;
+    if (!strcmp(name,"") || !strcmp(location,"")) return false;
+    if (budget < NO_BUDGET) return false;
+    return true;
+}
+
+
 PokemonTrainer pokemonTrainerCreate(char* name, char* location, int budget) {
-    if (name == NULL || strcmp(name,"") == SAME_STRINGS ||
-        location == NULL || strcmp(location,"") == SAME_STRINGS ||
-        budget < NO_BUDGET)
+    if (!pokemonTrainerIsValidArgs(name,location,budget))
         return NULL;
 
     PokemonTrainer trainer = malloc(sizeof(*trainer));
@@ -261,7 +291,8 @@ PokemonTrainer pokemonTrainerCopy(PokemonTrainer trainer) {
 PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
                                               Pokemon pokemon,
                                               Pokedex pokedex) {
-    if (trainer == NULL || pokemon == NULL) return POKEMON_TRAINER_NULL_ARG;
+    if (trainer == NULL || pokemon == NULL || pokedex == NULL)
+        return POKEMON_TRAINER_NULL_ARG;
 
     Pokemon new_pokemon = pokemonCopy(pokemon);
     if (new_pokemon == NULL) return POKEMON_TRAINER_OUT_OF_MEMORY;
@@ -280,19 +311,6 @@ PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
     return POKEMON_TRAINER_SUCCESS;
 }
 
-
-PokemonTrainerResult pokemonTrainerAddItem(PokemonTrainer trainer,
-                                              Item item) {
-    if (trainer == NULL || item == NULL) return POKEMON_TRAINER_NULL_ARG;
-
-    StoreResult result = storeAddItem(trainer->item_list, item);
-
-    if (result == STORE_OUT_OF_MEMORY) {
-        return POKEMON_TRAINER_OUT_OF_MEMORY;
-    }
-
-    return POKEMON_TRAINER_SUCCESS;
-}
 
 
 Pokemon pokemonTrainerGetPokemon(PokemonTrainer trainer, int pokemon_id) { //TODO: should be static?

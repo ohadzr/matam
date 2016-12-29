@@ -36,6 +36,19 @@ typedef enum {
 } PokemonTrainerResult;
 
 
+
+/**
+* Check if all arguments for @pokemonTrainerCreate are valid.
+* name and location shouldn't be NULL or empty strings
+* budget must be not negative
+*
+* @return
+* 	true - if valid.
+* 	false - if not.
+*
+**/
+bool pokemonTrainerIsValidArgs(char* name, char* location, int budget);
+
 /**
 * Creates a new pokemon trainer.
 * The trainer has a name property, and a location property,
@@ -81,16 +94,34 @@ PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
                                               Pokedex pokedex);
 
 
-/**
-* Add a given item to the mini-store(item list) of a given trainer.
-* The new item is a copy of given item.
-*
-* @return
-* 	POKEMON_TRAINER_NULL_ARG if trainer or item is NULL.
- * 	POKEMON_TRAINER_OUT_OF_MEMORY if set had a memory allocation error.
-* 	POKEMON_SUCCESS otherwise.
-*/
-PokemonTrainerResult pokemonTrainerAddItem(PokemonTrainer trainer, Item item);
+
+Pokemon pokemonTrainerGetPokemon(PokemonTrainer trainer, int pokemon_id);
+
+PokemonTrainerResult pokemonTrainerBuyItem(PokemonTrainer trainer, Item item,
+										   Store store);
+
+
+PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
+										  char* location, WorldMap world_map,
+										  Pokedex pokedex, FILE* output);
+
+
+PokemonTrainerResult pokemonTrainerFight(PokemonTrainer trainer1,
+										 PokemonTrainer trainer2,
+										 int pokemon1_id,
+										 int pokemon2_id, Pokedex pokedex,
+										 FILE* output);
+
+PokemonTrainerResult pokemonTrainerHealPokemon(PokemonTrainer trainer,
+											   int pokemon_id);
+
+
+PokemonTrainerResult pokemonTrainerTrainPokemon(PokemonTrainer trainer,
+												int pokemon_id);
+
+
+PokemonTrainerResult pokemonTrainerReport(PokemonTrainer trainer,
+										  FILE* output);
 
 
 /**
@@ -110,6 +141,7 @@ Trainers trainersCreate();
 * @return
 * 	POKEMON_TRAINER_NULL_ARG if trainer or trainers are NULL.
 * 	POKEMON_TRAINER_OUT_OF_MEMORY if set had a memory allocation error.
+*	POKEMON_TRAINER_ALREADY_EXIST if trainer already exist
 * 	POKEMON_SUCCESS otherwise.
 *
 **/
