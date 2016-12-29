@@ -60,7 +60,7 @@ static void pokemonTrainerFightAux(PokemonTrainer trainer1, Pokemon pokemon1,
 *   int - Highest value of item the trainer has (of given type)
 *   NO_MAX_VALUE - if no item found (set to -1)
 */
-static int pokemonTrainerGetMaxValueItem(PokemonTrainer trainer,
+static Item pokemonTrainerGetMaxValueItem(PokemonTrainer trainer,
                                          ItemType item_type);
 
 
@@ -148,16 +148,18 @@ void pokemonTrainerFightAux(PokemonTrainer trainer1, Pokemon pokemon1,
 }
 
 
-int pokemonTrainerGetMaxValueItem(PokemonTrainer trainer, ItemType item_type) {
+Item pokemonTrainerGetMaxValueItem(PokemonTrainer trainer, ItemType item_type) {
     int max_value = NO_MAX_VALUE;
+    Item item = NULL;
     STORE_FOREACH(Item, item_iter, trainer->item_list) {
         if (itemGetValue(item_iter) > max_value &&
                 itemGetType(item_iter) == item_type) {
+        	item = item_iter;
             max_value = itemGetValue(item_iter);
         }
     }
 
-    return max_value;
+    return item;
 }
 
 
@@ -304,6 +306,8 @@ PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
     trainer->pokecoins +=
             pokedexGetStarBonus(pokedex, pokemonGetName(new_pokemon));
 
+    pokemonDestroy(new_pokemon);
+
     if (result == LIST_OUT_OF_MEMORY) {
         return POKEMON_TRAINER_OUT_OF_MEMORY;
     }
@@ -344,6 +348,8 @@ PokemonTrainerResult pokemonTrainerBuyItem(PokemonTrainer trainer, Item item,
 
     PokemonTrainerResult pokemon_result =
             pokemonTrainerAddItem(trainer, new_item);
+
+    itemDestroy(new_item);
 
     trainer->pokecoins -= price;
 
@@ -428,22 +434,20 @@ PokemonTrainerResult pokemonTrainerHealPokemon(PokemonTrainer trainer,
     Pokemon pokemon = pokemonTrainerGetPokemon(trainer, pokemon_id);
     if (pokemon == NULL) return POKEMON_TRAINER_POKEMON_DOESNT_EXIST;
 
-    double max_value = pokemonTrainerGetMaxValueItem(trainer, TYPE_POTION);
-    if (max_value == NO_MAX_VALUE) return POKEMON_TRAINER_ITEM_OUT_OF_STOCK;
+    Item item = pokemonTrainerGetMaxValueItem(trainer, TYPE_POTION);
+    if (item == NULL) return POKEMON_TRAINER_ITEM_OUT_OF_STOCK;
 
     if (pokemonGetHP(pokemon) == DEFAULT_HP)
         return POKEMON_TRAINER_POKEMON_HP_AT_MAX;
 
-    Item item = NULL;
 
     STORE_FOREACH(Item, item_iter, trainer->item_list) {
         // if logic: potion *and*
-        //  (pokemon_hp+value is bigger than 100 *and* smaller than max_value))
+        //  (pokemon_hp+value is bigger than 100 *and* smaller than max valued item))
         if ( itemGetType(item_iter) == TYPE_POTION &&
-              (itemGetValue(item) + pokemon->hp >= DEFAULT_HP &&
-                  itemGetValue(item) < max_value) ) {
+              (itemGetValue(item_iter) + pokemon->hp >= DEFAULT_HP &&
+                  itemGetValue(item_iter) < itemGetValue(item)) ) {
             item = item_iter;
-            max_value = itemGetValue(item);
         }
     }
 
@@ -460,11 +464,11 @@ PokemonTrainerResult pokemonTrainerTrainPokemon(PokemonTrainer trainer,
     Pokemon pokemon = pokemonTrainerGetPokemon(trainer, pokemon_id);
     if (pokemon == NULL) return POKEMON_TRAINER_POKEMON_DOESNT_EXIST;
 
-    int max_value = pokemonTrainerGetMaxValueItem(trainer, TYPE_CANDY);
-    if (max_value == NO_MAX_VALUE) return POKEMON_TRAINER_ITEM_OUT_OF_STOCK;
+    Item item = pokemonTrainerGetMaxValueItem(trainer, TYPE_CANDY);
+    if (item == NULL) return POKEMON_TRAINER_ITEM_OUT_OF_STOCK;
 
     STORE_FOREACH(Item, item_iter, trainer->item_list) {
-        if (itemGetValue(item_iter) == max_value &&
+        if (itemGetValue(item_iter) == itemGetValue(item) &&
                 itemGetType(item_iter) == TYPE_CANDY) {
             pokemonUseItem(pokemon, item_iter);
             storeRemoveItem(trainer->item_list, item_iter);
@@ -523,6 +527,8 @@ void trainersDestroy(Trainers trainers) {
 }
 
 PokemonTrainer trainersGetTrainer(Trainers trainers, char* trainer_name) {
+	if (trainers == NULL || trainer_name == NULL) return NULL;
+
     SET_FOREACH(PokemonTrainer, trainer, trainers) {
         if (strcmp(trainer->name, trainer_name) == SAME_STRINGS)
             return trainer;

@@ -119,7 +119,7 @@ static bool testPokemonTrainerBuyItem() {
 static bool testPokemonTrainerTrainHealPokemon() {
     bool result = true;
 
-    PokemonTrainer trainer = pokemonTrainerCreate("Ash", "paris",1000);
+    PokemonTrainer trainer = pokemonTrainerCreate("Ash", "paris",10000);
 
     Pokedex pokedex = pokedexCreate();
     PokemonInfo pikachu_info = pokedexPokemonInfoCreate("Pikachu", 10);
@@ -140,6 +140,7 @@ static bool testPokemonTrainerTrainHealPokemon() {
     storeAddItem(store,item1);
     storeAddItem(store,item2);
     storeAddItem(store,item3);
+    storeAddItem(store,item4);
 
     pokemonTrainerBuyItem(trainer, item4, store);
     pokemonTrainerBuyItem(trainer, item1, store);
@@ -164,14 +165,14 @@ static bool testPokemonTrainerTrainHealPokemon() {
     TEST_EQUALS(result, pokemonGetHP(pokemonTrainerGetPokemon(trainer,1)), 90);
     TEST_EQUALS(result, pokemonTrainerHealPokemon(trainer, 1),
                 POKEMON_TRAINER_ITEM_OUT_OF_STOCK);
-    TEST_EQUALS(result, pokemonTrainerTrainPokemon(trainer, 2),
+    TEST_EQUALS(result, pokemonTrainerHealPokemon(trainer, 2),
                 POKEMON_TRAINER_POKEMON_DOESNT_EXIST);
 
 
     // Pokemon Train Testing
     TEST_EQUALS(result, pokemonTrainerTrainPokemon(trainer, 1),
                 POKEMON_TRAINER_SUCCESS);
-    TEST_EQUALS(result, pokemonGetCP(pokemonTrainerGetPokemon(trainer,1)), 30);
+    TEST_EQUALS(result, pokemonGetCP(pokemonTrainerGetPokemon(trainer,1)), 50);
     TEST_EQUALS(result, pokemonTrainerTrainPokemon(trainer, 1),
                 POKEMON_TRAINER_SUCCESS);
     TEST_EQUALS(result, pokemonGetCP(pokemonTrainerGetPokemon(trainer,1)), 70);
