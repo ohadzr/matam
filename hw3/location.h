@@ -10,9 +10,12 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include "set.h"
 #include "list.h"
+#include "print_utils.h"
 #include "pokemon.h"
+#include "utilities.h"
 
 /**************************************
  *              Defines               *
@@ -31,14 +34,11 @@ typedef struct location_t* Location;
 
 typedef enum {LOCATION_SUCCESS,
     LOCATION_NULL_ARGUMENT,
-    LOCATION_POKEMON_NOT_EXIST,
-    LOCATION_NEAR_LOCATION_NOT_EXIST,
     LOCATION_OUT_OF_MEMORY,
     LOCATION_ALREADY_IN_LOCATION} LocationResult;
 
 typedef enum {WORLD_MAP_SUCCESS,
     WORLD_MAP_NULL_ARGUMENT,
-    WORLD_MAP_LOCATION_NOT_EXIST,
     WORLD_MAP_LOCATION_ALREADY_EXISTS,
     WORLD_MAP_OUT_OF_MEMORY} WorldMapResult;
 
@@ -99,13 +99,6 @@ char* locationGetName( Location location );
  * LOCATION_SUCCESS: if pokemon was added successfully; */
 LocationResult locationAddPokemon( Location location , Pokemon pokemon );
 
-/* remove Pokemon from location.
- * return:
- * LOCATION_NULL_ARGUMENT: if location or pokemon equal NULL ;
- * LOCATION_POKEMON_NOT_EXIST: if pokemon wasn't in location ;
- * LOCATION_SUCCESS: if pokemon was removed successfully; */
-LocationResult locationRemovePokemon( Location location , Pokemon pokemon );
-
 /* add new NearLocation to location.
  * return:
  * LOCATION_ALREADY_IN_LOCATION: if tries to add the location to itself ;
@@ -115,13 +108,6 @@ LocationResult locationRemovePokemon( Location location , Pokemon pokemon );
 LocationResult locationAddNearLocation( Location location ,
                                         NearLocation near_location );
 
-/* remove NearLocation from location.
- * return:
- * LOCATION_NULL_ARGUMENT: if location or near_location equal NULL ;
- * LOCATION_POKEMON_NOT_EXIST: if near_location wasn't in location ;
- * LOCATION_SUCCESS: if near_location was removed successfully; */
-LocationResult locationRemoveNearLocation( Location location ,
-                                           NearLocation near_location );
 
 /* if destination is a NearLocation to location then return true, false else.
  * to be used only by legal parameters */
@@ -145,19 +131,11 @@ void worldMapDestroy( WorldMap world_map );
  * WORLD_MAP_SUCCESS: if location was added to world map successfully; */
 WorldMapResult worldMapAddLocation( WorldMap world_map , Location location );
 
-/* remove location from world_map.
- * return:
- * WORLD_MAP_NULL_ARGUMENT: if location or world_map equal NULL ;
- * WORLD_MAP_LOCATION_NOT_EXIST: if location wasn't in world_map ;
- * WORLD_MAP_SUCCESS: if location was removed successfully; */
-WorldMapResult worldMapRemoveLocation( WorldMap world_map , Location location );
 
 /* if location exist in map return true , false otherwise - to be used only by
  *  legal parameters */
 bool worldMapDoesLocationExist( WorldMap world_map , char* location );
 
-/* return number of locations in map - to be used only by legal parameters */
-int worldMapGetSize( WorldMap world_map );
 
 /* return location with the same name as loation_name from world map.
  * return NULL if world_map or loation_name are NULL or if location by that name
