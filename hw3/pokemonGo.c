@@ -22,6 +22,7 @@
                                         && (!strcmp(cmd_action, action)) &&   \
                                         (arg_counter!=num)
 #define GET_NEXT_ARGUMENT strtok(NULL, SPACE_DELIMITER)
+#define GET_NEXT_LINE(line, input_file)   fgets(line,MAX_LINE_SIZE,input_file)
 
 
 /********************************
@@ -46,8 +47,11 @@ static Location loadLocationsFileAddPokemon(char* location_name,
                                             WorldMap world_map,
                                             Pokedex pokedex);
 
-static MtmErrorCode loadLocationsFileAddNearLocations();
+static MtmErrorCode loadLocationsFileAddNearLocations(char* near_location,
+                                                      Location location,
+                                                      WorldMap world_map);
 
+static WorldMap freeWorldMapAndLocation(WorldMap world_map, Location location);
 
 /****************************************
  *    Assistent PokemonGO Funcs         *
@@ -143,7 +147,7 @@ int stringToInt(char *int_as_char) {
 MtmErrorCode loadPokedexFile(Pokedex pokedex, FILE* pokedex_file) {
     char line[MAX_LINE_SIZE], *pokemon_name, *initial_cp;
 
-    while (fgets(line, MAX_LINE_SIZE, pokedex_file)) {
+    while (GET_NEXT_LINE(line,pokedex_file)) {
         pokemon_name = strtok(line, SPACE_DELIMITER);
         if (pokemon_name == NULL) continue;
 
@@ -171,7 +175,7 @@ MtmErrorCode loadEvolutionsFile(Pokedex pokedex, FILE* evolution_file) {
     char line[MAX_LINE_SIZE], *pokemon_name;
     char *evolution_name, *evolution_level_char;
     int evolution_level;
-    while (fgets(line, MAX_LINE_SIZE, evolution_file)) {
+    while (GET_NEXT_LINE(line,evolution_file)) {
         pokemon_name = strtok(line, SPACE_DELIMITER);
         evolution_name = GET_NEXT_ARGUMENT;
         evolution_level_char = GET_NEXT_ARGUMENT;
@@ -216,10 +220,40 @@ Location loadLocationsFileAddPokemon(char* location_name,
     return location;
 }
 
-MtmErrorCode loadLocationsFileAddNearLocations() {
+MtmErrorCode loadLocationsFileAddNearLocations(char* near_location,
+                                               Location location,
+                                               WorldMap world_map) {
+    while (near_location != NULL) {
+        NearLocation new_near_location = nearLocationCreate(near_location);
+        LocationResult result = locationAddNearLocation(location,
+                                                        new_near_location);
+        if (result != LOCATION_SUCCESS) {
+            worldMapDestroy(world_map);
+            locationDestroy(location);
+            nearLocationDestroy(near_location);
+            return MTM_OUT_OF_MEMORY;
+        }
+
+        nearLocationDestroy(near_location);
+        near_location = GET_NEXT_ARGUMENT;
+    }
+
+    WorldMapResult result = worldMapAddLocation(world_map, location);
+    if (result == LIST_OUT_OF_MEMORY) {
+        worldMapDestroy(world_map);
+        locationDestroy(location);
+        return MTM_OUT_OF_MEMORY;
+    }
+
+    return MTM_SUCCESS;
 
 }
 
+WorldMap freeWorldMapAndLocation(WorldMap world_map, Location location) {
+    worldMapDestroy(world_map);
+    locationDestroy(location);
+    return NULL;
+}
 
 /********************************
  *          Commands Funcs      *
@@ -476,43 +510,31 @@ WorldMap pokemonGoWorldMapCreate(FILE* location_file, Pokedex pokedex) {
     if (location_file == NULL) return NULL;
     WorldMap world_map = worldMapCreate();
     if (world_map == NULL) return NULL;
-
     char location_info[MAX_LINE_SIZE];
-    char *first_part, *second_part,*location_name,*pokemon_name, *near_location;
+    char *first_part, *second_part, *location_name ,*near_location;
 
-    while (fgets(location_info, MAX_LINE_SIZE, location_file)) {
+    while (GET_NEXT_LINE(location_info,location_file)) {
         first_part = strtok(location_info, SEMICOLON_DELIMITER);
         if (first_part == NULL) continue;
         second_part = strtok(NULL, SEMICOLON_DELIMITER);
 
         location_name = strtok(first_part, SPACE_DELIMITER);
-        loadLocationsFileAddPokemon();
-
+        if (location_name == NULL) continue;
+        Location location = loadLocationsFileAddPokemon(location_name,
+                                                        world_map, pokedex);
+        if (location == NULL)
+            return freeWorldMapAndLocation(world_map, location);
 
         near_location = strtok(second_part, SPACE_DELIMITER);
-        while (near_location != NULL) {
-            NearLocation new_near_location = nearLocationCreate(near_location);
-            LocationResult result = locationAddNearLocation(location,
-                                                            new_near_location);
-            if (result != LOCATION_SUCCESS) {
-                worldMapDestroy(world_map);
-                locationDestroy(location);
-                nearLocationDestroy(near_location);
-                return NULL;
-            }
+        if (near_location == NULL)
+            return freeWorldMapAndLocation(world_map, location);
 
-            nearLocationDestroy(near_location);
-            near_location = GET_NEXT_ARGUMENT;
-        }
+        if (loadLocationsFileAddNearLocations(near_location, location,world_map)
+            == MTM_OUT_OF_MEMORY)
+            return freeWorldMapAndLocation(world_map, location);
 
-        WorldMapResult result = worldMapAddLocation(world_map, location);
-        if (result == LIST_OUT_OF_MEMORY) {
-            worldMapDestroy(world_map);
-            locationDestroy(location);
-        }
-
+        locationDestroy(location);
     }
-
     return world_map;
 }
 
@@ -568,7 +590,8 @@ void pokemonGo(FILE* pokedex_file, FILE* evolution_file, FILE* location_file,
     // infinite game loop
     while (result != MTM_OUT_OF_MEMORY && result != MTM_CANNOT_OPEN_FILE
            && result != MTM_INVALID_COMMAND_LINE_PARAMETERS) {
-        if (!fgets(command, MAX_LINE_SIZE, input)) break;
+
+        if (!GET_NEXT_LINE(command,input)) break;
         if (command == NULL) break;
         result = pokemonGoProcessCommand(command, trainers, store,
                                          world_map, pokedex, output);
