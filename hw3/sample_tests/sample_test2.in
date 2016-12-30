@@ -1,7 +1,7 @@
 trainer add Ash 100 paris
 trainer add Clemont 150 london
 store add candy 10 1
-store add potion 20 2
+    store add potion 20 2
 store add candy 20 1
 store add candy 200 1
 report stock

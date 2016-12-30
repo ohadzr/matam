@@ -143,6 +143,8 @@ void pokemonTrainerFightAux(PokemonTrainer trainer1, Pokemon pokemon1,
     pokemonUpdateLevel(pokemon1, CALC_LEVEL_BONUS(*old_level1, *old_level2));
     pokemonUpdateLevel(pokemon2, CALC_LEVEL_BONUS(*old_level2, *old_level1));
 
+    printf("delta1: %lf\n", delta1);
+    printf("delta2: %lf\n", delta2);
     trainer1->xp += CALC_XP_BONUS(delta2);
     trainer2->xp += CALC_XP_BONUS(delta1);
 }
@@ -219,16 +221,16 @@ PokemonTrainerResult pokemonTrainerAddItem(PokemonTrainer trainer,
  *    Pokemon Trainer Funcs     *
  ********************************/
 
-bool pokemonTrainerIsValidArgs(char* name, char* location, int budget) {
-    if (name == NULL || location == NULL) return false;
-    if (!strcmp(name,"") || !strcmp(location,"")) return false;
+bool pokemonTrainerIsValidArgs(char* name, int budget) {
+    if (name == NULL) return false;
+    if (!strcmp(name,"")) return false;
     if (budget < NO_BUDGET) return false;
     return true;
 }
 
 
-PokemonTrainer pokemonTrainerCreate(char* name, char* location, int budget) {
-    if (!pokemonTrainerIsValidArgs(name,location,budget))
+PokemonTrainer pokemonTrainerCreate(char* name, int budget) {
+    if (!pokemonTrainerIsValidArgs(name,budget))
         return NULL;
 
     PokemonTrainer trainer = malloc(sizeof(*trainer));
@@ -238,11 +240,11 @@ PokemonTrainer pokemonTrainerCreate(char* name, char* location, int budget) {
     trainer->pokecoins = budget;
     trainer->number_of_caught_pokemons = NO_POKEMONS;
     trainer->name = stringCopy(name);
-    trainer->location = stringCopy(location);
+    trainer->location = NULL;
     trainer->pokemon_list = listCreate(pokemonCopyElement, pokemonFreeElement);
     trainer->item_list = storeCreate();
 
-    if (trainer->name == NULL || trainer->location == NULL || \
+    if (trainer->name == NULL ||
         trainer->pokemon_list == NULL || trainer->item_list == NULL) {
         pokemonTrainerDestroy(trainer);
         return NULL;
@@ -269,16 +271,17 @@ void pokemonTrainerDestroy(PokemonTrainer trainer) {
 PokemonTrainer pokemonTrainerCopy(PokemonTrainer trainer) {
     if (trainer == NULL) return NULL;
     PokemonTrainer new_trainer = pokemonTrainerCreate(trainer->name,
-                                                      trainer->location,
                                                       trainer->pokecoins);
     if (new_trainer == NULL) return NULL;
 
+    new_trainer->location = stringCopy(trainer->location);
     listDestroy(new_trainer->pokemon_list);
     new_trainer->pokemon_list = listCopy(trainer->pokemon_list);
     storeDestroy(new_trainer->item_list);
     new_trainer->item_list = storeCopy(trainer->item_list);
 
-    if (new_trainer->pokemon_list == NULL || new_trainer->item_list == NULL) {
+    if (new_trainer->pokemon_list == NULL || new_trainer->item_list == NULL
+            || (new_trainer->location == NULL && trainer->location != NULL)) {
         pokemonTrainerDestroy(new_trainer);
         return NULL;
     }
@@ -363,8 +366,10 @@ PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
             pokedex == NULL || output == NULL)
         return POKEMON_TRAINER_NULL_ARG;
 
-    if (strcmp(trainer->location, location) == SAME_STRINGS)
-        return POKEMON_TRAINER_ALREADY_IN_LOCATION;
+    if (trainer->location != NULL) {
+    	if (strcmp(trainer->location, location) == SAME_STRINGS)
+    	        return POKEMON_TRAINER_ALREADY_IN_LOCATION;
+    }
 
     if (!worldMapIsLocationReachable(world_map, trainer->location, location))
         return POKEMON_TRAINER_LOCATION_IS_NOT_REACHABLE;
@@ -527,10 +532,9 @@ void trainersDestroy(Trainers trainers) {
 
 PokemonTrainer trainersGetTrainer(Trainers trainers, char* trainer_name) {
 	if (trainers == NULL || trainer_name == NULL) return NULL;
-
     SET_FOREACH(PokemonTrainer, trainer, trainers) {
-        if (strcmp(trainer->name, trainer_name) == SAME_STRINGS)
-            return trainer;
+    		if (strcmp(trainer->name, trainer_name) == SAME_STRINGS)
+    		            return trainer;
     }
 
     return NULL;

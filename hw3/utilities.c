@@ -9,6 +9,7 @@
 
 
 char* stringCopy(char* str) {
+    if (str == NULL) return NULL;
     char* dst_str = malloc(strlen(str)+1);
     if (dst_str != NULL) {
         if (strcmp("", str) == 0) return NULL;

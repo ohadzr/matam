@@ -15,12 +15,12 @@
  *              Defines               *
  **************************************/
 
-#define MAX_TYPE_NUMBER 2
 #define ITEM_1_BIGGER 1
 #define EQUAL 0
 #define ITEM_2_BIGGER -1
 #define EMPTY 0
-#define ILLEGAL -1
+#define DOUBLE_PRICE 2
+#define NO_PRICE 0
 
 /**************************************
  *              Structs               *
@@ -36,12 +36,10 @@ struct item_t {
  **************************************/
 
 /* convert string to type return -1 if string NULL */
-int static stringToType( char* string ) {
-	if (strcmp ( string , "TYPE_CANDY" ) == EQUAL )
+ItemType static stringToType( char* string ) {
+	if (strcmp ( string , "candy" ) == EQUAL )
 		return  TYPE_CANDY;
-	if (strcmp ( string , "TYPE_POTION" ) == EQUAL )
-		return  TYPE_POTION;
-	return ILLEGAL;
+	return  TYPE_POTION;
 }
 
 /* return true if value > 0 */
@@ -50,10 +48,9 @@ int static positiveCheck( int value ) {
 }
 
 /* check if type exists - return true if so */
-bool static isValidType( ItemType type ) {
-	for ( int i = 0 ; i < MAX_TYPE_NUMBER ; i++ ) {
-		if ( type == i ) return true;
-	}
+bool static isValidType( char* type ) {
+	if (!strcmp(type,"potion")) return true;
+	if (!strcmp(type,"candy")) return true;
 	return false;
 }
 
@@ -61,10 +58,9 @@ bool static isValidType( ItemType type ) {
 char static*  convertTypeToString( Item item ) {
 	if ( item ) {
 		ItemType type = itemGetType(item);
-		assert(isValidType(type));
 		switch (type) {
-			case TYPE_POTION: return "TYPE_POTION";
-			case TYPE_CANDY: return "TYPE_CANDY";
+			case TYPE_POTION: return "potion";
+			case TYPE_CANDY: return "candy";
 		}
 	}
 	return NULL;
@@ -101,6 +97,7 @@ Item itemCreate( int value, char* type ) {
 	if( !itemIsValidArgs( value, type ) ) return NULL;
 	Item new_item = malloc( sizeof(*new_item) );
 	if( !new_item )  return NULL;
+
 	new_item->type = stringToType( type );
 	new_item->value = value;
 	return new_item;
@@ -127,7 +124,11 @@ ItemType itemGetType( Item item ) {
 
 int itemGetPrice( Item item ) {
 	assert( item );
-	return ( itemGetValue(item) * ( itemGetType(item) + 1 ) );
+	if (itemGetType(item) == TYPE_CANDY)
+		return itemGetValue(item) * DOUBLE_PRICE;
+	if (itemGetType(item) == TYPE_POTION)
+		return itemGetValue(item);
+	return NO_PRICE;
 }
 
 int itemCompare( Item item1 , Item item2 ) {
@@ -141,8 +142,7 @@ int itemCompare( Item item1 , Item item2 ) {
 
 bool itemIsValidArgs( int value, char* type ) {
 	if ( (!type) || (!positiveCheck(value)) ) return false;
-	ItemType item_type = stringToType( type );
-	if ( !isValidType(item_type) ) return false;
+	if ( !isValidType(type) ) return false;
 	return true;
 }
 
@@ -210,17 +210,19 @@ void storePrintStock( Store store , FILE* output_channel ) {
 	mtmPrintStockHeader( output_channel );
 	if( listGetSize( store ) != EMPTY ) {
 		storeSort( store );
-		Item item_index = listGetFirst(store);
+		Item item = listGetFirst(store);
 		int counter = 0;
 		LIST_FOREACH( Item , current_item , store ) {
-			if ( itemCompare( item_index , current_item ) != EQUAL ) {
-				item_index = listGetCurrent(store);
-				mtmPrintItem(output_channel , convertTypeToString(current_item),
-							 itemGetValue(current_item) , counter);
+			if ( itemCompare( item , current_item ) != EQUAL ) {
+				mtmPrintItem(output_channel , convertTypeToString(item),
+							 itemGetValue(item) , counter);
 				counter = 0;
 			}
 			counter++;
+			item = current_item;
 		}
+		mtmPrintItem(output_channel , convertTypeToString(item),
+									 itemGetValue(item) , counter);
 	}
 }
 

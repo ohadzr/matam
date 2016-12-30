@@ -23,6 +23,16 @@ typedef struct pokemon_info_t* PokemonInfo;
 typedef void* PokemonInfoElement;
 
 
+/*
+* The pokemon in pokedex structure.
+*/
+struct pokemon_info_t {
+    char* name;
+    int cp_initial, evolution_level;
+    int pokecoin_bonus;
+    char* next_evolution;
+};
+
 /**************************************
  *        Structs declarations        *
  **************************************/

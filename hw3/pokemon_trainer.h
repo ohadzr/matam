@@ -57,7 +57,7 @@ typedef enum {
 * 	false - if not.
 *
 **/
-bool pokemonTrainerIsValidArgs(char* name, char* location, int budget);
+bool pokemonTrainerIsValidArgs(char* name, int budget);
 
 /**
 * Creates a new pokemon trainer.
@@ -69,11 +69,11 @@ bool pokemonTrainerIsValidArgs(char* name, char* location, int budget);
 *
 * @return
 * 	A new allocated pokemon trainer.
-* 	NULL - if name is NULL or empty, location is NULL, or budget is negative or
+* 	NULL - if name is NULL or empty, or budget is negative or
 * 	if memory allocation fails.
 *
 **/
-PokemonTrainer pokemonTrainerCreate(char* name, char* location, int budget);
+PokemonTrainer pokemonTrainerCreate(char* name, int budget);
 
 /**
 * Frees all memory allocated for the given pokemon trainer.

@@ -240,13 +240,15 @@ Pokemon worldMapGetPokemonInLocation( WorldMap world_map,char* location_name ){
     Location location = worldMapGetLocation( world_map ,location_name);
     if ( !location ) return NULL;
     if (worldMapDoesLocationExist( world_map , locationGetName(location) ) == false) return NULL;
-    Pokemon huntedPokemon = listGetFirst( location->pokemons );
+    Pokemon huntedPokemon = pokemonCopy(listGetFirst( location->pokemons ));
+    listRemoveCurrent( location->pokemons );
     return huntedPokemon;
 }
 
 bool worldMapIsLocationReachable( WorldMap world_map , char* current_location ,
                                   char* destination_location) {
-    assert ( !destination_location || !world_map );
+    assert ( destination_location != NULL);
+    assert ( world_map != NULL);
     if (!worldMapDoesLocationExist(world_map,destination_location) )
         return false;
     if( !current_location ) return true;

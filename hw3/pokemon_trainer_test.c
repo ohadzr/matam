@@ -35,14 +35,13 @@
 //static bool testPokemonTrainerCreateDestroy() {
 //    bool result = true;
 //
-//    PokemonTrainer trainer = pokemonTrainerCreate("Ash", "paris",100);
-//    PokemonTrainer trainer0 = pokemonTrainerCreate("Ash", "paris",0);
+//    PokemonTrainer trainer = pokemonTrainerCreate("Ash",100);
+//    PokemonTrainer trainer0 = pokemonTrainerCreate("Ash",0);
 //
 //    TEST_DIFFERENT(result,trainer , NULL);
 //    TEST_DIFFERENT(result,trainer0, NULL);
-//    TEST_EQUALS(result, pokemonTrainerCreate(NULL, "paris",100), NULL);
-//    TEST_EQUALS(result, pokemonTrainerCreate("Ash", NULL,100), NULL);
-//    TEST_EQUALS(result, pokemonTrainerCreate("Ash", "paris",-5), NULL);
+//    TEST_EQUALS(result, pokemonTrainerCreate(NULL,100), NULL);
+//    TEST_EQUALS(result, pokemonTrainerCreate("Ash",-5), NULL);
 //
 //    pokemonTrainerDestroy(trainer);
 //    pokemonTrainerDestroy(trainer0);
@@ -54,7 +53,7 @@
 //static bool testPokemonTrainerCopy() {
 //    bool result = true;
 //
-//    PokemonTrainer trainer = pokemonTrainerCreate("Ash", "paris",100);
+//    PokemonTrainer trainer = pokemonTrainerCreate("Ash",100);
 //
 //    PokemonTrainer trainer_copy = pokemonTrainerCopy(trainer);
 //
@@ -74,7 +73,7 @@
 //    bool result = true;
 //
 //
-//    PokemonTrainer trainer = pokemonTrainerCreate("Ash", "paris",100);
+//    PokemonTrainer trainer = pokemonTrainerCreate("Ash",100);
 //
 //    Item item1 = itemCreate(10,"potion");
 //    Item item2 = itemCreate(40,"candy");
@@ -119,7 +118,7 @@
 //static bool testPokemonTrainerTrainHealPokemon() {
 //    bool result = true;
 //
-//    PokemonTrainer trainer = pokemonTrainerCreate("Ash", "paris",10000);
+//    PokemonTrainer trainer = pokemonTrainerCreate("Ash",10000);
 //
 //    Pokedex pokedex = pokedexCreate();
 //    PokemonInfo pikachu_info = pokedexPokemonInfoCreate("Pikachu", 10);
@@ -218,9 +217,9 @@
 //
 //    Trainers trainers = trainersCreate();
 //
-//    PokemonTrainer trainer1 = pokemonTrainerCreate("Ash", "paris",1000);
+//    PokemonTrainer trainer1 = pokemonTrainerCreate("Ash",1000);
 //    PokemonTrainer trainer_copy = pokemonTrainerCopy(trainer1);
-//    PokemonTrainer trainer2 = pokemonTrainerCreate("Ohad", "london",10);
+//    PokemonTrainer trainer2 = pokemonTrainerCreate("Ohad",10);
 //
 //    TEST_EQUALS(result,trainersAddTrainer(trainers, trainer1),
 //                POKEMON_TRAINER_SUCCESS);
