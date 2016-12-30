@@ -229,7 +229,7 @@ void worldMapDestroy( WorldMap world_map ) {
 
 WorldMapResult worldMapAddLocation( WorldMap world_map , Location location ) {
     if ( (!world_map) || (!location) ) return WORLD_MAP_NULL_ARGUMENT;
-    if ( worldMapDoesLocationExist( world_map , location ) )
+    if ( worldMapDoesLocationExist( world_map , locationGetName(location) ) )
         return WORLD_MAP_LOCATION_ALREADY_EXISTS;
     ListResult result = listInsertLast( world_map , location );
     if ( result == LIST_OUT_OF_MEMORY ) return WORLD_MAP_OUT_OF_MEMORY;

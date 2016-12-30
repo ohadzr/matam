@@ -105,17 +105,17 @@ MtmErrorCode handlePokemonTrainerResult(PokemonTrainerResult result) {
         case POKEMON_TRAINER_ALREADY_IN_LOCATION:
             return MTM_TRAINER_ALREADY_IN_LOCATION;
         case POKEMON_TRAINER_LOCATION_IS_NOT_REACHABLE:
-            MTM_LOCATION_IS_NOT_REACHABLE;
+        	return MTM_LOCATION_IS_NOT_REACHABLE;
         case POKEMON_TRAINER_INVALID_AGR:
-            MTM_INVALID_ARGUMENT;
+        	return MTM_INVALID_ARGUMENT;
         case POKEMON_TRAINER_POKEMON_HP_AT_MAX:
-            MTM_HP_IS_AT_MAX;
+        	return MTM_HP_IS_AT_MAX;
         case POKEMON_TRAINER_ALREADY_EXIST:
-            MTM_TRAINER_NAME_ALREADY_EXISTS;
+        	return MTM_TRAINER_NAME_ALREADY_EXISTS;
         case POKEMON_TRAINER_SUCCESS:
-            MTM_SUCCESS;
+        	return MTM_SUCCESS;
         case POKEMON_TRAINER_NO_AVAILABLE_ITEM_FOUND:
-            MTM_NO_AVAILABLE_ITEM_FOUND;
+        	return MTM_NO_AVAILABLE_ITEM_FOUND;
     }
     return MTM_SUCCESS;
 }
@@ -128,9 +128,9 @@ MtmErrorCode handleStoreResult(StoreResult result) {
         case STORE_NULL_ARGUMENT:
             return MTM_INVALID_COMMAND_LINE_PARAMETERS;
         case STORE_ITEM_NOT_EXIST:
-            MTM_ITEM_OUT_OF_STOCK;
+        	return MTM_ITEM_OUT_OF_STOCK;
         case STORE_OUT_OF_MEMORY:
-            MTM_OUT_OF_MEMORY;
+        	return MTM_OUT_OF_MEMORY;
     }
     return MTM_SUCCESS;
 }
@@ -239,7 +239,7 @@ MtmErrorCode loadLocationsFileAddNearLocations(char* near_location,
     }
 
     WorldMapResult result = worldMapAddLocation(world_map, location);
-    if (result == LIST_OUT_OF_MEMORY) {
+    if (result == WORLD_MAP_OUT_OF_MEMORY) {
         worldMapDestroy(world_map);
         locationDestroy(location);
         return MTM_OUT_OF_MEMORY;
@@ -443,7 +443,7 @@ MtmErrorCode pokemonGoTrainerReport(Trainers trainers, FILE* output) {
 
 MtmErrorCode pokemonGoWorldMapReport(WorldMap world_map, FILE* output) {
     if (world_map == NULL) return MTM_OUT_OF_MEMORY;
-    if (output == NULL) MTM_CANNOT_OPEN_FILE;
+    if (output == NULL) return MTM_CANNOT_OPEN_FILE;
 
     worldMapPrintReport(world_map, output);
     return MTM_SUCCESS;
@@ -452,7 +452,7 @@ MtmErrorCode pokemonGoWorldMapReport(WorldMap world_map, FILE* output) {
 
 MtmErrorCode pokemonGoStoreReport(Store store, FILE* output) {
     if (store == NULL) return MTM_OUT_OF_MEMORY;
-    if (output == NULL) MTM_CANNOT_OPEN_FILE;
+    if (output == NULL) return MTM_CANNOT_OPEN_FILE;
 
     storePrintStock(store, output);
     return MTM_SUCCESS;
@@ -645,7 +645,7 @@ void pokemonGo(FILE* pokedex_file, FILE* evolution_file, FILE* location_file,
 
 
 int main(int argc, char** argv) {
-    if (isValidMainArgs) {
+    if (isValidMainArgs(argc, argv)) {
         FILE* pokedex_file = fopen(argv[2],"r");
         FILE* evolution_file = fopen(argv[4],"r");
         FILE* location_file = fopen(argv[6],"r");
