@@ -144,19 +144,19 @@ PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
 
 
 /**
-* Trainer goes hunting in a given location. If there's a pokemon in location
-* he catch him (first one, if there are many).
-* pokemon is being added to trainer's pokemon list and being giving an ID of
-* the next pokemon. The location must not be the trainer's current location and
-* must be reachable from current trainer location.
+* A battle between 2 trainers and 2 pokemons.
+* In the battle the pokemons HP and level are changed and also the trainers XP.
+* A pokemon can die and be deleted from a game if its HP reaches zero.
+* A pokemon can evolve after a battle (even a few evolutions) if it reaches
+* to his evolution level.
 *
 * @return
 * 	POKEMON_TRAINER_NULL_ARG if trainer or location, world_map, pokedex or
 * 	output are NULL.
-* 	POKEMON_TRAINER_ALREADY_IN_LOCATION if trainer is already in the same
-* 	location
-* 	POKEMON_TRAINER_LOCATION_IS_NOT_REACHABLE if trainer can't reach location
-* 	POKEMON_TRAINER_OUT_OF_MEMORY if set had a memory allocation error.
+* 	POKEMON_TRAINER_POKEMON_DOESNT_EXIST if one of the pokemons doesn't exist
+* 	POKEMON_TRAINER_INVALID_AGR if trainers name is the same
+* 	POKEMON_TRAINER_OUT_OF_MEMORY if set had a memory allocation error (in case
+* 	of evolution)
 * 	POKEMON_SUCCESS otherwise.
 */
 PokemonTrainerResult pokemonTrainerFight(PokemonTrainer trainer1,
@@ -165,14 +165,50 @@ PokemonTrainerResult pokemonTrainerFight(PokemonTrainer trainer1,
 										 int pokemon2_id, Pokedex pokedex,
 										 FILE* output);
 
+
+/**
+* Heal a pokemon from trainer's pokemon list by given id with a potion.
+* if the trainer has a potion that can heal pokemon to full HP without use it,
+ * unless there's a potion with smaller value that can HP to full HP.
+ * If there's no potion to heal to full HP, uses max valued potion.
+ * If trainer doesn't have potions - doesn't heal pokemon.
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer is NULL.
+* 	POKEMON_TRAINER_POKEMON_DOESNT_EXIST if one the pokemon doesn't exist in
+* 	trainer's pokemon list (dead or invalid)
+* 	POKEMON_TRAINER_ITEM_OUT_OF_STOCK if trainer doesn't have potions
+* 	POKEMON_TRAINER_POKEMON_HP_AT_MAX if the pokemon's HP is already at max
+* 	POKEMON_SUCCESS otherwise.
+*/
 PokemonTrainerResult pokemonTrainerHealPokemon(PokemonTrainer trainer,
 											   int pokemon_id);
 
-
+/**
+* Train a pokemon from trainer's pokemon list by given id  with a candy.
+* Use the trainer's highest valued candy to train pokemon.
+* If trainer doesn't have candies - doesn't train pokemon.
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer is NULL.
+* 	POKEMON_TRAINER_POKEMON_DOESNT_EXIST if one the pokemon doesn't exist in
+* 	trainer's pokemon list (dead or invalid)
+* 	POKEMON_TRAINER_ITEM_OUT_OF_STOCK if trainer doesn't have potions
+* 	POKEMON_SUCCESS otherwise.
+*/
 PokemonTrainerResult pokemonTrainerTrainPokemon(PokemonTrainer trainer,
 												int pokemon_id);
 
 
+/**
+*   Print the trainers report. First all candies (ascending value), second
+*   potion and then pokemons (by ID, ascending).
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer is NULL.
+* 	POKEMON_TRAINER_OUT_OF_MEMORY if store sorting failed (allocation error).
+* 	POKEMON_SUCCESS otherwise.
+*/
 PokemonTrainerResult pokemonTrainerReport(PokemonTrainer trainer,
 										  FILE* output);
 
