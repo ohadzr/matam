@@ -22,8 +22,12 @@
                                         (!strcmp(cmd_name, name)) \
                                         && (!strcmp(cmd_action, action)) &&   \
                                         (arg_counter!=num)
-
-
+#define GET_NEXT_ARGUMENT strtok(NULL, SPACE_DELIMITER)
+#define ASSERT_GLOBAL {                                                        \
+        assert(pokedex);                                                       \
+        assert(trainers);                                                      \
+        assert(world_map);                                                     \
+}
 
 
 /********************************
@@ -307,7 +311,70 @@ MtmErrorCode pokemonGoStoreReport(Store store, FILE* output) {
     return MTM_SUCCESS;
 }
 
+MtmErrorCode pokemonGoAddTrainer( char* command, Pokedex pokedex, WorldMap world_map, Trainers trainers, FILE* output) {
+    ASSERT_GLOBAL;
+    char* name =  GET_NEXT_ARGUMENT;
+    char* start_point = GET_NEXT_ARGUMENT;
+    char* budget_char = GET_NEXT_ARGUMENT;
+    if ( !budget_char ) return MTM_INVALID_COMMAND_LINE_PARAMETERS;
+    int budget = charToInt( budget_char );
 
+    if ( (!name) || (!budget) || (!start_point) )
+        return MTM_INVALID_COMMAND_LINE_PARAMETERS;
+    if ( !(pokemonTrainerIsValidArgs( name, start_point, budget)) )
+        return MTM_INVALID_ARGUMENT;
+    if ( trainersDoesTrainerExist(trainers,name) )
+        return MTM_TRAINER_NAME_ALREADY_EXISTS;
+    if ( !worldMapDoesLocationExist(world_map,start_point) )
+        return MTM_LOCATION_DOES_NOT_EXIST;
+
+    //TODO: add trainerCreateParametersCheck
+    PokemonTrainer trainer=pokemonTrainerCreate(name, start_point, budget);
+    if (trainer == NULL) return MTM_OUT_OF_MEMORY;
+
+    PokemonTrainerResult result1 = pokemonTrainerGoHunt( trainer, start_point,
+                                                         world_map, pokedex,
+                                                         output);
+    if ( result1 == POKEMON_TRAINER_OUT_OF_MEMORY ) {
+        pokemonTrainerDestroy(trainer);
+        return MTM_OUT_OF_MEMORY;
+    }
+
+    PokemonTrainerResult result2 = trainersAddTrainer( trainers, trainer );
+    if ( result2 == POKEMON_TRAINER_OUT_OF_MEMORY ) {
+        pokemonTrainerDestroy(trainer);
+        return MTM_OUT_OF_MEMORY;
+    }
+
+    return MTM_SUCCESS;
+}
+
+MtmErrorCode pokemonGoTrainerGoHunt( char* command, Pokedex pokedex ,
+                                     WorldMap world_map, Trainers trainers,
+                                     FILE* output) {
+    ASSERT_GLOBAL;
+    char* trainer_name = GET_NEXT_ARGUMENT;
+    char* destination_location = GET_NEXT_ARGUMENT;
+    sscanf(command, "%s %s" , trainer_name, destination_location);
+
+    if ( (!trainer_name) || (!destination_location) )
+        return MTM_INVALID_COMMAND_LINE_PARAMETERS;
+    if ( trainersDoesTrainerExist(trainers,trainer_name) )
+        return MTM_TRAINER_DOES_NOT_EXIST;
+    if ( !worldMapDoesLocationExist(world_map,destination_location) )
+        return MTM_LOCATION_DOES_NOT_EXIST;
+
+
+    PokemonTrainer trainer = trainersGetTrainer( trainers, trainer_name );
+    if ( !trainer ) return MTM_TRAINER_DOES_NOT_EXIST;
+    char* current_location = pokemonTrainerGetTrainerLocation( trainer );//TODO: add pokemonTrainerGetTrainerLocation (char*)
+    Location location_from = worldMapGetLocation( world_map, current_location );
+    if ( !location )  MTM_LOCATION_DOES_NOT_EXIST;
+    if ( !(worldMapIsLocationReachable( world_map, current_location, destination_location)) ) return MTM_LOCATION_IS_NOT_REACHABLE;
+    Location location_to = worldMapGetLocation( world_map, destination_location );
+    if ( locationCompare(location_from, location_to) == 0) return MTM_TRAINER_ALREADY_IN_LOCATION;
+    pokemonTrainerupdateCurrentLocation( trainer, location_to);
+}
 
 MtmErrorCode pokemonGoProcessCommand(char* command, Trainers trainers,
                              Store store, WorldMap world_map, Pokedex pokedex,

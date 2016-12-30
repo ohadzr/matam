@@ -52,17 +52,6 @@ int static locationNameCompare( char* location1 , char* location2 ){
     return LOCATIONS_EQAUL;
 }
 
-/* if location exist in map return true , false otherwise - to be used only by
- *  legal parameters */
-bool static worldMapDoesLocationExist( WorldMap world_map , Location location ){
-    assert( world_map && location );
-    LIST_FOREACH( Location , current_location , world_map ) {
-        if ( locationCompare(location , current_location) == LOCATIONS_EQAUL )
-            return true;
-    }
-    return false;
-}
-
 /**************************************
  *          Wrapper Functions         *
  **************************************/
@@ -258,6 +247,16 @@ WorldMapResult worldMapRemoveLocation( WorldMap world_map , Location location ){
     return WORLD_MAP_LOCATION_NOT_EXIST;
 }
 
+
+bool worldMapDoesLocationExist( WorldMap world_map , char* location ){
+    assert( world_map && location );
+    LIST_FOREACH( Location , current_location , world_map ) {
+        if(locationNameCompare(location,current_location->name)==LOCATIONS_EQAUL)
+            return true;
+    }
+    return false;
+}
+
 int worldMapGetSize( WorldMap world_map ) {
     assert( world_map );
     return listGetSize( world_map );
@@ -279,21 +278,20 @@ Pokemon worldMapGetPokemonInLocation( WorldMap world_map,char* location_name ){
     if ( (!world_map) || (!location_name) ) return NULL;
     Location location = worldMapGetLocation( world_map ,location_name);
     if ( !location ) return NULL;
-    if (worldMapDoesLocationExist( world_map , location ) == false) return NULL;
+    if (worldMapDoesLocationExist( world_map , locationGetName(location) ) == false) return NULL;
     Pokemon huntedPokemon = listGetFirst( location->pokemons );
     return huntedPokemon;
 }
 
 bool worldMapIsLocationReachable( WorldMap world_map , char* current_location ,
                                   char* destination_location) {
-    assert( destination_location && current_location && world_map);
-    assert( strlen(current_location)  &&  strlen(destination_location) );
-    Location location = worldMapGetLocation(world_map,current_location);
-    Location destination = worldMapGetLocation(world_map,destination_location);
-    if ( !location || !destination ) return false;
-    if ( (!worldMapDoesLocationExist(world_map,location)) ||
-         !(worldMapDoesLocationExist(world_map,destination)) )
+    assert ( !destination_location || !world_map );
+    if (!worldMapDoesLocationExist(world_map,destination_location) )
         return false;
+    if( !current_location ) return true;
+    if (!worldMapDoesLocationExist(world_map,current_location) )
+        return false;
+    Location location = worldMapGetLocation(world_map,current_location);
     return locationIsNearDestination(location,destination_location);
 }
 

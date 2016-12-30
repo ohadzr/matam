@@ -152,6 +152,10 @@ WorldMapResult worldMapAddLocation( WorldMap world_map , Location location );
  * WORLD_MAP_SUCCESS: if location was removed successfully; */
 WorldMapResult worldMapRemoveLocation( WorldMap world_map , Location location );
 
+/* if location exist in map return true , false otherwise - to be used only by
+ *  legal parameters */
+bool worldMapDoesLocationExist( WorldMap world_map , char* location );
+
 /* return number of locations in map - to be used only by legal parameters */
 int worldMapGetSize( WorldMap world_map );
 

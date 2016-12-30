@@ -379,6 +379,8 @@ PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
     if (pokemon == NULL) {
         mtmPrintCatchResult(output, trainer->name, NULL, location);
         return POKEMON_TRAINER_SUCCESS;
+  //TODO:else  mtmPrintCatchResult(output, pokemonGetPokemonName(pokemon), NULL, location);
+  //TODO:switch order of  mtmPrintCatchResult  pokemonTrainerAddPokemon because add could fail in copy => not success
     }
 
     PokemonTrainerResult result = pokemonTrainerAddPokemon(trainer, pokemon,

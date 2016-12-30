@@ -139,7 +139,7 @@
 //
 //}
 //
-//static bool testWorldMapCombo() {
+//static bool testWorldMapCombo() { //TODO: add worldMapDoesLocationExist tests
 //    bool result = true;
 //
 //    /* -----------------------  initialization  ----------------------- */
