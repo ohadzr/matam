@@ -17,7 +17,7 @@
 
 #define MAX_TYPE_NUMBER 2
 #define ITEM_1_BIGGER 1
-#define ITEMS_EQUAL 0
+#define EQUAL 0
 #define ITEM_2_BIGGER -1
 #define EMPTY 0
 #define ILLEGAL -1
@@ -37,10 +37,11 @@ struct item_t {
 
 /* convert string to type return -1 if string NULL */
 int static stringToType( char* string ) {
-	if ( !string )return ILLEGAL;
-	int type;
-	sscanf( string , "%d" , &type );
-	return type;
+	if (strcmp ( string , "TYPE_CANDY" ) == EQUAL )
+		return  TYPE_CANDY;
+	if (strcmp ( string , "TYPE_POTION" ) == EQUAL )
+		return  TYPE_POTION;
+	return ILLEGAL;
 }
 
 /* return true if value > 0 */
@@ -62,8 +63,8 @@ char static*  convertTypeToString( Item item ) {
 		ItemType type = itemGetType(item);
 		assert(isValidType(type));
 		switch (type) {
-			case TYPE_POTION: return "potion";
-			case TYPE_CANDY: return "candy";
+			case TYPE_POTION: return "TYPE_POTION";
+			case TYPE_CANDY: return "TYPE_CANDY";
 		}
 	}
 	return NULL;
@@ -100,8 +101,7 @@ Item itemCreate( int value, char* type ) {
 	if( !itemIsValidArgs( value, type ) ) return NULL;
 	Item new_item = malloc( sizeof(*new_item) );
 	if( !new_item )  return NULL;
-	int type_to_be = stringToType( type );
-	new_item->type = (ItemType)type_to_be;
+	new_item->type = stringToType( type );
 	new_item->value = value;
 	return new_item;
 }
@@ -136,12 +136,12 @@ int itemCompare( Item item1 , Item item2 ) {
 	if( itemGetType( item1 ) <  itemGetType( item2 ) ) return ITEM_2_BIGGER;
 	if( itemGetValue( item1 ) >  itemGetValue( item2 ) ) return ITEM_1_BIGGER;
 	if( itemGetValue( item1 ) <  itemGetValue( item2 ) ) return ITEM_2_BIGGER;
-	return ITEMS_EQUAL;
+	return EQUAL;
 }
 
 bool itemIsValidArgs( int value, char* type ) {
 	if ( (!type) || (!positiveCheck(value)) ) return false;
-	ItemType item_type = (ItemType)stringToType( type );
+	ItemType item_type = stringToType( type );
 	if ( !isValidType(item_type) ) return false;
 	return true;
 }
@@ -173,7 +173,7 @@ StoreResult storeAddItem ( Store store , Item item ) {
 StoreResult storeRemoveItem( Store store , Item item ) {
 	if ( !item || !store ) return STORE_NULL_ARGUMENT;
 	LIST_FOREACH( Item , current_item , store ) {
-		if ( itemCompare( current_item , item ) ==  ITEMS_EQUAL ){
+		if ( itemCompare( current_item , item ) ==  EQUAL ){
 			listRemoveCurrent( store );
 			return STORE_SUCCESS;
 		}
@@ -191,7 +191,7 @@ Item storeSellItem( Store store , Item item ) {
 bool storeDoesItemExist(  Store store , Item item ) {
 	assert ( item && store );
 	LIST_FOREACH( Item , current_item , store ) {
-		if ( itemCompare( current_item , item ) ==  ITEMS_EQUAL ){
+		if ( itemCompare( current_item , item ) ==  EQUAL ){
 			return true;
 		}
 	}
@@ -213,7 +213,7 @@ void storePrintStock( Store store , FILE* output_channel ) {
 		Item item_index = listGetFirst(store);
 		int counter = 0;
 		LIST_FOREACH( Item , current_item , store ) {
-			if ( itemCompare( item_index , current_item ) != ITEMS_EQUAL ) {
+			if ( itemCompare( item_index , current_item ) != EQUAL ) {
 				item_index = listGetCurrent(store);
 				mtmPrintItem(output_channel , convertTypeToString(current_item),
 							 itemGetValue(current_item) , counter);

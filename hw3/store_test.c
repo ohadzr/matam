@@ -7,11 +7,11 @@
 #include "store.h"
 #include "aux_macros.h"
 #include <assert.h>
-//
-///**************************************
-// *         Static Functions           *
-// **************************************/
-//
+
+/**************************************
+ *         Static Functions           *
+ **************************************/
+
 //static bool testItemCombo() {
 //    bool result = true;
 ///* -----------------------  initialization  ----------------------- */
