@@ -95,17 +95,70 @@ PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
 
 
 
+/**
+* Find and return a pokemon by a given id
+*
+* @return
+*   NULL if trainer is NULL or if no pokemon in that id was found
+*   Pokemon from trainer's pokemon list otherwise.
+*/
 Pokemon pokemonTrainerGetPokemon(PokemonTrainer trainer, int pokemon_id);
 
+
+/**
+* Buying item from store and moving it from store to trainer item list.
+* item must be valid, exist in store and the trainer must have sufficent
+* funds to buy item. After buying the trainer's budget is reduced by the
+* price of the item.
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer or store or item are NULL.
+* 	POKEMON_TRAINER_INSUFFICIENT_BUDGET if trainer doesn't have enough budget
+* 	POKEMON_TRAINER_ITEM_OUT_OF_STOCK if item not in store
+* 	POKEMON_TRAINER_OUT_OF_MEMORY if set had a memory allocation error.
+* 	POKEMON_SUCCESS otherwise.
+*/
 PokemonTrainerResult pokemonTrainerBuyItem(PokemonTrainer trainer, Item item,
 										   Store store);
 
-
+/**
+* Trainer goes hunting in a given location. If there's a pokemon in location
+* he catch him (first one, if there are many).
+* pokemon is being added to trainer's pokemon list and being giving an ID of
+* the next pokemon. The location must not be the trainer's current location and
+* must be reachable from current trainer location.
+* After hunting print results using @mtmPrint functions from print utilities.
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer or location, world_map, pokedex or
+* 	output are NULL.
+* 	POKEMON_TRAINER_ALREADY_IN_LOCATION if trainer is already in the same
+* 	location
+* 	POKEMON_TRAINER_LOCATION_IS_NOT_REACHABLE if trainer can't reach location
+* 	POKEMON_TRAINER_OUT_OF_MEMORY if set had a memory allocation error.
+* 	POKEMON_SUCCESS otherwise.
+*/
 PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
 										  char* location, WorldMap world_map,
 										  Pokedex pokedex, FILE* output);
 
 
+/**
+* Trainer goes hunting in a given location. If there's a pokemon in location
+* he catch him (first one, if there are many).
+* pokemon is being added to trainer's pokemon list and being giving an ID of
+* the next pokemon. The location must not be the trainer's current location and
+* must be reachable from current trainer location.
+*
+* @return
+* 	POKEMON_TRAINER_NULL_ARG if trainer or location, world_map, pokedex or
+* 	output are NULL.
+* 	POKEMON_TRAINER_ALREADY_IN_LOCATION if trainer is already in the same
+* 	location
+* 	POKEMON_TRAINER_LOCATION_IS_NOT_REACHABLE if trainer can't reach location
+* 	POKEMON_TRAINER_OUT_OF_MEMORY if set had a memory allocation error.
+* 	POKEMON_SUCCESS otherwise.
+*/
 PokemonTrainerResult pokemonTrainerFight(PokemonTrainer trainer1,
 										 PokemonTrainer trainer2,
 										 int pokemon1_id,

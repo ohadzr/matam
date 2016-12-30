@@ -3,21 +3,20 @@
 //
 
 #include <stdio.h>
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <assert.h>
 #include "pokedex.h"
 #include "pokemon_trainer.h"
-#include "pokedex.h"
-#include "location.h"
-#include "store.h"
-#include "print_utils.h"
+//#include "location.h"
+//#include "store.h"
+//#include "print_utils.h"
 
 
 #define MAX_LINE_SIZE 250
 #define SPACE_DELIMITER " "
-#define SEMILICOLON_DELIMITER ";"
+#define SEMICOLON_DELIMITER ";"
 #define COMMAND_HANDLE(cmd_name, name, cmd_action, action, arg_counter, num) \
                                         (!strcmp(cmd_name, name)) \
                                         && (!strcmp(cmd_action, action)) &&   \
@@ -33,7 +32,9 @@ static int countArgsInCommand( char* command );
 
 static MtmErrorCode handlePokemonTrainerResult(PokemonTrainerResult result);
 
-static int charToInt(char* int_as_char);
+static MtmErrorCode handleStoreResult(StoreResult result);
+
+static int stringToInt(char *int_as_char);
 
 /****************************************
  *    Assistent PokemonGO Funcs         *
@@ -79,7 +80,22 @@ MtmErrorCode handlePokemonTrainerResult(PokemonTrainerResult result) {
     return MTM_SUCCESS;
 }
 
-int charToInt(char* int_as_char) {
+
+MtmErrorCode handleStoreResult(StoreResult result) {
+    switch (result) {
+        case STORE_SUCCESS:
+            return MTM_SUCCESS;
+        case STORE_NULL_ARGUMENT:
+            return MTM_INVALID_COMMAND_LINE_PARAMETERS;
+        case STORE_ITEM_NOT_EXIST:
+            MTM_ITEM_OUT_OF_STOCK;
+        case STORE_OUT_OF_MEMORY:
+            MTM_OUT_OF_MEMORY;
+    }
+    return MTM_SUCCESS;
+}
+
+int stringToInt(char *int_as_char) {
     assert(int_as_char != NULL);
 
     int num;
@@ -107,13 +123,13 @@ WorldMap pokemonGoWorldMapCreate(FILE* location_file, Pokedex pokedex) {
 
 
 
-    char location_info[250];
+    char location_info[MAX_LINE_SIZE];
     char *first_part, *second_part,*location_name,*pokemon_name, *near_location;
 
     while (fgets(location_info, MAX_LINE_SIZE, location_file)) {
-        first_part = strtok(location_info, SEMILICOLON_DELIMITER);
+        first_part = strtok(location_info, SEMICOLON_DELIMITER);
         if (first_part == NULL) continue;
-        second_part = strtok(NULL, SEMILICOLON_DELIMITER);
+        second_part = strtok(NULL, SEMICOLON_DELIMITER);
 
         location_name = strtok(first_part, SPACE_DELIMITER);
         Location location = locationCreate(location_name);
@@ -171,7 +187,7 @@ Pokedex pokemonGoPokedexCreate(FILE* pokedex_file, FILE* evolution_file) {
     Pokedex pokedex = pokedexCreate();
     if (pokedex == NULL) return NULL;
 
-    char pokemon_line[250], *pokemon_name, *initial_cp;
+    char pokemon_line[MAX_LINE_SIZE], *pokemon_name, *initial_cp;
 
     while (fgets(pokemon_line, MAX_LINE_SIZE, pokedex_file)) {
         pokemon_name = strtok(pokemon_line, SPACE_DELIMITER);
@@ -208,17 +224,66 @@ void destroyPokemonGo(Trainers trainers, Store store, WorldMap world_map,
 }
 
 
+
+MtmErrorCode pokemonGoTrainerPurchase(Trainers trainers, Store store) {
+    if (trainers == NULL || store == NULL) return MTM_OUT_OF_MEMORY;
+
+    char* trainer_name = GET_NEXT_ARGUMENT;
+    char* item_name = GET_NEXT_ARGUMENT;
+    char* item_value = GET_NEXT_ARGUMENT;
+    int value = stringToInt(item_value);
+
+    if (trainersDoesTrainerExist(trainers, trainer_name) == false)
+        return MTM_TRAINER_DOES_NOT_EXIST;
+
+    if (itemIsValidArgs(value, item_name) == false) return MTM_INVALID_ARGUMENT;
+
+    PokemonTrainer trainer = trainersGetTrainer(trainers, trainer_name);
+    Item item = itemCreate(value, item_name);
+    if (item == NULL) return MTM_OUT_OF_MEMORY;
+
+    PokemonTrainerResult result = pokemonTrainerBuyItem(trainer,item,store );
+
+    return handlePokemonTrainerResult(result);
+}
+
+MtmErrorCode pokemonGoStoreAddItem(Store store) {
+    if (store == NULL) return MTM_OUT_OF_MEMORY;
+
+    char* item_name = GET_NEXT_ARGUMENT;
+    char* item_value = GET_NEXT_ARGUMENT;
+    char* quantity_char = GET_NEXT_ARGUMENT;
+    int value = stringToInt(item_value), quantity = stringToInt(quantity_char);
+
+    if (itemIsValidArgs(value, item_name) == false) return MTM_INVALID_ARGUMENT;
+
+    Item item = itemCreate(value, item_name);
+    if (item == NULL) return MTM_OUT_OF_MEMORY;
+
+    for (int i=0; i<quantity; i++) {
+        StoreResult result = storeAddItem(store, item);
+        if (handleStoreResult(result) != MTM_SUCCESS) {
+            itemDestroy(item);
+            return handleStoreResult(result);
+        }
+
+    }
+
+    itemDestroy(item);
+    return MTM_SUCCESS;
+}
+
 MtmErrorCode pokemonGoTrainerBattle(Pokedex pokedex, Trainers trainers,
                                     FILE* output) {
     if (pokedex == NULL || trainers == NULL) return MTM_OUT_OF_MEMORY;
     if (output == NULL) return MTM_CANNOT_OPEN_FILE;
 
-    char* trainer1_name = strtok(NULL, SPACE_DELIMITER);
-    char* trainer2_name = strtok(NULL, SPACE_DELIMITER);
-    char* pokemon_id_char_1 = strtok(NULL, SPACE_DELIMITER);
-    char* pokemon_id_char_2 = strtok(NULL, SPACE_DELIMITER);
-    int pokemon_id1 = charToInt(pokemon_id_char_1);
-    int pokemon_id2 = charToInt(pokemon_id_char_2);
+    char* trainer1_name = GET_NEXT_ARGUMENT;
+    char* trainer2_name = GET_NEXT_ARGUMENT;
+    char* pokemon_id_char_1 = GET_NEXT_ARGUMENT;
+    char* pokemon_id_char_2 = GET_NEXT_ARGUMENT;
+    int pokemon_id1 = stringToInt(pokemon_id_char_1);
+    int pokemon_id2 = stringToInt(pokemon_id_char_2);
 
     if (!trainersDoesTrainerExist(trainers, trainer1_name) ||
             !trainersDoesTrainerExist(trainers, trainer2_name))
@@ -232,13 +297,12 @@ MtmErrorCode pokemonGoTrainerBattle(Pokedex pokedex, Trainers trainers,
     return handlePokemonTrainerResult(result);
 }
 
-MtmErrorCode pokemonGoPokemonHeal(Trainers trainers, FILE* output) {
+MtmErrorCode pokemonGoPokemonHeal(Trainers trainers) {
     if (trainers == NULL) return MTM_OUT_OF_MEMORY;
-    if (output == NULL) return MTM_CANNOT_OPEN_FILE;
 
-    char* trainer_name = strtok(NULL, SPACE_DELIMITER); //TODO: dup with next - please fix
-    char* pokemon_id_char = strtok(NULL, SPACE_DELIMITER);
-    int pokemon_id = charToInt(pokemon_id_char);
+    char* trainer_name = GET_NEXT_ARGUMENT; //TODO: dup with next - please fix
+    char* pokemon_id_char = GET_NEXT_ARGUMENT;
+    int pokemon_id = stringToInt(pokemon_id_char);
 
     if (!trainersDoesTrainerExist(trainers, trainer_name))
         return MTM_TRAINER_DOES_NOT_EXIST;
@@ -251,13 +315,12 @@ MtmErrorCode pokemonGoPokemonHeal(Trainers trainers, FILE* output) {
 
 }
 
-MtmErrorCode pokemonGoPokemonTrain(Trainers trainers, FILE* output) {
+MtmErrorCode pokemonGoPokemonTrain(Trainers trainers) {
     if (trainers == NULL) return MTM_OUT_OF_MEMORY;
-    if (output == NULL) return MTM_CANNOT_OPEN_FILE;
 
-    char* trainer_name = strtok(NULL, SPACE_DELIMITER);
-    char* pokemon_id_char = strtok(NULL, SPACE_DELIMITER);
-    int pokemon_id = charToInt(pokemon_id_char);
+    char* trainer_name = GET_NEXT_ARGUMENT;
+    char* pokemon_id_char = GET_NEXT_ARGUMENT;
+    int pokemon_id = stringToInt(pokemon_id_char);
 
 
     if (!trainersDoesTrainerExist(trainers, trainer_name))
@@ -276,7 +339,7 @@ MtmErrorCode pokemonGoTrainerReport(Trainers trainers, FILE* output) {
     if (trainers == NULL) return MTM_OUT_OF_MEMORY;
     if (output == NULL) return MTM_CANNOT_OPEN_FILE;
 
-    char* trainer_name = strtok(NULL, SPACE_DELIMITER);
+    char* trainer_name = GET_NEXT_ARGUMENT;
 
     if (!trainersDoesTrainerExist(trainers, trainer_name))
         return MTM_TRAINER_DOES_NOT_EXIST;
@@ -312,7 +375,7 @@ MtmErrorCode pokemonGoAddTrainer( Pokedex pokedex, WorldMap world_map, Trainers 
     char* start_point = GET_NEXT_ARGUMENT;
     char* budget_char = GET_NEXT_ARGUMENT;
     if ( !budget_char ) return MTM_INVALID_COMMAND_LINE_PARAMETERS;
-    int budget = charToInt( budget_char );
+    int budget = stringToInt(budget_char);
     if ( !output ) return MTM_CANNOT_OPEN_FILE;
     if ( (!name) || (!budget) || (!start_point) )
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
@@ -368,7 +431,7 @@ MtmErrorCode pokemonGoTrainerGoHunt( Pokedex pokedex ,WorldMap world_map,
 
 MtmErrorCode pokemonGoProcessCommand(char* command, Trainers trainers,
                              Store store, WorldMap world_map, Pokedex pokedex,
-                             FILE* input, FILE* output) {
+                             FILE* output) {
     int arg_counter = countArgsInCommand(command);
     if (arg_counter < 2) return MTM_INVALID_COMMAND_LINE_PARAMETERS;
     char* section = strtok(command, SPACE_DELIMITER);
@@ -379,15 +442,15 @@ MtmErrorCode pokemonGoProcessCommand(char* command, Trainers trainers,
     if (COMMAND_HANDLE(section, "trainer",action, "go", arg_counter, 4))
         return pokemonGoTrainerGoHunt( pokedex , world_map, trainers, output);
     if (COMMAND_HANDLE(section,"trainer",action,"purchase",arg_counter,5))
-        return pokemonGoTrainerPurchase();
+        return pokemonGoTrainerPurchase(trainers, store);
     if (COMMAND_HANDLE(section, "store",action, "add", arg_counter, 5))
-        return pokemonGoStoreAddItem();
+        return pokemonGoStoreAddItem(store);
     if (COMMAND_HANDLE(section, "battle",action,"fight", arg_counter, 6))
-        return pokemonGoTrainerBattle();
+        return pokemonGoTrainerBattle(pokedex, trainers, output);
     if (COMMAND_HANDLE(section, "pokemon",action, "heal", arg_counter,4))
-        return pokemonGoPokemonHeal(trainers, output);
+        return pokemonGoPokemonHeal(trainers);
     if (COMMAND_HANDLE(section,"pokemon",action,"train",arg_counter, 4))
-        return pokemonGoPokemonTrain(trainers, output);
+        return pokemonGoPokemonTrain(trainers);
     if (COMMAND_HANDLE(section,"report",action,"trainer",arg_counter, 3))
         return pokemonGoTrainerReport(trainers, output);
     if (COMMAND_HANDLE(section,"report",action,"locations",arg_counter,2))
@@ -421,7 +484,7 @@ void pokemonGo(FILE* pokedex_file, FILE* evolution_file, FILE* location_file,
         if (!fgets(command, MAX_LINE_SIZE, input)) break;
         if (command == NULL) break;
         result = pokemonGoProcessCommand(command, trainers, store,
-                                          world_map, pokedex, input, output);
+                                          world_map, pokedex, output);
         if (result != MTM_SUCCESS) {
             mtmPrintErrorMessage(stderr, result);
         }
