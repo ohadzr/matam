@@ -307,9 +307,7 @@ MtmErrorCode pokemonGoStoreReport(Store store, FILE* output) {
 }
 
 MtmErrorCode pokemonGoAddTrainer( Pokedex pokedex, WorldMap world_map, Trainers trainers, FILE* output ) {
-    assert(pokedex);
-    assert(trainers);
-    assert(world_map);
+    assert(pokedex && trainers && world_map);
     char* name =  GET_NEXT_ARGUMENT;
     char* start_point = GET_NEXT_ARGUMENT;
     char* budget_char = GET_NEXT_ARGUMENT;
@@ -324,9 +322,9 @@ MtmErrorCode pokemonGoAddTrainer( Pokedex pokedex, WorldMap world_map, Trainers 
         return MTM_TRAINER_NAME_ALREADY_EXISTS;
     if ( !worldMapDoesLocationExist(world_map,start_point) )
         return MTM_LOCATION_DOES_NOT_EXIST;
+
     if ( !pokemonTrainerIsValidArgs( name, start_point, budget) )
     return MTM_INVALID_ARGUMENT;
-
     PokemonTrainer trainer=pokemonTrainerCreate(name, start_point, budget);
     if (trainer == NULL) return MTM_OUT_OF_MEMORY;
 
@@ -347,10 +345,10 @@ MtmErrorCode pokemonGoAddTrainer( Pokedex pokedex, WorldMap world_map, Trainers 
     return MTM_SUCCESS;
 }
 
-MtmErrorCode pokemonGoTrainerGoHunt( char* command, Pokedex pokedex ,
+MtmErrorCode pokemonGoTrainerGoHunt( Pokedex pokedex ,
                                      WorldMap world_map, Trainers trainers,
                                      FILE* output) {
-    ASSERT_GLOBAL;
+    assert()
     char* trainer_name = GET_NEXT_ARGUMENT;
     char* destination_location = GET_NEXT_ARGUMENT;
     sscanf(command, "%s %s" , trainer_name, destination_location);
@@ -361,7 +359,7 @@ MtmErrorCode pokemonGoTrainerGoHunt( char* command, Pokedex pokedex ,
         return MTM_TRAINER_DOES_NOT_EXIST;
     if ( !worldMapDoesLocationExist(world_map,destination_location) )
         return MTM_LOCATION_DOES_NOT_EXIST;
-    PokemonTrainer trainer = trainersGetTrainer( );
+    PokemonTrainer trainer = trainersGetTrainer( trainers, trainer_name );
     PokemonTrainerResult result = pokemonTrainerGoHunt(PokemonTrainer trainer,char* location, WorldMap world_map, Pokedex pokedex, FILE* output)
 
 

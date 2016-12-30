@@ -20,6 +20,7 @@
 #define ITEMS_EQUAL 0
 #define ITEM_2_BIGGER -1
 #define EMPTY 0
+#define ILLEGAL -1
 
 /**************************************
  *              Structs               *
@@ -33,6 +34,14 @@ struct item_t {
 /**************************************
  *         Static Functions           *
  **************************************/
+
+/* convert string to type return -1 if string NULL */
+int static stringToType( char* string ) {
+	if ( !string )return ILLEGAL;
+	int type;
+	sscanf( string , "%d" , &type );
+	return type;
+}
 
 /* return true if value > 0 */
 int static positiveCheck( int value ) {
@@ -87,11 +96,12 @@ int static itemCompareElement( ItemElement item1 , ItemElement item2 ) {
  *           ITEM Functions           *
  **************************************/
 
-Item itemCreate( int value,ItemType type ) {
-	if( ( !isValidType(type) ) || ( !positiveCheck(value) ) ) return NULL;
+Item itemCreate( int value, char* type ) {
+	if( !itemIsValidArgs( value, type ) ) return NULL;
 	Item new_item = malloc( sizeof(*new_item) );
 	if( !new_item )  return NULL;
-	new_item->type = type;
+	int type_to_be = stringToType( type );
+	new_item->type = (ItemType)type_to_be;
 	new_item->value = value;
 	return new_item;
 }
@@ -102,7 +112,7 @@ void itemDestroy( Item item ) {
 
 Item itemCopy( Item item ) {
 	if ( !item ) return NULL;
-	return itemCreate(item->value,item->type);
+	return itemCreate( item->value,convertTypeToString(item) );
 }
 
 int itemGetValue( Item item ) {
@@ -127,6 +137,13 @@ int itemCompare( Item item1 , Item item2 ) {
 	if( itemGetValue( item1 ) >  itemGetValue( item2 ) ) return ITEM_1_BIGGER;
 	if( itemGetValue( item1 ) <  itemGetValue( item2 ) ) return ITEM_2_BIGGER;
 	return ITEMS_EQUAL;
+}
+
+bool itemIsValidArgs( int value, char* type ) {
+	if ( (!type) || (!positiveCheck(value)) ) return false;
+	ItemType item_type = (ItemType)stringToType( type );
+	if ( !isValidType(item_type) ) return false;
+	return true;
 }
 
 /**************************************

@@ -15,9 +15,9 @@
 //static bool testItemCombo() {
 //    bool result = true;
 ///* -----------------------  initialization  ----------------------- */
-//    Item item1 = itemCreate(0,TYPE_CANDY);
-//    Item item2 = itemCreate(40,TYPE_CANDY);
-//    Item item3 = itemCreate(100,TYPE_POTION);
+//    Item item1 = itemCreate(0,"TYPE_CANDY");
+//    Item item2 = itemCreate(40,"TYPE_CANDY");
+//    Item item3 = itemCreate(100,"TYPE_POTION");
 //    Item item4 = itemCopy(item2);
 ///* ----------------------------- tests ---------------------------- */
 //    TEST_EQUALS(result,item1,NULL);
@@ -41,9 +41,9 @@
 //static bool testStoreCombo() {
 //    bool result = true;
 ///* -----------------------  initialization  ----------------------- */
-//    Item item1 = itemCreate(0,TYPE_CANDY);
-//    Item item2 = itemCreate(40,TYPE_CANDY);
-//    Item item3 = itemCreate(100,TYPE_POTION);
+//    Item item1 = itemCreate(0,"TYPE_CANDY");
+//    Item item2 = itemCreate(40,"TYPE_CANDY");
+//    Item item3 = itemCreate(100,"TYPE_POTION");
 //    Item item4 = itemCopy(item2);
 //    Item item5 = itemCopy(item4);
 //    Store store1 = storeCreate();

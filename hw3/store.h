@@ -43,7 +43,7 @@ typedef enum {STORE_SUCCESS,
  **************************************/
 
 /* return new item or NULL if type invalid || value<= 0 || not enough memory */
-Item itemCreate( int value,ItemType type );
+Item itemCreate( int value, char* type );
 
 /* if item == NULL do nothing, else free all memory allocated to item */
 void itemDestroy( Item item );
@@ -63,6 +63,9 @@ int itemGetPrice( Item item );
 /* define: if items has the same value and same type then they equal. function
  * return 0 if items equal, 1 if item1 > item2 and -1 if item2 > item1 */
 int itemCompare( Item item1 , Item item2 );
+
+/* check if argument to create Item valid, return true if so and false else */
+bool itemIsValidArgs( int value, char* type );
 
 /* return new store with no items in it. return NULL if not enough memory */
 Store storeCreate();
