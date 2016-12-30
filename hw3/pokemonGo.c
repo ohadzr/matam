@@ -209,9 +209,28 @@ void destroyPokemonGo(Trainers trainers, Store store, WorldMap world_map,
 }
 
 
-MtmErrorCode pokemonGoTrainerBattle(Pokedex pokedex, Trainers trainers) {
+MtmErrorCode pokemonGoTrainerBattle(Pokedex pokedex, Trainers trainers,
+                                    FILE* output) {
+    if (pokedex == NULL || trainers == NULL) return MTM_OUT_OF_MEMORY;
+    if (output == NULL) return MTM_CANNOT_OPEN_FILE;
 
+    char* trainer1_name = strtok(NULL, SPACE_DELIMITER);
+    char* trainer2_name = strtok(NULL, SPACE_DELIMITER);
+    char* pokemon_id_char_1 = strtok(NULL, SPACE_DELIMITER);
+    char* pokemon_id_char_2 = strtok(NULL, SPACE_DELIMITER);
+    int pokemon_id1 = charToInt(pokemon_id_char_1);
+    int pokemon_id2 = charToInt(pokemon_id_char_2);
 
+    if (!trainersDoesTrainerExist(trainers, trainer1_name) ||
+            !trainersDoesTrainerExist(trainers, trainer2_name))
+        return MTM_TRAINER_DOES_NOT_EXIST;
+    PokemonTrainer trainer1 =  trainersGetTrainer(trainers,trainer1_name);
+    PokemonTrainer trainer2 =  trainersGetTrainer(trainers,trainer2_name);
+
+    PokemonTrainerResult result = pokemonTrainerFight(trainer1, trainer2,
+                                                      pokemon_id1, pokemon_id2,
+                                                      pokedex, output);
+    return handlePokemonTrainerResult(result);
 }
 
 MtmErrorCode pokemonGoPokemonHeal(Trainers trainers, FILE* output) {
