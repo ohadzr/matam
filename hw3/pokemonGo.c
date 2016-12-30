@@ -36,6 +36,12 @@ static MtmErrorCode handleStoreResult(StoreResult result);
 
 static int stringToInt(char *int_as_char);
 
+static MtmErrorCode loadPokedexFile(Pokedex pokedex, FILE* pokedex_file);
+
+static MtmErrorCode loadEvolutionsFile(Pokedex pokedex, FILE* evolution_file);
+
+
+
 /****************************************
  *    Assistent PokemonGO Funcs         *
  ****************************************/
@@ -46,7 +52,7 @@ int countArgsInCommand( char* command ) {
     int counter = 0;
     char *current_word = strtok(command, SPACE_DELIMITER);
     while (current_word) {
-        current_word = strtok(NULL, SPACE_DELIMITER);
+        current_word = GET_NEXT_ARGUMENT;
         counter++;
     }
     return counter;
@@ -104,6 +110,55 @@ int stringToInt(char *int_as_char) {
     return num;
 }
 
+MtmErrorCode loadPokedexFile(Pokedex pokedex, FILE* pokedex_file) {
+    char line[MAX_LINE_SIZE], *pokemon_name, *initial_cp;
+
+    while (fgets(line, MAX_LINE_SIZE, pokedex_file)) {
+        pokemon_name = strtok(line, SPACE_DELIMITER);
+        if (pokemon_name == NULL) continue;
+
+        initial_cp = GET_NEXT_ARGUMENT;
+        int cp;
+        sscanf(initial_cp, "%d", &cp);
+        PokemonInfo pokemon_info = pokedexPokemonInfoCreate(pokemon_name, cp);
+        if (pokemon_info == NULL) {
+            pokedexDestroy(pokedex);
+            return MTM_OUT_OF_MEMORY;
+        }
+
+        char* type = GET_NEXT_ARGUMENT;
+        while (type != NULL) {
+            pokedexAddType(pokedex, pokemon_name, type);
+            type = GET_NEXT_ARGUMENT;
+        }
+        pokedexPokemonInfoDestroy(pokemon_info);
+    }
+
+    return MTM_SUCCESS;
+}
+
+MtmErrorCode loadEvolutionsFile(Pokedex pokedex, FILE* evolution_file) {
+    char line[MAX_LINE_SIZE], *pokemon_name;
+    char *evolution_name, *evolution_level_char;
+    int evolution_level;
+    while (fgets(line, MAX_LINE_SIZE, evolution_file)) {
+        pokemon_name = strtok(line, SPACE_DELIMITER);
+        evolution_name = GET_NEXT_ARGUMENT;
+        evolution_level_char = GET_NEXT_ARGUMENT;
+        evolution_level = stringToInt(evolution_level_char);
+        PokedexResult result = pokedexUpdateNextEvolution(pokedex, pokemon_name,
+                                                          evolution_name,
+                                                          evolution_level);
+        if (result == POKEDEX_OUT_OF_MEMORY) {
+            pokedexDestroy(pokedex);
+            return MTM_OUT_OF_MEMORY;
+        }
+    }
+
+    return MTM_SUCCESS;
+}
+
+
 /********************************
  *        PokemonGo Funcs       *
  ********************************/
@@ -121,8 +176,6 @@ WorldMap pokemonGoWorldMapCreate(FILE* location_file, Pokedex pokedex) {
     WorldMap world_map = worldMapCreate();
     if (world_map == NULL) return NULL;
 
-
-
     char location_info[MAX_LINE_SIZE];
     char *first_part, *second_part,*location_name,*pokemon_name, *near_location;
 
@@ -133,7 +186,7 @@ WorldMap pokemonGoWorldMapCreate(FILE* location_file, Pokedex pokedex) {
 
         location_name = strtok(first_part, SPACE_DELIMITER);
         Location location = locationCreate(location_name);
-        pokemon_name = strtok(NULL, SPACE_DELIMITER);
+        pokemon_name = GET_NEXT_ARGUMENT;
         while (pokemon_name != NULL) {
             Pokemon pokemon = pokemonCreate(pokemon_name, pokedex);
             if (pokemon == NULL || location == NULL) {
@@ -150,7 +203,7 @@ WorldMap pokemonGoWorldMapCreate(FILE* location_file, Pokedex pokedex) {
                 return NULL;
             }
             pokemonDestroy(pokemon);
-            pokemon_name = strtok(NULL, SPACE_DELIMITER);
+            pokemon_name = GET_NEXT_ARGUMENT;
         }
 
         near_location = strtok(second_part, SPACE_DELIMITER);
@@ -166,7 +219,7 @@ WorldMap pokemonGoWorldMapCreate(FILE* location_file, Pokedex pokedex) {
             }
 
             nearLocationDestroy(near_location);
-            near_location = strtok(NULL, SPACE_DELIMITER);
+            near_location = GET_NEXT_ARGUMENT;
         }
 
         WorldMapResult result = worldMapAddLocation(world_map, location);
@@ -187,27 +240,16 @@ Pokedex pokemonGoPokedexCreate(FILE* pokedex_file, FILE* evolution_file) {
     Pokedex pokedex = pokedexCreate();
     if (pokedex == NULL) return NULL;
 
-    char pokemon_line[MAX_LINE_SIZE], *pokemon_name, *initial_cp;
+    MtmErrorCode result = loadPokedexFile(pokedex, pokedex_file);
+    if (result != MTM_SUCCESS) {
+        pokedexDestroy(pokedex);
+        return NULL;
+    }
 
-    while (fgets(pokemon_line, MAX_LINE_SIZE, pokedex_file)) {
-        pokemon_name = strtok(pokemon_line, SPACE_DELIMITER);
-        if (pokemon_name == NULL) continue;
-
-        initial_cp = strtok(NULL, SPACE_DELIMITER);
-        int cp;
-        sscanf(initial_cp, "%d", &cp);
-        PokemonInfo pokemon_info = pokedexPokemonInfoCreate(pokemon_name, cp);
-        if (pokemon_info == NULL) {
-            pokedexDestroy(pokedex);
-            return NULL;
-        }
-
-        char* type = strtok(NULL, SPACE_DELIMITER);
-        while (type != NULL) {
-            pokedexAddType(pokedex, pokemon_name, type);
-            type = strtok(NULL, SPACE_DELIMITER);
-        }
-        pokedexPokemonInfoDestroy(pokemon_info);
+    result = loadEvolutionsFile(pokedex, evolution_file);
+    if (result != MTM_SUCCESS){
+        pokedexDestroy(pokedex);
+        return NULL;
     }
 
     return pokedex;
@@ -435,7 +477,7 @@ MtmErrorCode pokemonGoProcessCommand(char* command, Trainers trainers,
     int arg_counter = countArgsInCommand(command);
     if (arg_counter < 2) return MTM_INVALID_COMMAND_LINE_PARAMETERS;
     char* section = strtok(command, SPACE_DELIMITER);
-    char* action = strtok(NULL, SPACE_DELIMITER);
+    char* action = GET_NEXT_ARGUMENT;
 
     if (COMMAND_HANDLE(section, "trainer",action, "add", arg_counter, 5))
         return pokemonGoAddTrainer( pokedex, world_map, trainers, output );

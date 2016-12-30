@@ -13,6 +13,10 @@
 #include "location.h"
 
 
+/********************************
+ *          Defines             *
+ ********************************/
+
 typedef struct pokemon_trainer_t* PokemonTrainer;
 
 
@@ -34,6 +38,11 @@ typedef enum {
 	POKEMON_TRAINER_ALREADY_EXIST,
 	POKEMON_TRAINER_SUCCESS
 } PokemonTrainerResult;
+
+
+/**************************************
+ *        Functions declarations      *
+ **************************************/
 
 
 
