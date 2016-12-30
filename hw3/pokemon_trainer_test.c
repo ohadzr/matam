@@ -76,9 +76,9 @@ static bool testPokemonTrainerBuyItem() {
 
     PokemonTrainer trainer = pokemonTrainerCreate("Ash", "paris",100);
 
-    Item item1 = itemCreate(10,TYPE_POTION);
-    Item item2 = itemCreate(40,TYPE_CANDY);
-    Item item3 = itemCreate(100,TYPE_POTION);
+    Item item1 = itemCreate(10,"potion");
+    Item item2 = itemCreate(40,"candy");
+    Item item3 = itemCreate(100,"candy");
 
     Store store = storeCreate();
     storeAddItem(store,item1);
@@ -130,10 +130,10 @@ static bool testPokemonTrainerTrainHealPokemon() {
                 POKEMON_TRAINER_SUCCESS);
     pokemonUpdateHP(pokemonTrainerGetPokemon(trainer,1),-20);
 
-    Item item1 = itemCreate(30,TYPE_POTION);
-    Item item2 = itemCreate(40,TYPE_CANDY);
-    Item item3 = itemCreate(50,TYPE_POTION);
-    Item item4 = itemCreate(20,TYPE_CANDY);
+    Item item1 = itemCreate(30,"potion");
+    Item item2 = itemCreate(40,"candy");
+    Item item3 = itemCreate(50,"potion");
+    Item item4 = itemCreate(20,"candy");
 
     Store store = storeCreate();
     storeAddItem(store,item1);
@@ -164,7 +164,7 @@ static bool testPokemonTrainerTrainHealPokemon() {
                 POKEMON_TRAINER_SUCCESS);
     TEST_EQUALS(result, pokemonGetHP(pokemonTrainerGetPokemon(trainer,1)), 90);
     TEST_EQUALS(result, pokemonTrainerHealPokemon(trainer, 1),
-                POKEMON_TRAINER_ITEM_OUT_OF_STOCK);
+                POKEMON_TRAINER_NO_AVAILABLE_ITEM_FOUND);
     TEST_EQUALS(result, pokemonTrainerHealPokemon(trainer, 2),
                 POKEMON_TRAINER_POKEMON_DOESNT_EXIST);
 
@@ -177,7 +177,7 @@ static bool testPokemonTrainerTrainHealPokemon() {
                 POKEMON_TRAINER_SUCCESS);
     TEST_EQUALS(result, pokemonGetCP(pokemonTrainerGetPokemon(trainer,1)), 70);
     TEST_EQUALS(result, pokemonTrainerTrainPokemon(trainer, 1),
-                POKEMON_TRAINER_ITEM_OUT_OF_STOCK);
+                POKEMON_TRAINER_NO_AVAILABLE_ITEM_FOUND);
     TEST_EQUALS(result, pokemonTrainerTrainPokemon(trainer, 2),
                 POKEMON_TRAINER_POKEMON_DOESNT_EXIST);
 

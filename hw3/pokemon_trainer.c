@@ -381,14 +381,12 @@ PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
         mtmPrintCatchResult(output, trainer->name, NULL, location);
         return POKEMON_TRAINER_SUCCESS;
     }
-
     PokemonTrainerResult result = pokemonTrainerAddPokemon(trainer, pokemon,
                                                            pokedex);
     if (result == POKEMON_TRAINER_SUCCESS) {
         mtmPrintCatchResult(output, trainer->name,
                             pokemonGetName(pokemon), location);
     }
-
     return result;
 }
 
@@ -436,7 +434,7 @@ PokemonTrainerResult pokemonTrainerHealPokemon(PokemonTrainer trainer,
     if (pokemon == NULL) return POKEMON_TRAINER_POKEMON_DOESNT_EXIST;
 
     Item item = pokemonTrainerGetMaxValueItem(trainer, TYPE_POTION);
-    if (item == NULL) return POKEMON_TRAINER_ITEM_OUT_OF_STOCK;
+    if (item == NULL) return POKEMON_TRAINER_NO_AVAILABLE_ITEM_FOUND;
 
     if (pokemonGetHP(pokemon) == DEFAULT_HP)
         return POKEMON_TRAINER_POKEMON_HP_AT_MAX;
@@ -466,7 +464,7 @@ PokemonTrainerResult pokemonTrainerTrainPokemon(PokemonTrainer trainer,
     if (pokemon == NULL) return POKEMON_TRAINER_POKEMON_DOESNT_EXIST;
 
     Item item = pokemonTrainerGetMaxValueItem(trainer, TYPE_CANDY);
-    if (item == NULL) return POKEMON_TRAINER_ITEM_OUT_OF_STOCK;
+    if (item == NULL) return POKEMON_TRAINER_NO_AVAILABLE_ITEM_FOUND;
 
     STORE_FOREACH(Item, item_iter, trainer->item_list) {
         if (itemGetValue(item_iter) == itemGetValue(item) &&
