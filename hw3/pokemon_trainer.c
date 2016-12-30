@@ -317,7 +317,7 @@ PokemonTrainerResult pokemonTrainerAddPokemon(PokemonTrainer trainer,
 
 
 
-Pokemon pokemonTrainerGetPokemon(PokemonTrainer trainer, int pokemon_id) { //TODO: should be static?
+Pokemon pokemonTrainerGetPokemon(PokemonTrainer trainer, int pokemon_id) {
     if (trainer == NULL) return NULL;
 
     Pokemon pokemon = NULL;
@@ -359,7 +359,8 @@ PokemonTrainerResult pokemonTrainerBuyItem(PokemonTrainer trainer, Item item,
 PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
                                           char* location, WorldMap world_map,
                                           Pokedex pokedex, FILE* output) {
-    if (trainer == NULL || location == NULL)
+    if (trainer == NULL || location == NULL || world_map == NULL ||
+            pokedex == NULL || output == NULL)
         return POKEMON_TRAINER_NULL_ARG;
 
     if (strcmp(trainer->location, location) == SAME_STRINGS)
