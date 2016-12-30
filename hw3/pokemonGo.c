@@ -313,7 +313,7 @@ MtmErrorCode pokemonGoAddTrainer( Pokedex pokedex, WorldMap world_map, Trainers 
     char* budget_char = GET_NEXT_ARGUMENT;
     if ( !budget_char ) return MTM_INVALID_COMMAND_LINE_PARAMETERS;
     int budget = charToInt( budget_char );
-    if ( !output ) return MTM_CANNOT_OPEN_FILE
+    if ( !output ) return MTM_CANNOT_OPEN_FILE;
     if ( (!name) || (!budget) || (!start_point) )
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
     if ( !(pokemonTrainerIsValidArgs( name, start_point, budget)) )
@@ -345,33 +345,25 @@ MtmErrorCode pokemonGoAddTrainer( Pokedex pokedex, WorldMap world_map, Trainers 
     return MTM_SUCCESS;
 }
 
-MtmErrorCode pokemonGoTrainerGoHunt( Pokedex pokedex ,
-                                     WorldMap world_map, Trainers trainers,
-                                     FILE* output) {
-    assert()
+MtmErrorCode pokemonGoTrainerGoHunt( Pokedex pokedex ,WorldMap world_map,
+                                     Trainers trainers, FILE* output) {
+    assert( pokedex && world_map && trainers );
     char* trainer_name = GET_NEXT_ARGUMENT;
     char* destination_location = GET_NEXT_ARGUMENT;
-    sscanf(command, "%s %s" , trainer_name, destination_location);
 
     if ( (!trainer_name) || (!destination_location) )
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
+    if ( !output ) return MTM_CANNOT_OPEN_FILE;
     if ( trainersDoesTrainerExist(trainers,trainer_name) )
         return MTM_TRAINER_DOES_NOT_EXIST;
     if ( !worldMapDoesLocationExist(world_map,destination_location) )
         return MTM_LOCATION_DOES_NOT_EXIST;
     PokemonTrainer trainer = trainersGetTrainer( trainers, trainer_name );
-    PokemonTrainerResult result = pokemonTrainerGoHunt(PokemonTrainer trainer,char* location, WorldMap world_map, Pokedex pokedex, FILE* output)
-
-
-
-    PokemonTrainer trainer = trainersGetTrainer( trainers, trainer_name );
-    if ( !trainer ) return MTM_TRAINER_DOES_NOT_EXIST;
-    char* current_location = pokemonTrainerGetTrainerLocation( trainer );//TODO: add pokemonTrainerGetTrainerLocation (char*)
-
-    if ( !(worldMapIsLocationReachable( world_map, current_location, destination_location)) ) return MTM_LOCATION_IS_NOT_REACHABLE;
-    Location location_to = worldMapGetLocation( world_map, destination_location );
-    if ( locationCompare(location_from, location_to) == 0) return MTM_TRAINER_ALREADY_IN_LOCATION;
-    pokemonTrainerupdateCurrentLocation( trainer, location_to);
+    PokemonTrainerResult result = pokemonTrainerGoHunt( trainer,
+                                                        destination_location,
+                                                        world_map, pokedex,
+                                                        output);
+    return handlePokemonTrainerResult(result);
 }
 
 MtmErrorCode pokemonGoProcessCommand(char* command, Trainers trainers,
@@ -385,7 +377,7 @@ MtmErrorCode pokemonGoProcessCommand(char* command, Trainers trainers,
     if (COMMAND_HANDLE(section, "trainer",action, "add", arg_counter, 5))
         return pokemonGoAddTrainer( pokedex, world_map, trainers, output );
     if (COMMAND_HANDLE(section, "trainer",action, "go", arg_counter, 4))
-        return pokemonGoTrainerGoHunt();
+        return pokemonGoTrainerGoHunt( pokedex , world_map, trainers, output);
     if (COMMAND_HANDLE(section,"trainer",action,"purchase",arg_counter,5))
         return pokemonGoTrainerPurchase();
     if (COMMAND_HANDLE(section, "store",action, "add", arg_counter, 5))
