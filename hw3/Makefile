@@ -16,7 +16,7 @@ OBJ_POKEMON_GO = pokemon_go.o location.o pokedex.o trainer.o pokemon.o store.o u
 OBJ_TEST = ${TEST_FOLDER}/store_test.o ${TEST_FOLDER}/pokemon_test.o \
 		   ${TEST_FOLDER}/trainer_test.o  ${TEST_FOLDER}/pokedex_test.o\
 		   ${TEST_FOLDER}/location_test.o
-####    TODO: delete this ^ (one line) add below instead
+####    TODO: delete this ^ (one line) and add below instead
 ####		   ${TEST_FOLDER}/location_test.o ${TEST_FOLDER}/pokemon_go_test.o \
 ####		   ${TEST_FOLDER}/map_test.o
 
@@ -113,8 +113,8 @@ ${TEST_FOLDER}/location_test.o : ${TEST_FOLDER}/location_test.c location.h \
 ###TODO: add map test
 #${TEST_FOLDER}/map_test.o : ${TEST_FOLDER}/map_test.c \
 ###							${MAP_FOLDER}/map_mtm.h  \
-###							${TEST_FOLDER}/test_utilities.h
-###	${CC} ${CFLAGS} -Imap_mtm -c ${TEST_FOLDER}/map_test.c -o $@
+#							${TEST_FOLDER}/test_utilities.h
+#	${CC} ${CFLAGS} -Imap_mtm -c ${TEST_FOLDER}/map_test.c -o $@
 
 
 #################### mtm_map
