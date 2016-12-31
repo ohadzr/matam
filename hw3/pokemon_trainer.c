@@ -247,7 +247,6 @@ PokemonTrainer pokemonTrainerCreate(char* name, int budget) {
         pokemonTrainerDestroy(trainer);
         return NULL;
     }
-    //PokemonTrainerResult result = pokemonTrainerGoHunt(trainer, location); //TODO:need to run in PokemonGO !
 
     return trainer;
 }
@@ -363,18 +362,15 @@ PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
     if (trainer == NULL || location == NULL || world_map == NULL ||
             pokedex == NULL || output == NULL)
         return POKEMON_TRAINER_NULL_ARG;
-
     if (trainer->location != NULL) {
     	if (strcmp(trainer->location, location) == SAME_STRINGS)
     	        return POKEMON_TRAINER_ALREADY_IN_LOCATION;
     }
-
     if (!worldMapIsLocationReachable(world_map, trainer->location, location))
         return POKEMON_TRAINER_LOCATION_IS_NOT_REACHABLE;
 
     stringDestroy(trainer->location);
     trainer->location = stringCopy(location);
-
     if (trainer->location == NULL)
         return POKEMON_TRAINER_OUT_OF_MEMORY;
 
@@ -390,6 +386,7 @@ PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
         mtmPrintCatchResult(output, trainer->name,
                             pokemonGetName(pokemon), location);
     }
+    pokemonDestroy(pokemon);
     return result;
 }
 
@@ -436,11 +433,12 @@ PokemonTrainerResult pokemonTrainerHealPokemon(PokemonTrainer trainer,
     Pokemon pokemon = pokemonTrainerGetPokemon(trainer, pokemon_id);
     if (pokemon == NULL) return POKEMON_TRAINER_POKEMON_DOESNT_EXIST;
 
+    if (pokemonGetHP(pokemon) == DEFAULT_HP)
+        return POKEMON_TRAINER_POKEMON_HP_AT_MAX;
+
     Item item = pokemonTrainerGetMaxValueItem(trainer, TYPE_POTION);
     if (item == NULL) return POKEMON_TRAINER_NO_AVAILABLE_ITEM_FOUND;
 
-    if (pokemonGetHP(pokemon) == DEFAULT_HP)
-        return POKEMON_TRAINER_POKEMON_HP_AT_MAX;
 
 
     STORE_FOREACH(Item, item_iter, trainer->item_list) {

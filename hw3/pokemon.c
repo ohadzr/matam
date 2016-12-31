@@ -109,7 +109,7 @@ PokemonResult pokemonUpdateHP(Pokemon pokemon, double value) {
 }
 
 char* pokemonGetName(Pokemon pokemon) {
-    assert(pokemon != NULL);
+    if (pokemon == NULL) return NULL;
     return pokemon->name;
 }
 
