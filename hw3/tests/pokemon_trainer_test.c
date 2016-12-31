@@ -38,7 +38,7 @@ static bool testCombo() {
     TEST_DIFFERENT(result,ash , NULL);
     TEST_DIFFERENT(result,ash_copy , NULL);
 
-    PokemonTrainer trainer2 = pokemonTrainerCreate("Ohad",1000);
+    PokemonTrainer trainer2 = pokemonTrainerCreate("Ohad",100);
     TEST_EQUALS(result, pokemonTrainerBuyItem(trainer2, item1, store),
                 POKEMON_TRAINER_SUCCESS);
     TEST_EQUALS(result, pokemonTrainerBuyItem(trainer2, item1, store),
