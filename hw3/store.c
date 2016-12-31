@@ -207,6 +207,7 @@ StoreResult storeSort( Store store ) {
 void storePrintStock( Store store , FILE* output_channel ) {
 	assert( store && output_channel );
 
+
 	if( listGetSize( store ) != EMPTY ) {
 		storeSort( store );
 		Item item = listGetFirst(store);

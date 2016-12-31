@@ -20,6 +20,7 @@
                                         (arg_counter==num)
 #define GET_NEXT_ARGUMENT strtok(NULL, SPACE_DELIMITER)
 #define GET_NEXT_LINE(line, input_file)   fgets(line,MAX_LINE_SIZE,input_file)
+#define POSITIVE_QUANTITY 0
 
 
 /********************************
@@ -177,6 +178,7 @@ MtmErrorCode loadPokedexFile(Pokedex pokedex, FILE* pokedex_file) {
             pokedexPokemonInfoDestroy(pokemon_info);
             return MTM_OUT_OF_MEMORY;
         }
+
         char* type = GET_NEXT_ARGUMENT;
         while (type != NULL) {
             pokedexAddType(pokedex, pokemon_name, type);
@@ -277,7 +279,6 @@ MtmErrorCode pokemonGoAddTrainer( Pokedex pokedex, WorldMap world_map, Trainers 
     char* budget_char = GET_NEXT_ARGUMENT;
     char* start_point = GET_NEXT_ARGUMENT;
 
-
     int budget = stringToInt(budget_char);
     if ( !output ) return MTM_CANNOT_OPEN_FILE;
     if ( !(pokemonTrainerIsValidArgs( name, budget)) )
@@ -300,6 +301,7 @@ MtmErrorCode pokemonGoAddTrainer( Pokedex pokedex, WorldMap world_map, Trainers 
         pokemonTrainerDestroy(trainer);
         return MTM_OUT_OF_MEMORY;
     }
+    pokemonTrainerDestroy(trainer);
     return MTM_SUCCESS;
 }
 
@@ -346,6 +348,7 @@ MtmErrorCode pokemonGoTrainerPurchase(Trainers trainers, Store store) {
 
     PokemonTrainerResult result = pokemonTrainerBuyItem(trainer,item,store );
 
+    itemDestroy(item);
     return handlePokemonTrainerResult(result);
 }
 
@@ -357,8 +360,8 @@ MtmErrorCode pokemonGoStoreAddItem(Store store) {
     char* quantity_char = GET_NEXT_ARGUMENT;
     int value = stringToInt(item_value), quantity = stringToInt(quantity_char);
 
-    if (itemIsValidArgs(value, item_name) == false) return MTM_INVALID_ARGUMENT;
-
+    if (!itemIsValidArgs(value, item_name) || quantity < POSITIVE_QUANTITY)
+        return MTM_INVALID_ARGUMENT;
     Item item = itemCreate(value, item_name);
     if (item == NULL) return MTM_OUT_OF_MEMORY;
 
@@ -386,6 +389,8 @@ MtmErrorCode pokemonGoTrainerBattle(Pokedex pokedex, Trainers trainers,
     int pokemon_id1 = stringToInt(pokemon_id_char_1);
     int pokemon_id2 = stringToInt(pokemon_id_char_2);
 
+    if (!strcmp(trainer1_name, trainer2_name))
+        return MTM_INVALID_ARGUMENT;
     if (!trainersDoesTrainerExist(trainers, trainer1_name) ||
             !trainersDoesTrainerExist(trainers, trainer2_name))
         return MTM_TRAINER_DOES_NOT_EXIST;

@@ -270,9 +270,8 @@ void worldMapPrintReport( WorldMap world_map , FILE* output_channel) {
     worldMapSort( world_map );
     mtmPrintLocationsHeader( output_channel );
     LIST_FOREACH( Location , current_location , world_map ) {
-        LIST_FOREACH( Pokemon , current_pokemon , current_location->pokemons ) {
-            mtmPrintLocation( output_channel, locationGetName(current_location),
-                              pokemonGetName(current_pokemon) );
-        }
+        Pokemon pokemon = listGetFirst(current_location->pokemons);
+        mtmPrintLocation( output_channel, locationGetName(current_location),
+                              pokemonGetName(pokemon) );
     }
 }
