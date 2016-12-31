@@ -6,19 +6,19 @@ TEST_FOLDER = tests
 MAP_FOLDER = map_mtm
 
 ##### TODO: remove comment below
-#OBJ_MAP = ${MAP_FOLDER}/map_mtm.o
+####OBJ_MAP = ${MAP_FOLDER}/map_mtm.o
 OBJ_STORE = store.o
-OBJ_POKEMON = utilities.o pokemon.o
-OBJ_TRAINER = utilities.o trainer.o
+OBJ_POKEMON = utilities.o pokemon.o pokedex.o store.o
+OBJ_TRAINER = utilities.o trainer.o pokedex.o store.o location.o pokemon.o
 OBJ_POKEDEX = utilities.o pokedex.o
-OBJ_LOCATION = utilities.o location.o
-OBJ_POKEMON_GO = pokemon_go.o
+OBJ_LOCATION = utilities.o location.o pokedex.o pokemon.o store.o
+OBJ_POKEMON_GO = pokemon_go.o location.o pokedex.o trainer.o pokemon.o store.o utilities.o
 OBJ_TEST = ${TEST_FOLDER}/store_test.o ${TEST_FOLDER}/pokemon_test.o \
 		   ${TEST_FOLDER}/trainer_test.o  ${TEST_FOLDER}/pokedex_test.o\
-		   ${TEST_FOLDER}/location_test.o ${TEST_FOLDER}/pokemon_go_test.o
+		   ${TEST_FOLDER}/location_test.o
 ####    TODO: delete this ^ (one line) add below instead
-#		   ${TEST_FOLDER}/location_test.o ${TEST_FOLDER}/pokemon_go_test.o \
-#		   ${TEST_FOLDER}/map_test.o
+####		   ${TEST_FOLDER}/location_test.o ${TEST_FOLDER}/pokemon_go_test.o \
+####		   ${TEST_FOLDER}/map_test.o
 
 #################### main
 
@@ -33,45 +33,45 @@ pokemon_go : ${OBJ_POKEMON_GO}
 #####tests : ${OBJ_TEST} ${OBJ_MAP}
 tests : ${OBJ_TEST}
 	${CC} ${CFLAGS} ${TEST_FOLDER}/store_test.o ${OBJ_STORE} \
-	        ${LIBS} -o store_test
+	${LIBS} -o store_test
 	${CC} ${CFLAGS} ${TEST_FOLDER}/pokemon_test.o ${OBJ_POKEMON} \
-	        ${LIBS} -o pokemon_test
+	${LIBS} -o pokemon_test
 	${CC} ${CFLAGS} ${TEST_FOLDER}/trainer_test.o ${OBJ_TRAINER} \
-    	    ${LIBS} -o trainer_test
-    ${CC} ${CFLAGS} ${TEST_FOLDER}/pokedex_test.o ${OBJ_POKEDEX} \
-        	${LIBS} -o pokedex_test
+	${LIBS} -o trainer_test
+	${CC} ${CFLAGS} ${TEST_FOLDER}/pokedex_test.o ${OBJ_POKEDEX} \
+    ${LIBS} -o pokedex_test
 	${CC} ${CFLAGS} ${TEST_FOLDER}/location_test.o ${OBJ_LOCATION} \
-            ${LIBS} -o location_test
+	${LIBS} -o location_test
 	#### TODO: add later
-	#${CC} ${CFLAGS} ${TEST_FOLDER}/pokemon_go_test.o ${OBJ_POKEMON_GO} \
-	#        ${LIBS} -o pokemon_go_test
-	#${CC} ${CFLAGS} ${TEST_FOLDER}/map_test.o ${OBJ_MAP} \
-	#        ${LIBS} -o map_test
+	####${CC} ${CFLAGS} ${TEST_FOLDER}/pokemon_go_test.o ${OBJ_POKEMON_GO} \
+	####        ${LIBS} -o pokemon_go_test
+	####${CC} ${CFLAGS} ${TEST_FOLDER}/map_test.o ${OBJ_MAP} \
+	####        ${LIBS} -o map_test
 
 #################### pokemon Go adts code
 
-utilities.o : utilities.h
+utilities.o : utilities.h utilities.c
 	${CC} ${CFLAGS} -c utilities.c -o $@
 
-store.o : store.h list.h print_utils.h
+store.o : store.c store.h list.h print_utils.h
 	${CC} ${CFLAGS} -c store.c -o $@
 
-pokemon.o : pokemon.h store.h list.h set.h utilities.h pokedex.h
+pokemon.o : pokemon.c pokemon.h store.h list.h set.h utilities.h pokedex.h
 	${CC} ${CFLAGS} -c pokemon.c -o $@
 
-trainer.o : pokemon_trainer.h pokemon.h store.h \
+trainer.o : pokemon_trainer.c pokemon_trainer.h pokemon.h store.h \
              list.h set.h utilities.h pokedex.h print_utils.h location.h
 	${CC} ${CFLAGS} -c pokemon_trainer.c -o $@
 
-pokedex.o : pokemon_trainer.h pokemon.h store.h \
+pokedex.o : pokedex.c pokemon_trainer.h pokemon.h store.h \
              list.h set.h utilities.h pokedex.h print_utils.h location.h
-	${CC} ${CFLAGS} -c pokemon_trainer.c -o $@
+	${CC} ${CFLAGS} -c pokedex.c -o $@
 
-location.o : location.h set.h list.h print_utils.h pokemon.h \
+location.o : location.c location.h set.h list.h print_utils.h pokemon.h \
               store.h utilities.h pokedex.h
 	${CC} ${CFLAGS} -c location.c -o $@
 
-pokemon_go.o : pokedex.h set.h utilities.h pokemon_trainer.h \
+pokemon_go.o : pokemon_go.c pokedex.h set.h utilities.h pokemon_trainer.h \
                 pokemon.h store.h list.h print_utils.h location.h
 	${CC} ${CFLAGS} -c pokemon_go.c -o $@
 
@@ -87,11 +87,11 @@ ${TEST_FOLDER}/pokemon_test.o : ${TEST_FOLDER}/pokemon_test.c pokedex.h \
                                 pokemon.h store.h list.h set.h utilities.h
 	${CC} ${CFLAGS} -I. -c ${TEST_FOLDER}/pokemon_test.c -o $@
 
-${TEST_FOLDER}/trainer_test.o : ${TEST_FOLDER}/pokemon_trainer_test.c pokemon.h
-                                store.h list.h print_utils.h location.h \
+${TEST_FOLDER}/trainer_test.o : ${TEST_FOLDER}/pokemon_trainer_test.c pokemon.h \
+								store.h list.h print_utils.h location.h \
 							    ${TEST_FOLDER}/test_utilities.h \
                                 set.h utilities.h pokedex.h pokemon_trainer.h
-	${CC} ${CFLAGS} -I. -c ${TEST_FOLDER}/trainer_test.c -o $@
+	${CC} ${CFLAGS} -I. -c ${TEST_FOLDER}/pokemon_trainer_test.c -o $@
 
 ${TEST_FOLDER}/pokedex_test.o : ${TEST_FOLDER}/pokedex_test.c pokedex.h \
                                 ${TEST_FOLDER}/test_utilities.h  set.h \
@@ -105,16 +105,16 @@ ${TEST_FOLDER}/location_test.o : ${TEST_FOLDER}/location_test.c location.h \
 	${CC} ${CFLAGS} -I. -c ${TEST_FOLDER}/location_test.c -o $@
 
 ###TODO: add pokemon_go_test
-#${TEST_FOLDER}/pokemon_go_test.o : ${TEST_FOLDER}/yad3service_test.c \
-#								   yad3service.h customer.h  realtor.h \
-#								   ${TEST_FOLDER}/test_utilities.h
-#	${CC} ${CFLAGS} -I. -c ${TEST_FOLDER}/pokemon_go_test.c -o $@
+###${TEST_FOLDER}/pokemon_go_test.o : ${TEST_FOLDER}/yad3service_test.c \
+###								   yad3service.h customer.h  realtor.h \
+###								   ${TEST_FOLDER}/test_utilities.h
+###	${CC} ${CFLAGS} -I. -c ${TEST_FOLDER}/pokemon_go_test.c -o $@
 
 ###TODO: add map test
 #${TEST_FOLDER}/map_test.o : ${TEST_FOLDER}/map_test.c \
-#							${MAP_FOLDER}/map_mtm.h  \
-#							${TEST_FOLDER}/test_utilities.h
-#	${CC} ${CFLAGS} -Imap_mtm -c ${TEST_FOLDER}/map_test.c -o $@
+###							${MAP_FOLDER}/map_mtm.h  \
+###							${TEST_FOLDER}/test_utilities.h
+###	${CC} ${CFLAGS} -Imap_mtm -c ${TEST_FOLDER}/map_test.c -o $@
 
 
 #################### mtm_map
