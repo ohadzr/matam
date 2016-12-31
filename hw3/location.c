@@ -2,17 +2,9 @@
  *       Header files include         *
  **************************************/
 
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
+
 #include "location.h"
-#include "set.h"
-#include "list.h"
-#include "print_utils.h"
-#include "pokemon.h"
-#include "utilities.h"
+
 
 /**************************************
  *              Defines               *
@@ -176,16 +168,6 @@ LocationResult locationAddPokemon( Location location , Pokemon pokemon ){
     return LOCATION_SUCCESS;
 }
 
-LocationResult locationRemovePokemon( Location location , Pokemon pokemon ){
-    if ( (!location) || (!pokemon) ) return LOCATION_NULL_ARGUMENT;
-    LIST_FOREACH( Pokemon , current_pokemon , location->pokemons ) {
-        if ( pokemonCompareByName(current_pokemon,pokemon) ==  POKEMON_EQUAL) {
-            listRemoveCurrent( location->pokemons );
-            return LOCATION_SUCCESS;
-        }
-    }
-    return LOCATION_POKEMON_NOT_EXIST;
-}
 
 LocationResult locationAddNearLocation(  Location location ,
                                          NearLocation near_location ){
@@ -197,14 +179,7 @@ LocationResult locationAddNearLocation(  Location location ,
     return LOCATION_SUCCESS;
 }
 
-LocationResult locationRemoveNearLocation( Location location ,
-                                           NearLocation near_location ) {
-    if ( (!location) || (!near_location) ) return LOCATION_NULL_ARGUMENT;
-    SetResult result = setRemove( location->near_locations , near_location );
-    if( result == SET_ITEM_DOES_NOT_EXIST )
-        return LOCATION_NEAR_LOCATION_NOT_EXIST;
-    return LOCATION_SUCCESS;
-}
+
 
 bool locationIsNearDestination( Location location , char* destination ) {
     assert( location && destination );
@@ -236,16 +211,6 @@ WorldMapResult worldMapAddLocation( WorldMap world_map , Location location ) {
     return WORLD_MAP_SUCCESS;
 }
 
-WorldMapResult worldMapRemoveLocation( WorldMap world_map , Location location ){
-    if ( (!world_map) || (!location) ) return WORLD_MAP_NULL_ARGUMENT;
-    LIST_FOREACH( Location , current_location , world_map ) {
-        if ( locationCompare(location , current_location) == LOCATIONS_EQAUL ) {
-            listRemoveCurrent( world_map );
-            return WORLD_MAP_SUCCESS;
-        }
-    }
-    return WORLD_MAP_LOCATION_NOT_EXIST;
-}
 
 
 bool worldMapDoesLocationExist( WorldMap world_map , char* location ){
@@ -257,10 +222,6 @@ bool worldMapDoesLocationExist( WorldMap world_map , char* location ){
     return false;
 }
 
-int worldMapGetSize( WorldMap world_map ) {
-    assert( world_map );
-    return listGetSize( world_map );
-}
 
 Location worldMapGetLocation( WorldMap world_map , char* location_name ) {
     if ( !world_map ) return NULL;
@@ -279,13 +240,15 @@ Pokemon worldMapGetPokemonInLocation( WorldMap world_map,char* location_name ){
     Location location = worldMapGetLocation( world_map ,location_name);
     if ( !location ) return NULL;
     if (worldMapDoesLocationExist( world_map , locationGetName(location) ) == false) return NULL;
-    Pokemon huntedPokemon = listGetFirst( location->pokemons );
+    Pokemon huntedPokemon = pokemonCopy(listGetFirst( location->pokemons ));
+    listRemoveCurrent( location->pokemons );
     return huntedPokemon;
 }
 
 bool worldMapIsLocationReachable( WorldMap world_map , char* current_location ,
                                   char* destination_location) {
-    assert ( destination_location && world_map );
+    assert ( destination_location != NULL);
+    assert ( world_map != NULL);
     if (!worldMapDoesLocationExist(world_map,destination_location) )
         return false;
     if( !current_location ) return true;
