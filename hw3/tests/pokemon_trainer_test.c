@@ -15,11 +15,64 @@ static bool testCombo() {
     Pokemon pikachu = pokemonCreate("Pikachu", pokedex);
     Pokemon raichu = pokemonCreate("Raichu", pokedex);
 
+    PokemonTrainer trainer = pokemonTrainerCreate("Ash",100);
+    Trainers trainers = trainersCreate();
 
+    Item item1 = itemCreate(10,"potion");
+    Item item2 = itemCreate(40,"candy");
+    Item item3 = itemCreate(100,"candy");
 
-    //TODO: add pokedex & location tests too
+    Store store = storeCreate();
+    storeAddItem(store,item1);
+    storeAddItem(store,item1);
+    storeAddItem(store,item2);
+    storeAddItem(store,item3);
 
+    TEST_DIFFERENT(result,trainer , NULL);
+    TEST_EQUALS(result,trainersAddTrainer(trainers, trainer),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result,trainersAddTrainer(trainers, trainer),
+                POKEMON_TRAINER_ALREADY_EXIST);
+    PokemonTrainer ash = trainersGetTrainer(trainers, "Ash");
+    PokemonTrainer ash_copy = pokemonTrainerCopy(ash);
+    TEST_DIFFERENT(result,ash , NULL);
+    TEST_DIFFERENT(result,ash_copy , NULL);
 
+    PokemonTrainer trainer2 = pokemonTrainerCreate("Ohad",1000);
+    TEST_EQUALS(result, pokemonTrainerBuyItem(trainer2, item1, store),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerBuyItem(trainer2, item1, store),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerBuyItem(trainer2, item1, store),
+                POKEMON_TRAINER_ITEM_OUT_OF_STOCK);
+    TEST_EQUALS(result, pokemonTrainerBuyItem(trainer2, item2, store),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerBuyItem(trainer2, item3, store),
+                POKEMON_TRAINER_INSUFFICIENT_BUDGET);
+
+    TEST_EQUALS(result,pokemonTrainerAddPokemon(trainer2,pikachu, pokedex),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result,pokemonTrainerAddPokemon(trainer2,raichu, pokedex),
+                POKEMON_TRAINER_SUCCESS);
+    TEST_EQUALS(result, pokemonTrainerHealPokemon(trainer2, 1),
+                POKEMON_TRAINER_POKEMON_HP_AT_MAX);
+
+    pokemonUpdateHP(pokemonTrainerGetPokemon(trainer2,1),-90);
+    TEST_EQUALS(result, pokemonTrainerHealPokemon(trainer2, 1),
+                POKEMON_TRAINER_SUCCESS);
+
+    TEST_EQUALS(result, pokemonGetHP(pokemonTrainerGetPokemon(trainer2,1)), 20);
+    TEST_EQUALS(result,trainersAddTrainer(trainers, trainer2),
+                POKEMON_TRAINER_SUCCESS);
+
+    storeDestroy(store);
+    itemDestroy(item1);
+    itemDestroy(item2);
+    itemDestroy(item3);
+    pokemonTrainerDestroy(trainer);
+    pokemonTrainerDestroy(trainer2);
+    pokemonTrainerDestroy(ash_copy);
+    trainersDestroy(trainers);
     pokemonDestroy(pikachu);
     pokemonDestroy(raichu);
     pokedexPokemonInfoDestroy(pikachu_info);
