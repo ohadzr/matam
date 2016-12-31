@@ -5,7 +5,8 @@ CFLAGS = -std=c99 -Wall -pedantic-errors -Werror
 TEST_FOLDER = tests
 MAP_FOLDER = map_mtm
 
-
+##### TODO: remove comment below
+####OBJ_MAP = ${MAP_FOLDER}/map_mtm.o
 OBJ_STORE = store.o
 OBJ_POKEMON = utilities.o pokemon.o pokedex.o store.o
 OBJ_TRAINER = utilities.o trainer.o pokedex.o store.o location.o pokemon.o
@@ -15,7 +16,9 @@ OBJ_POKEMON_GO = pokemon_go.o location.o pokedex.o trainer.o pokemon.o store.o u
 OBJ_TEST = ${TEST_FOLDER}/store_test.o ${TEST_FOLDER}/pokemon_test.o \
 		   ${TEST_FOLDER}/trainer_test.o  ${TEST_FOLDER}/pokedex_test.o\
 		   ${TEST_FOLDER}/location_test.o
-
+####    TODO: delete this ^ (one line) and add below instead
+####		   ${TEST_FOLDER}/location_test.o ${TEST_FOLDER}/pokemon_go_test.o \
+####		   ${TEST_FOLDER}/map_test.o
 
 #################### main
 
@@ -26,6 +29,8 @@ all : pokemon_go tests
 pokemon_go : ${OBJ_POKEMON_GO}
 	${CC} ${CFLAGS} ${OBJ_POKEMON_GO} ${LIBS} -o $@
 
+#### TODO: replace later
+#####tests : ${OBJ_TEST} ${OBJ_MAP}
 tests : ${OBJ_TEST}
 	${CC} ${CFLAGS} ${TEST_FOLDER}/store_test.o ${OBJ_STORE} \
 	${LIBS} -o store_test
@@ -37,7 +42,11 @@ tests : ${OBJ_TEST}
     ${LIBS} -o pokedex_test
 	${CC} ${CFLAGS} ${TEST_FOLDER}/location_test.o ${OBJ_LOCATION} \
 	${LIBS} -o location_test
-
+	#### TODO: add later
+	####${CC} ${CFLAGS} ${TEST_FOLDER}/pokemon_go_test.o ${OBJ_POKEMON_GO} \
+	####        ${LIBS} -o pokemon_go_test
+	####${CC} ${CFLAGS} ${TEST_FOLDER}/map_test.o ${OBJ_MAP} \
+	####        ${LIBS} -o map_test
 
 #################### pokemon Go adts code
 
@@ -95,9 +104,24 @@ ${TEST_FOLDER}/location_test.o : ${TEST_FOLDER}/location_test.c location.h \
                                  ${TEST_FOLDER}/test_utilities.h
 	${CC} ${CFLAGS} -I. -c ${TEST_FOLDER}/location_test.c -o $@
 
+###TODO: add pokemon_go_test
+###${TEST_FOLDER}/pokemon_go_test.o : ${TEST_FOLDER}/yad3service_test.c \
+###								   yad3service.h customer.h  realtor.h \
+###								   ${TEST_FOLDER}/test_utilities.h
+###	${CC} ${CFLAGS} -I. -c ${TEST_FOLDER}/pokemon_go_test.c -o $@
+
+###TODO: add map test
+#${TEST_FOLDER}/map_test.o : ${TEST_FOLDER}/map_test.c \
+###							${MAP_FOLDER}/map_mtm.h  \
+#							${TEST_FOLDER}/test_utilities.h
+#	${CC} ${CFLAGS} -Imap_mtm -c ${TEST_FOLDER}/map_test.c -o $@
+
 
 #################### mtm_map
 
+#####TODO: edit this before finish
+#${MAP_FOLDER}/map_mtm.o : ${MAP_FOLDER}/map_mtm.c ${MAP_FOLDER}/map_mtm.h
+#	${CC} ${CFLAGS} -c ${MAP_FOLDER}/map_mtm.c -o $@
 
 #################### Misc commands	
 .PHONY: clean
