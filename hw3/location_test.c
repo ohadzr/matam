@@ -69,7 +69,7 @@
 //    locationAddPokemon(location2, pokemon3);
 //    locationAddPokemon(location2, pokemon2);
 //    locationAddPokemon(location3, pokemon1);
-//    //locationAddPokemon(location6, pokemon3);
+//    locationAddPokemon(location6, pokemon3);
 //    locationAddNearLocation(location1, nearLocation2);
 //    locationAddNearLocation(location1, nearLocation3);
 //    locationAddNearLocation(location2, nearLocation1);
@@ -77,8 +77,8 @@
 //    locationAddNearLocation(location3, nearLocation1);
 //    /* ----------------------------- tests ---------------------------- */
 //    TEST_DIFFERENT(result, location1, NULL);
-//    //TEST_DIFFERENT(result, location6, NULL);
-//    //TEST_EQUALS(result, locationCompare(location1, location6), 0);
+//    TEST_DIFFERENT(result, location6, NULL);
+//    TEST_EQUALS(result, locationCompare(location1, location6), 0);
 //    TEST_DIFFERENT(result, locationCompare(location1, location2), 0);
 //    TEST_EQUALS(result, locationIsNearDestination(location1, nearLocation1),
 //                false);
@@ -104,15 +104,15 @@
 //                LOCATION_NULL_ARGUMENT);
 //    TEST_EQUALS(result, locationRemoveNearLocation(location3, nearLocation5),
 //                LOCATION_NULL_ARGUMENT);
-//    //TEST_EQUALS(result, locationIsNearDestination(location6, nearLocation1),
-//    //		false);
+//    TEST_EQUALS(result, locationIsNearDestination(location6, nearLocation1),
+//    		false);
 //    TEST_EQUALS(result, locationAddNearLocation(location4, nearLocation5),
 //                LOCATION_NULL_ARGUMENT);
 //    TEST_EQUALS(result, locationAddPokemon(location4, pokemon3),
 //                LOCATION_SUCCESS);
-//    //TEST_EQUALS(result,
-//    //		locationIsNearDestination(location6, locationGetName(location1)),
-//    //		false);
+//    TEST_EQUALS(result,
+//    		locationIsNearDestination(location6, locationGetName(location1)),
+//    		false);
 //    /* ------------------------  destruction  ------------------------- */
 //    nearLocationDestroy(nearLocation1);
 //    nearLocationDestroy(nearLocation2);
