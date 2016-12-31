@@ -1,0 +1,159 @@
+Epsilon captured a bulbasaur in madrid.
+Delta captured a caterpie in sydney.
+
+************  Pokemon Battle  *************
+Epsilon          		vs.		            Delta
+bulbasaur        		   		         caterpie
+10               		CP 		               10
+100.00 --> 85.00 		HP 		100.00 -->  85.00
+1      --> 2     		LVL		     1 -->      2
+1.00   --> 2.50  		XP 		  1.00 -->   2.50
+
+************  Pokemon Battle  *************
+Epsilon          		vs.		            Delta
+bulbasaur        		   		         caterpie
+10               		CP 		               10
+85.00  --> 49.38 		HP 		 85.00 -->  49.38
+2      --> 3     		LVL		     2 -->      3
+2.50   --> 6.06  		XP 		  2.50 -->   6.06
+
+************  Locations Report  ***********
+berlin              :  empty
+london              :  pidgey
+madrid              :  pidgey
+paris               :  pidgey
+rome                :  pikachu
+sydney              :  pikachu
+berlin is empty: Sigma could not catch any pokemons.
+
+************  Locations Report  ***********
+berlin              :  empty
+london              :  pidgey
+madrid              :  pidgey
+paris               :  pidgey
+rome                :  pikachu
+sydney              :  pikachu
+
+*************  Trainer Report  ************
+Epsilon
+Currently in madrid
+Budget  151   Pokecoins
+XP      6.06
+
+* Trainer's Items:
+* Trainer's Pokemons:
+1    ivysaur             HP     79.38
+                         CP        20
+                         LEVEL      3
+
+*************  Trainer Report  ************
+Delta
+Currently in sydney
+Budget  267   Pokecoins
+XP      6.06
+
+* Trainer's Items:
+* Trainer's Pokemons:
+1    metapod             HP     49.38
+                         CP        20
+                         LEVEL      3
+
+***   Stock Report   ***
+Peanut captured a pidgey in london.
+
+*************  Trainer Report  ************
+Peanut
+Currently in london
+Budget  130   Pokecoins
+XP      1.00
+
+* Trainer's Items:
+* Trainer's Pokemons:
+1    pidgey              HP    100.00
+                         CP        20
+                         LEVEL      1
+Peanut2 captured a pikachu in london.
+Peanut3 captured a charmander in london.
+Peanut4 captured a pidgey in london.
+Peanut5 captured a rattata in london.
+london is empty: Peanut6 could not catch any pokemons.
+
+************  Pokemon Battle  *************
+Peanut3          		vs.		          Peanut2
+charmander       		   		          pikachu
+15               		CP 		               30
+100.00 --> 55.00 		HP 		100.00 -->  77.50
+1      --> 2     		LVL		     1 -->      2
+1.00   --> 3.25  		XP 		  1.00 -->   5.50
+
+************  Pokemon Battle  *************
+Peanut4          		vs.		          Peanut5
+pidgey           		   		          rattata
+20               		CP 		               15
+100.00 --> 77.50 		HP 		100.00 -->  70.00
+1      --> 2     		LVL		     1 -->      2
+1.00   --> 4.00  		XP 		  1.00 -->   3.25
+Peanut captured a pidgey in paris.
+Peanut2 captured a rattata in paris.
+Peanut3 captured a pikachu in paris.
+Peanut4 captured a bulbasaur in paris.
+paris is empty: Peanut5 could not catch any pokemons.
+Peanut captured a pidgey in madrid.
+Peanut2 captured a bulbasaur in madrid.
+Peanut3 captured a charmander in madrid.
+madrid is empty: Peanut4 could not catch any pokemons.
+
+************  Pokemon Battle  *************
+Peanut3          		vs.		            Delta
+charmander       		   		          metapod
+15               		CP 		               20
+100.00 --> 0.00  		HP 		 49.38 -->   0.00
+1      --> 2     		LVL		     3 -->      4
+3.25   --> 10.56 		XP 		  6.06 -->  21.18
+Peanut3's charmander has died in the battle.
+Delta's metapod has died in the battle.
+
+***   Stock Report   ***
+candy    9              X 1
+candy    10             X 7
+potion   10             X 9
+
+************  Pokemon Battle  *************
+Peanut           		vs.		          Peanut2
+pidgey           		   		          pikachu
+20               		CP 		               30
+100.00 --> 0.00  		HP 		 77.50 -->  47.50
+1      --> 2     		LVL		     2 -->      3
+1.00   --> 4.00  		XP 		  5.50 -->  28.39
+Peanut's pidgey has died in the battle.
+
+************  Pokemon Battle  *************
+Peanut           		vs.		          Peanut2
+pidgey           		   		          rattata
+20               		CP 		               15
+100.00 --> 0.00  		HP 		100.00 -->   0.00
+1      --> 2     		LVL		     1 -->      2
+4.00   --> 16.00 		XP 		 28.39 -->  92.28
+Peanut's pidgey has died in the battle.
+Peanut2's rattata has died in the battle.
+
+*************  Trainer Report  ************
+Sigma
+Currently in berlin
+Budget  0     Pokecoins
+XP      1.00
+
+* Trainer's Items:
+* Trainer's Pokemons:
+
+*************  Trainer Report  ************
+Peanut
+Currently in madrid
+Budget  130   Pokecoins
+XP      16.00
+
+* Trainer's Items:
+* Trainer's Pokemons:
+1    pidgey              HP    100.00
+                         CP        50
+                         LEVEL      1

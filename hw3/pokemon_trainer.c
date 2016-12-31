@@ -143,8 +143,6 @@ void pokemonTrainerFightAux(PokemonTrainer trainer1, Pokemon pokemon1,
     pokemonUpdateLevel(pokemon1, CALC_LEVEL_BONUS(*old_level1, *old_level2));
     pokemonUpdateLevel(pokemon2, CALC_LEVEL_BONUS(*old_level2, *old_level1));
 
-    printf("delta1: %lf\n", delta1);
-    printf("delta2: %lf\n", delta2);
     trainer1->xp += CALC_XP_BONUS(delta2);
     trainer2->xp += CALC_XP_BONUS(delta1);
 }

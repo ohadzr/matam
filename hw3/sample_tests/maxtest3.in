@@ -1,0 +1,101 @@
+		trainer add Epsilon 151 madrid
+	trainer add Delta 257 sydney
+		
+		
+		battle fight Epsilon Delta 1 1
+		  battle fight Epsilon Delta 1 1
+		report locations
+store add candy -1 -1
+store add slippers 50 30
+store add potion 30 1
+trainer purchase Epsilon potion 30
+pokemon heal Epsilon 1
+store add candy 0 10
+trainer add Sigma 0 berlin
+trainer purchase Sigma candy 0
+trainer go Sigma berlin
+report locations
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+report trainer Pi
+report trainer Epsilon
+report trainer Delta
+report stock
+battle fight Sigma Sigma 1 1
+battle fight Peanut Peanut 1 3
+battle fight Peanut Peanut -1 1
+report trainer Peanut
+trainer add Peanut 100 london
+report trainer Peanut
+report trainer Peanut2
+trainer add Peanut2 100 london
+trainer add Peanut3 100 london
+trainer add Peanut4 100 london
+trainer add Peanut5 100 london
+trainer add Peanut6 100 london
+battle fight Peanut3 Peanut2 1 1
+battle fight Peanut4 Peanut5 1 1
+store add potion 10 10
+trainer purchase Peanut5 potion 10
+pokemon heal Peanut5 1
+trainer go Peanut paris
+trainer go Peanut2 paris
+trainer go Peanut3 paris
+trainer go Peanut4 paris
+trainer go Peanut5 paris
+trainer go Peanut madrid
+trainer go Peanut2 madrid
+trainer go Peanut3 madrid
+trainer go Peanut4 madrid
+battle fight Peanut2 Delta 2 2
+battle fight Peanut3 Delta 3 1
+pokemon heal Peanut7 -3
+pokemon heal Peanut -3
+pokemon heal Peanut 1
+trainer add Sigma 100 Moscow
+store add candy 10 1
+store add candy 10 1
+store add candy 10 1
+store add candy 10 1
+store add candy 10 1
+store add candy 10 2
+store add candy 10 -1
+store add candy 9 1
+store add candy -3 1
+report stock
+trainer purchase Peanut candy 10
+trainer purchase Peanut2 candy 10
+trainer purchase Peanut3 candy 10
+trainer purchase Peanut4 candy 10
+trainer purchase Peanut5 candy 10
+trainer purchase Peanut candy 10
+trainer purchase Peanut candy 10
+trainer purchase Peanut candy 10
+pokemon train Peanut 1
+pokemon train Peanut 1
+pokemon train Peanut 1
+pokemon train Peanut 1
+pokemon train Peanut 1
+pokemon train Peanut 2
+pokemon train Peanut 3
+pokemon train Peanut 4
+battle fight Peanut Peanut2 3 1
+battle fight Peanut Peanut2 2 2
+report trainer Sigma
+report trainer Peanut

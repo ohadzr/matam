@@ -8,7 +8,6 @@
 #include <string.h>
 #include <assert.h>
 #include "store.h"
-#include "list.h"
 #include "print_utils.h"
 
 /**************************************
@@ -207,7 +206,7 @@ StoreResult storeSort( Store store ) {
 
 void storePrintStock( Store store , FILE* output_channel ) {
 	assert( store && output_channel );
-	mtmPrintStockHeader( output_channel );
+
 	if( listGetSize( store ) != EMPTY ) {
 		storeSort( store );
 		Item item = listGetFirst(store);

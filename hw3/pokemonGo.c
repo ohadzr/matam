@@ -3,15 +3,12 @@
 //
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <assert.h>
 #include "pokedex.h"
 #include "pokemon_trainer.h"
-#include "location.h"
-#include "store.h"
-#include "print_utils.h"
+
 
 
 #define MAX_LINE_SIZE 250
@@ -29,7 +26,7 @@
  * Helper Function Declarations *
  ********************************/
 
-static void pokemonGoStringEndEdit( char* string );
+static void pokemonGoStringEdit(char *string);
 
 static bool isValidMainArgs(int argc, char** argv);
 
@@ -51,7 +48,7 @@ static Location loadLocationsFileAddPokemon(char* location_name,
 
 static MtmErrorCode loadLocationsFileAddNearLocations(char* near_location,
                                                       Location location,
-                                                      WorldMap world_map, FILE* output);
+                                                      WorldMap world_map);
 
 
 
@@ -60,12 +57,14 @@ static MtmErrorCode loadLocationsFileAddNearLocations(char* near_location,
  *    Assistent PokemonGO Funcs         *
  ****************************************/
 
-void pokemonGoStringEndEdit( char* string ) {
+void pokemonGoStringEdit(char *string) {
 	if( string && strlen(string) ) {
 		char* current_letter = string;
 		while( *current_letter ) {
 			if ( (*current_letter) == '\r' || (*current_letter) == '\n')
 				*current_letter = '\0';
+            if ((*current_letter) == '\t')
+                *current_letter = ' ';
 			current_letter++;
 		}
 	}
@@ -162,7 +161,7 @@ MtmErrorCode loadPokedexFile(Pokedex pokedex, FILE* pokedex_file) {
     char line[MAX_LINE_SIZE], *pokemon_name, *initial_cp;
 
     while (GET_NEXT_LINE(line,pokedex_file)) {
-    	pokemonGoStringEndEdit(line);
+        pokemonGoStringEdit(line);
         pokemon_name = strtok(line, SPACE_DELIMITER);
         if (pokemon_name == NULL) continue;
 
@@ -194,7 +193,7 @@ MtmErrorCode loadEvolutionsFile(Pokedex pokedex, FILE* evolution_file) {
     char *evolution_name, *evolution_level_char;
     int evolution_level;
     while (GET_NEXT_LINE(line,evolution_file)) {
-    	pokemonGoStringEndEdit(line);
+        pokemonGoStringEdit(line);
         pokemon_name = strtok(line, SPACE_DELIMITER);
         evolution_name = GET_NEXT_ARGUMENT;
         evolution_level_char = GET_NEXT_ARGUMENT;
@@ -218,7 +217,6 @@ Location loadLocationsFileAddPokemon(char* location_name,
 
     char* pokemon_name = GET_NEXT_ARGUMENT;
     while (pokemon_name != NULL) {
-    	printf("%s\n",pokemon_name);
         Pokemon pokemon = pokemonCreate(pokemon_name, pokedex);
         if (pokemon == NULL || location == NULL) {
             worldMapDestroy(world_map);
@@ -242,9 +240,8 @@ Location loadLocationsFileAddPokemon(char* location_name,
 
 MtmErrorCode loadLocationsFileAddNearLocations(char* near_location,
                                                Location location,
-                                               WorldMap world_map, FILE*output) {
+                                               WorldMap world_map) {
     while (near_location != NULL) {
-    	printf("%s\n", near_location);
         NearLocation new_near_location = nearLocationCreate(near_location);
         LocationResult result = locationAddNearLocation(location,
                                                         new_near_location);
@@ -265,7 +262,6 @@ MtmErrorCode loadLocationsFileAddNearLocations(char* near_location,
         locationDestroy(location);
         return MTM_OUT_OF_MEMORY;
     }
-    worldMapPrintReport(  world_map , output);//
     return MTM_SUCCESS;
 
 }
@@ -470,6 +466,7 @@ MtmErrorCode pokemonGoStoreReport(Store store, FILE* output) {
     if (store == NULL) return MTM_OUT_OF_MEMORY;
     if (output == NULL) return MTM_CANNOT_OPEN_FILE;
 
+    mtmPrintStockHeader( output );
     storePrintStock(store, output);
     return MTM_SUCCESS;
 }
@@ -479,10 +476,11 @@ MtmErrorCode pokemonGoStoreReport(Store store, FILE* output) {
 MtmErrorCode pokemonGoProcessCommand(char* command, Trainers trainers,
                              Store store, WorldMap world_map, Pokedex pokedex,
                              FILE* output) {
-	pokemonGoStringEndEdit(command);
+    pokemonGoStringEdit(command);
 	char command_for_count[MAX_LINE_SIZE];
 	strcpy(command_for_count, command);
     int arg_counter = countArgsInCommand(command_for_count);
+    if (arg_counter == 0) return MTM_SUCCESS;
     if (arg_counter < 2) return MTM_INVALID_COMMAND_LINE_PARAMETERS;
     char* section = strtok(command, SPACE_DELIMITER);
     char* action = GET_NEXT_ARGUMENT;
@@ -524,7 +522,7 @@ Store pokemonGoStoreCreate() {
     return storeCreate();
 }
 
-WorldMap pokemonGoWorldMapCreate(FILE* location_file, Pokedex pokedex,FILE* output) {
+WorldMap pokemonGoWorldMapCreate(FILE* location_file, Pokedex pokedex) {
     if (location_file == NULL) return NULL;
     WorldMap world_map = worldMapCreate();
     if (world_map == NULL) return NULL;
@@ -532,12 +530,10 @@ WorldMap pokemonGoWorldMapCreate(FILE* location_file, Pokedex pokedex,FILE* outp
     char *first_part, *second_part, *location_name ,*near_location;
 
     while (GET_NEXT_LINE(location_info,location_file)) {
-    	pokemonGoStringEndEdit(location_info);
+        pokemonGoStringEdit(location_info);
         first_part = strtok(location_info, SEMICOLON_DELIMITER);
-        printf("\nfirst part:%s\n", first_part);
         if (first_part == NULL) continue;
         second_part = strtok(NULL, SEMICOLON_DELIMITER);
-        printf("\nsecond part:%s\n", second_part);
 
         location_name = strtok(first_part, SPACE_DELIMITER);
         if (location_name == NULL) continue;
@@ -554,7 +550,7 @@ WorldMap pokemonGoWorldMapCreate(FILE* location_file, Pokedex pokedex,FILE* outp
         else near_location = NULL;
 
         if (loadLocationsFileAddNearLocations(near_location, location,
-                                   world_map, output)  == MTM_OUT_OF_MEMORY)
+                                   world_map)  == MTM_OUT_OF_MEMORY)
             return NULL;
 
         locationDestroy(location);
@@ -601,7 +597,7 @@ void pokemonGo(FILE* pokedex_file, FILE* evolution_file, FILE* location_file,
     Trainers trainers = pokemonGoTrainersCreate();
     Store store = pokemonGoStoreCreate();
     Pokedex pokedex = pokemonGoPokedexCreate(pokedex_file, evolution_file);
-    WorldMap world_map = pokemonGoWorldMapCreate(location_file, pokedex,output);
+    WorldMap world_map = pokemonGoWorldMapCreate(location_file, pokedex);
 
     if (!trainers || !store || !world_map || !pokedex) {
         mtmPrintErrorMessage(stderr, MTM_OUT_OF_MEMORY);
