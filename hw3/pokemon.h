@@ -49,14 +49,14 @@ typedef void* PokemonElement;
 
 /**
 * Creates a new pokemon.
-* The name, type and cp are parameters set the corresponding
+* The name, level, hp, cp bonus and cp are parameters set the corresponding
 * properties of the pokemon.
 * The pokemon is created at level 1 and 100 HP.
 *
 * @return
 * 	A new allocated pokemon.
-* 	If name is NULL or empty, type is invalid, experience or max_number_of_moves
-*   is not positive, or in case of a memory allocation failure - return NULL.
+* 	If name is NULL or empty, pokedex is empty
+*   or in case of a memory allocation failure - return NULL.
 **/
 Pokemon pokemonCreate(char* name, Pokedex pokedex);
 
