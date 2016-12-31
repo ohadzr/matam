@@ -363,13 +363,16 @@ PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
             pokedex == NULL || output == NULL)
         return POKEMON_TRAINER_NULL_ARG;
     if (trainer->location != NULL) {
-    	if (strcmp(trainer->location, location) == SAME_STRINGS)
+    	if (strcmp(trainer->location, location) == SAME_STRINGS){
+                printf("%s is at %s\n", trainer->name, trainer->location);
+                printf("location is %s\n", location);
     	        return POKEMON_TRAINER_ALREADY_IN_LOCATION;
+        }
     }
-    if (!worldMapIsLocationReachable(world_map, trainer->location, location))
+    if (!worldMapIsLocationReachable(world_map,trainer->location,location))
         return POKEMON_TRAINER_LOCATION_IS_NOT_REACHABLE;
-
     stringDestroy(trainer->location);
+
     trainer->location = stringCopy(location);
     if (trainer->location == NULL)
         return POKEMON_TRAINER_OUT_OF_MEMORY;

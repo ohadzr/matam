@@ -22,11 +22,11 @@ OBJ_TEST = ${TEST_FOLDER}/store_test.o ${TEST_FOLDER}/pokemon_test.o \
 
 #################### main
 
-all : pokemon_go tests
-	make pokemon_go
+all : mtm_pokemon_go tests
+	make mtm_pokemon_go
 	make tests
 
-pokemon_go : ${OBJ_POKEMON_GO}
+mtm_pokemon_go : ${OBJ_POKEMON_GO}
 	${CC} ${CFLAGS} ${OBJ_POKEMON_GO} ${LIBS} -o $@
 
 #### TODO: replace later
@@ -75,7 +75,9 @@ pokemon_go.o : pokemon_go.c pokedex.h set.h utilities.h pokemon_trainer.h \
                 pokemon.h store.h list.h print_utils.h location.h
 	${CC} ${CFLAGS} -c pokemon_go.c -o $@
 
-
+### TODO: add mtm_map.c
+	
+	
 #################### pokemonGo + map_mtm tests
 
 ${TEST_FOLDER}/store_test.o : ${TEST_FOLDER}/store_test.c store.h list.h \

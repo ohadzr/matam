@@ -2,7 +2,7 @@ Error: trainer does not exist.
 Error: trainer does not exist.
 Error: invalid argument.
 Error: invalid argument.
-Error: trainer name already exist.
+Error: trainer name already used.
 Error: location does not exist.
 Error: invalid argument.
 Error: invalid argument.
@@ -12,11 +12,11 @@ Error: location does not exist.
 Error: location is not reachable.
 Error: location is not reachable.
 Error: trainer already in location.
-Error: budget is not sufficient.
-Error: no available item found.
-Error: item out of stock.
-Error: no available item found.
-Error: item out of stock.
+Error: budget is insufficient.
+Error: requested item is out of stock.
+Error: requested item is out of stock.
+Error: requested item is out of stock.
+Error: requested item is out of stock.
 
 
 

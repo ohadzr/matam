@@ -4,7 +4,7 @@ trainer go Ohad paris
 trainer go Ohad palet
 
 trainer add Ohad 100 paris
-trainer add Shani 100 sydny
+trainer add Shani 100 sydney
 trainer add Gal 200 hong-kong
 trainer add Sahar 400 mumbai
 trainer add Itay 0 mumbai
@@ -25,9 +25,9 @@ store add potion 20 2
 store add potion 30 1
 store add potion 70 1
 store add potion 100 2
-store report
+report stock
 
-trainer go Ohad sydny
+trainer go Ohad sydney
 trainer go Ohad japan
 trainer go Ohad london
 trainer go Shani london
@@ -40,22 +40,22 @@ trainer go Ohad london
 trainer go Itay shanghai 
 trainer go Itay berlin 
 
-triner purchase Itay candy 30 
-triner purchase Itay potion 10 
-triner purchase Gal candy 100
-triner purchase Gal candy 30
-triner purchase Gal potion 100
-triner purchase Ohad potion 10
-triner purchase Ohad potion 20
-triner purchase Ohad potion 20
-triner purchase Ohad potion 20
+trainer purchase Itay candy 30 
+trainer purchase Itay potion 10 
+trainer purchase Gal candy 100
+trainer purchase Gal candy 30
+trainer purchase Gal potion 100
+trainer purchase Ohad potion 10
+trainer purchase Ohad potion 20
+trainer purchase Ohad potion 20
+trainer purchase Ohad potion 20
 store add potion 20 1
-triner purchase Ohad potion 20
+trainer purchase Ohad potion 20
 
 trainer go Tomer alexandria
 report locations
-battle fight Ohad Shani charmander caterpie
-battle fight Itay Tomer Dragonite Mew
+battle fight Ohad Shani 4 1 
+battle fight Itay Tomer 1 2
 
 
 
