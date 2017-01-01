@@ -7,4 +7,5 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c99 -Wall -Werror -pedantic-errors 
 set(LIST_OPERATE_FILES listOperate.c)
 add_executable(hw3_dry_list_operate ${LIST_OPERATE_FILES})
 
-
+set(MERGE_SORT_FILES merge_sort_GDT.c)
+add_executable(hw3_dry_merge_sort ${MERGE_SORT_FILES})
