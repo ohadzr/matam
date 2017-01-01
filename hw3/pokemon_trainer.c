@@ -362,7 +362,7 @@ PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
     if (trainer == NULL || location == NULL || world_map == NULL ||
             pokedex == NULL || output == NULL)
         return POKEMON_TRAINER_NULL_ARG;
-    if (trainer->location != NULL) {
+    if (trainer->location != NULL) {//TODO: not need because trainer is not null
     	if (strcmp(trainer->location, location) == SAME_STRINGS)
     	        return POKEMON_TRAINER_ALREADY_IN_LOCATION;
     }

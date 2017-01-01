@@ -1,3 +1,4 @@
+
 ************  Locations Report  ***********
 alexandria          :  Cyndaquil
 berlin              :  ivysaur
@@ -17,11 +18,12 @@ hong-kong is empty: Gal could not catch any pokemons.
 Sahar captured a Mewtwo in mumbai.
 mumbai is empty: Itay could not catch any pokemons.
 Tomer captured a pidgey in london.
+
 ***   Stock Report   ***
 candy    10             X 5
 candy    20             X 5
 candy    30             X 1
-candy    40             X 5
+candy    40             X 1
 potion   20             X 2
 potion   30             X 1
 potion   70             X 1
@@ -34,6 +36,7 @@ Ohad captured a charmander in london.
 Itay captured a Dragonite in shanghai.
 Itay captured a ivysaur in berlin.
 Tomer captured a Mew in alexandria.
+
 ************  Locations Report  ***********
 alexandria          :  raichu
 berlin              :  squirtle
@@ -65,3 +68,37 @@ Dragonite        		   		              Mew
 1.00   --> 16.00 		XP 		  1.00 -->  76.00
 Itay's Dragonite has died in the battle.
 Tomer's Mew has died in the battle.
+Gal captured a pikachu in rome.
+
+************  Pokemon Battle  *************
+Gal              		vs.		            Shani
+pikachu          		   		         caterpie
+60               		CP 		               10
+100.00 --> 62.50 		HP 		100.00 -->  10.00
+1      --> 2     		LVL		     2 -->      3
+1.00   --> 10.00 		XP 		  2.50 -->   6.25
+
+*************  Trainer Report  ************
+Gal
+Currently in rome
+Budget  60    Pokecoins
+XP      10.00
+
+* Trainer's Items:
+potion   100            X 1
+* Trainer's Pokemons:
+1    pikachu             HP     62.50
+                         CP        60
+                         LEVEL      2
+
+*************  Trainer Report  ************
+Tomer
+Currently in alexandria
+Budget  130   Pokecoins
+XP      76.00
+
+* Trainer's Items:
+* Trainer's Pokemons:
+1    pidgey              HP    100.00
+                         CP        20
+                         LEVEL      1

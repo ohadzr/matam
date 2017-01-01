@@ -34,8 +34,12 @@ struct location_t {
  *         Static Functions           *
  **************************************/
 
-/* compare if 2 names equal - if so return 0 , if the first bigger return 1 and
- *  if the second bigger return -1. - to be used only by legal parameters */
+/* function compare if 2 names equal. this function asserts parameters not NULL.
+ *
+ * @return
+ * if equal return 0 , if the first is bigger return 1 and
+ * if the second bigger return -1.
+ */
 int static locationNameCompare( char* location1 , char* location2 ){
     assert( location1 && location2 );
     int result = strcmp( location1 , location2 );
@@ -44,12 +48,113 @@ int static locationNameCompare( char* location1 , char* location2 ){
     return LOCATIONS_EQAUL;
 }
 
+/* function copy near location.
+ *
+ * @return
+ * if location_name valid (=> not NULL and not an empty string) and provided
+ * that memory allocation succeeded - return copy of nearLocation.
+ * return NULL otherwise
+ */
+NearLocation static nearLocationCopy( NearLocation location_to_copy ){
+    return nearLocationCreate ( location_to_copy );
+}
+
+/* function compare tow nearLocations. function assert locations not NULL.
+ *
+ * @return
+ * if equal return 0 , if the first bigger return 1
+ * and if the second bigger return -1.
+ */
+int static nearLocationCompare( NearLocation location1 , NearLocation location2 ) {
+    return locationNameCompare( location1 , location2 );
+}
+
+/* function copy location.
+ *
+ * @return
+ * if location valid (=> not NULL) and provided that memory allocation succeeded
+ * return copy of location. return NULL otherwise.
+ */
+Location static locationCopy( Location location ) {
+    if ( !location ) return NULL;
+    Location copyed_location = locationCreate( locationGetName( location ) );
+    if ( !copyed_location ) return NULL;
+    listDestroy(copyed_location->pokemons);
+    copyed_location->pokemons = listCopy( location->pokemons );
+    RELEALSE_TREATMENT( copyed_location->pokemons , copyed_location );
+    setDestroy(copyed_location->near_locations);
+    copyed_location->near_locations = setCopy(location->near_locations);
+    RELEALSE_TREATMENT( copyed_location->near_locations , copyed_location );
+    return copyed_location;
+}
+
+/* define two locations equal if their names equal.
+ * function compare two Locations. function asserts parameters not NULL.
+ *
+ * @return
+ * if equal - return 0 , if the first bigger return 1 and if the second bigger
+ * return -1.
+ */
+int locationCompare( Location location1 , Location location2 ) {
+    assert ( location1 && location2 );
+    return locationNameCompare( location1->name , location2->name );
+}
+
+/* function extricate location's name. function assert location not NULL.
+ *
+ * @return
+ * location name.
+ */
+char static* locationGetName( Location location ) {
+    assert( location );
+    return location->name;
+}
+
+/* function check if destination is a NearLocation of location.
+ *
+ * @return
+ * return true if destination is a NearLocation of location.
+ * return false if one of the parameters NULL or destination is not a
+ * NearLocation of location.
+ */
+bool static locationIsNearDestination( Location location , char* destination ) {
+    if ( (!location) || (!destination) ) return false;
+    SET_FOREACH( char* , current_location , location->near_locations ){
+        if ( nearLocationCompare( current_location , destination ) == 0  )
+            return true;
+    }
+    return false;
+}
+
+/* function extricate location from world map.
+ *
+ * @return
+ * location with the same name as loation_name from world map if exist.
+ * return NULL if world_map or loation_name are NULL or if location by that name
+ * does not exist or if location_name is an empty string.
+ */
+Location static worldMapGetLocation( WorldMap world_map , char* location_name ) {
+    if ( !world_map ) return NULL;
+    if ((!location_name) || (strlen(location_name)==EMPTY_STRING)) return NULL;
+    LIST_FOREACH( Location , current_location , world_map ) {
+        if (locationNameCompare(locationGetName(current_location),location_name)
+            == LOCATIONS_EQAUL ) {
+            return current_location;
+        }
+    }
+    return NULL;
+}
+
 /**************************************
  *          Wrapper Functions         *
  **************************************/
 
 /* wrapper function to nearLocationCopy so it will be possible to work
- *  with set GDT */
+ *  with set GDT.
+ *
+ * @return
+ * valid copyed location or NULL if location NULL.
+ */
 ItemElement static nearLocationCopyElement( NearLocationElement near_location ){
     return nearLocationCopy( (NearLocation)near_location );
 }
@@ -69,7 +174,11 @@ int static nearLocationCompareElement( NearLocationElement
 }
 
 /*wrapper function to locationCopy so it will be possible to work with
- * list GDT */
+ * list GDT.
+ *
+ * @return
+ * 1 if location1 is bigger then location2, 0 if equal and -1 else
+ */
 LocationElement locationCopyElement( LocationElement location ) {
     return locationCopy( (Location)location );
 }
@@ -103,17 +212,10 @@ void nearLocationDestroy(NearLocation location_name){
     stringDestroy( location_name );
 }
 
-NearLocation nearLocationCopy( NearLocation location_to_copy ){
-    return nearLocationCreate ( location_to_copy );
-}
-
-int nearLocationCompare( NearLocation location1 , NearLocation location2 ) {
-    return locationNameCompare( location1 , location2 );
-}
-
 /**************************************
  *         LOCATION Functions         *
  **************************************/
+
 
 Location locationCreate( char* location_name ) {
     if ( (!location_name) || (!strlen(location_name)) ) return NULL;
@@ -129,6 +231,7 @@ Location locationCreate( char* location_name ) {
     return new_location;
 }
 
+
 void locationDestroy( Location location ) {
     if ( location ) {
         stringDestroy( location->name );
@@ -138,28 +241,6 @@ void locationDestroy( Location location ) {
     free ( location );
 }
 
-Location locationCopy( Location location ) {
-    if ( !location ) return NULL;
-    Location copyed_location = locationCreate( locationGetName( location ) );
-    if ( !copyed_location ) return NULL;
-    listDestroy(copyed_location->pokemons);
-    copyed_location->pokemons = listCopy( location->pokemons );
-    RELEALSE_TREATMENT( copyed_location->pokemons , copyed_location );
-    setDestroy(copyed_location->near_locations);
-    copyed_location->near_locations = setCopy(location->near_locations);
-    RELEALSE_TREATMENT( copyed_location->near_locations , copyed_location );
-    return copyed_location;
-}
-
-int locationCompare( Location location1 , Location location2 ) {
-    assert ( location1 && location2 );
-    return locationNameCompare( location1->name , location2->name );
-}
-
-char* locationGetName( Location location ) {
-    assert( location );
-    return location->name;
-}
 
 LocationResult locationAddPokemon( Location location , Pokemon pokemon ){
     if ( (!location) || (!pokemon) ) return LOCATION_NULL_ARGUMENT;
@@ -177,17 +258,6 @@ LocationResult locationAddNearLocation(  Location location ,
     SetResult result = setAdd(location->near_locations , near_location);
     if ( result == SET_OUT_OF_MEMORY ) return LOCATION_OUT_OF_MEMORY;
     return LOCATION_SUCCESS;
-}
-
-
-
-bool locationIsNearDestination( Location location , char* destination ) {
-    assert( location && destination );
-    SET_FOREACH( char* , current_location , location->near_locations ){
-        if ( nearLocationCompare( current_location , destination ) == 0  )
-            return true;
-    }
-    return false;
 }
 
 /**************************************
@@ -211,28 +281,13 @@ WorldMapResult worldMapAddLocation( WorldMap world_map , Location location ) {
     return WORLD_MAP_SUCCESS;
 }
 
-
-
 bool worldMapDoesLocationExist( WorldMap world_map , char* location ){
-    assert( world_map && location );
+    if( (!world_map) || (!location) ) return false;
     LIST_FOREACH( Location , current_location , world_map ) {
         if(locationNameCompare(location,current_location->name)==LOCATIONS_EQAUL)
             return true;
     }
     return false;
-}
-
-
-Location worldMapGetLocation( WorldMap world_map , char* location_name ) {
-    if ( !world_map ) return NULL;
-    if ((!location_name) || (strlen(location_name)==EMPTY_STRING)) return NULL;
-    LIST_FOREACH( Location , current_location , world_map ) {
-        if (locationNameCompare(locationGetName(current_location),location_name)
-            == LOCATIONS_EQAUL ) {
-            return current_location;
-        }
-    }
-    return NULL;
 }
 
 Pokemon worldMapGetPokemonInLocation( WorldMap world_map,char* location_name ){
@@ -272,6 +327,6 @@ void worldMapPrintReport( WorldMap world_map , FILE* output_channel) {
     LIST_FOREACH( Location , current_location , world_map ) {
         Pokemon pokemon = listGetFirst(current_location->pokemons);
         mtmPrintLocation( output_channel, locationGetName(current_location),
-                              pokemonGetName(pokemon) );
+                          pokemonGetName(pokemon) );
     }
 }

@@ -15,8 +15,9 @@ Error: trainer already in location.
 Error: budget is insufficient.
 Error: requested item is out of stock.
 Error: requested item is out of stock.
-Error: requested item is out of stock.
-Error: requested item is out of stock.
-
-
-
+Error: pokemon does not exist.
+Error: no available item found.
+Error: hp is at max.
+Error: hp is at max.
+Error: pokemon does not exist.
+Error: trainer does not exist.
