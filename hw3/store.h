@@ -12,7 +12,7 @@
 #include <string.h>
 #include "list.h"
 
-// TODO: find better way to access list macro
+
 #define STORE_FOREACH(type,iterator,list) \
 	for(type iterator = listGetFirst(list) ; \
 		iterator ;\

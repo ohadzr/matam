@@ -307,8 +307,6 @@ bool worldMapIsLocationReachable( WorldMap world_map , char* current_location ,
     if (!worldMapDoesLocationExist(world_map,destination_location) )
         return false;
     if( !current_location ) return true;
-    if (!worldMapDoesLocationExist(world_map,current_location) )
-        return false;
     Location location = worldMapGetLocation(world_map,current_location);
     return locationIsNearDestination(location,destination_location);
 }

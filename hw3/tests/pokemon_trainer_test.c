@@ -294,6 +294,10 @@ static bool testTrainersAddGetTrainer() {
     TEST_EQUALS(result,trainersGetTrainer(trainers,NULL), NULL);
     TEST_EQUALS(result,trainersGetTrainer(NULL,"Ash"), NULL);
 
+    TEST_EQUALS(result, trainersDoesTrainerExist(trainers, "Ohad"),true);
+    TEST_EQUALS(result, trainersDoesTrainerExist(trainers, "Ash"),true);
+    TEST_EQUALS(result, trainersDoesTrainerExist(trainers, "ohad"),false);
+
 
     pokemonTrainerDestroy(trainer1);
     pokemonTrainerDestroy(trainer2);

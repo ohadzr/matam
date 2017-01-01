@@ -72,17 +72,20 @@ static void pokemonTrainerRemovePokemon(PokemonTrainer trainer,
                                                         Pokemon pokemon);
 
 
-/* wrapper function to pokemonTrainerCopy so it
- * will be possible to work with Set GDT */
+/** wrapper function to pokemonTrainerCopy so it
+ *  will be possible to work with Set GDT
+ **/
 PokemonTrainerElement static pokemonTrainerCopyElement(
         PokemonTrainerElement trainer);
 
-/*wrapper function to pokemonTrainerDestroy so it
- * will be possible to work with Set GDT*/
+/** wrapper function to pokemonTrainerDestroy so it
+ *  will be possible to work with Set GDT
+ **/
 void static pokemonTrainerFreeElement(PokemonTrainerElement trainer);
 
-/*wrapper function to pokemonTrainerCompare so it
- * will be possible to work with Set GDT*/
+/** wrapper function to pokemonTrainerCompare so it
+ *  will be possible to work with Set GDT
+ **/
 int static pokemonTrainerCompareElement(PokemonTrainerElement trainer1 ,
                                      PokemonTrainerElement trainer2);
 
@@ -362,9 +365,12 @@ PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
     if (trainer == NULL || location == NULL || world_map == NULL ||
             pokedex == NULL || output == NULL)
         return POKEMON_TRAINER_NULL_ARG;
-    if (trainer->location != NULL) {//TODO: not need because trainer is not null
-    	if (strcmp(trainer->location, location) == SAME_STRINGS)
-    	        return POKEMON_TRAINER_ALREADY_IN_LOCATION;
+    if (trainer->location != NULL) {
+    	if (strcmp(trainer->location, location) == SAME_STRINGS) {
+            printf("%s is at %s\n", trainer->name, trainer->location);//TODO: remove this
+            printf("destination is: %s\n", location);
+            return POKEMON_TRAINER_ALREADY_IN_LOCATION;
+        }
     }
     if (!worldMapIsLocationReachable(world_map,trainer->location,location))
         return POKEMON_TRAINER_LOCATION_IS_NOT_REACHABLE;
@@ -438,8 +444,6 @@ PokemonTrainerResult pokemonTrainerHealPokemon(PokemonTrainer trainer,
 
     Item item = pokemonTrainerGetMaxValueItem(trainer, TYPE_POTION);
     if (item == NULL) return POKEMON_TRAINER_NO_AVAILABLE_ITEM_FOUND;
-
-
 
     STORE_FOREACH(Item, item_iter, trainer->item_list) {
         // if logic: potion *and*
@@ -536,7 +540,7 @@ PokemonTrainer trainersGetTrainer(Trainers trainers, char* trainer_name) {
     return NULL;
 }
 
-//TODO: add to tests!
+
 bool trainersDoesTrainerExist(Trainers trainers, char* trainer_name) {
     assert(trainers != NULL);
     assert(trainer_name != NULL);

@@ -30,22 +30,42 @@
  * Helper Function Declarations *
  ********************************/
 
-/* wrapper function to pokedexPokemonInfoCopy so it
- * will be possible to work with Set GDT */
+/** wrapper function to pokedexPokemonInfoCopy so it
+ * will be possible to work with Set GDT
+ * */
 PokemonInfoElement static pokemonInfoCopyElement(
         PokemonInfoElement pokemon_info);
 
-/*wrapper function to pokedexPokemonInfoDestroy so it
- * will be possible to work with Set GDT*/
+/** wrapper function to pokedexPokemonInfoDestroy so it
+ *  will be possible to work with Set GDT
+ * */
 void static pokemonInfoFreeElement(PokemonInfoElement pokemon_info);
 
-/*wrapper function to pokedexPokemonInfoCompare so it
- * will be possible to work with Set GDT*/
+/** wrapper function to pokedexPokemonInfoCompare so it
+ * will be possible to work with Set GDT
+ **/
 int static pokemonInfoCompareElement(PokemonInfoElement pokemon_info1 ,
                                       PokemonInfoElement pokemon_info2);
 
+/**
+* after adding a new type to pokemon info, this function calcs the bonus,
+ * the spesific type should have
+*
+* @return
+ * 	REGULAR_BONUS - if type is regular
+ * 	ONE_STAR_BONUS - if type has one star
+ * 	TWO_STARS_BONUS - if type has two stars
+ * 	NO_BONUS - if no such type (equal to zero)
+ *
+*/
 static int typeToBonus(char* type_name);
 
+
+/**
+* get the pokemon evolution level
+*
+* This function asserts (pokedex != NULL) , (pokemon_name != NULL);
+*/
 static int pokedexGetEvolutionLevel(Pokedex pokedex, char* pokemon_name);
 
 /****************************************

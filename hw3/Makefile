@@ -16,8 +16,7 @@ OBJ_POKEMON_GO = pokemon_go.o location.o pokedex.o trainer.o pokemon.o store.o u
 OBJ_TEST = ${TEST_FOLDER}/store_test.o ${TEST_FOLDER}/pokemon_test.o \
 		   ${TEST_FOLDER}/trainer_test.o  ${TEST_FOLDER}/pokedex_test.o\
 		   ${TEST_FOLDER}/location_test.o
-####    TODO: delete this ^ (one line) and add below instead
-####		   ${TEST_FOLDER}/location_test.o ${TEST_FOLDER}/pokemon_go_test.o \
+####    TODO: add below instead
 ####		   ${TEST_FOLDER}/map_test.o
 
 #################### main
@@ -43,8 +42,6 @@ tests : ${OBJ_TEST}
 	${CC} ${CFLAGS} ${TEST_FOLDER}/location_test.o ${OBJ_LOCATION} \
 	${LIBS} -o location_test
 	#### TODO: add later
-	####${CC} ${CFLAGS} ${TEST_FOLDER}/pokemon_go_test.o ${OBJ_POKEMON_GO} \
-	####        ${LIBS} -o pokemon_go_test
 	####${CC} ${CFLAGS} ${TEST_FOLDER}/map_test.o ${OBJ_MAP} \
 	####        ${LIBS} -o map_test
 
@@ -106,11 +103,6 @@ ${TEST_FOLDER}/location_test.o : ${TEST_FOLDER}/location_test.c location.h \
                                  ${TEST_FOLDER}/test_utilities.h
 	${CC} ${CFLAGS} -I. -c ${TEST_FOLDER}/location_test.c -o $@
 
-###TODO: add pokemon_go_test
-###${TEST_FOLDER}/pokemon_go_test.o : ${TEST_FOLDER}/yad3service_test.c \
-###								   yad3service.h customer.h  realtor.h \
-###								   ${TEST_FOLDER}/test_utilities.h
-###	${CC} ${CFLAGS} -I. -c ${TEST_FOLDER}/pokemon_go_test.c -o $@
 
 ###TODO: add map test
 #${TEST_FOLDER}/map_test.o : ${TEST_FOLDER}/map_test.c \
