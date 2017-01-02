@@ -55,6 +55,7 @@ static int max(int number1, int number2) {
 
 static int getListSize(Node node) {
     int counter = 0;
+
     while (node) {
         counter++;
         node = node->next;
@@ -85,7 +86,7 @@ static Node listInsertLast(Node list, Node node) {
         list = list->next;
     }
 
-    list->next = node;
+    list->next = nodeCopy(node);
     return first_node;
 }
 
@@ -130,12 +131,14 @@ Node listOperate(Node node1, Node node2, IntOperatorElement operator) {
         new_node->next = NULL;
 
         if (list == NULL)
-            list = new_node;
+            list = nodeCopy(new_node);
         else
             listInsertLast(list, new_node);
 
         node1 = node1->next;
         node2 = node2->next;
+
+        free(new_node);
     }
 
     return list;
