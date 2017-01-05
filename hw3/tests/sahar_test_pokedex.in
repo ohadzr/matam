@@ -20,13 +20,13 @@ rattata 15 NORMAL
 raticate 20 NORMAL
 pikachu 30 ELECTRIC
 raichu 60 ELECTRIC
-Jigglypuff 40 NORMAL Fairy
-Wigglytuff 50 NORMAL Fairy
-Zubat 30 Poison FLYING
-Golbat 50 Poison FLYING
+Jigglypuff 40 NORMAL FAIRY
+Wigglytuff 50 NORMAL FAIRY
+Zubat 30 POISON FLYING
+Golbat 50 POISON FLYING
 Dratini 40 DRAGON
-DRAGONair 70 DRAGON
-DRAGONite 100 DRAGON FLYING
+Dragonair 70 DRAGON
+Dragonite 100 DRAGON FLYING
 Mewtwo 200 PSYCHIC
 Mew 500 PSYCHIC
 Cyndaquil 40 FIRE
