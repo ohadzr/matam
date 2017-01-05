@@ -16,22 +16,14 @@ struct node_t {
 
 
 /********** DELETE ***********/
-void listDestroy(Node node) {
-    if (node == NULL) return;
-    Node next_node;
 
-    while (node) {
-        next_node = node->next;
-        free(node);
-        node = next_node;
-    }
-}
 
 void print_list(Node node) {
     printf("Node:\t");
-    while(node) {
-        printf("%d\t", node->n);
-        node = node->next;
+    Node next_node = node;
+    while(next_node) {
+        printf("%d\t", next_node->n);
+        next_node = next_node->next;
     }
     printf("\n");
 }
@@ -53,65 +45,67 @@ static int max(int number1, int number2) {
     return number2;
 }
 
-static int getListSize(Node node) {
+static int getListSize(Node list) {
     int counter = 0;
-
-    while (node) {
+    Node next_node = list;
+    while (next_node) {
         counter++;
-        node = node->next;
+        next_node = next_node->next;
     }
     return counter;
 }
 
-static Node nodeCopy(Node node) {
-    if (node == NULL) return NULL;
+static Node nodeCreate(int n, Node next_node) {
     Node new_node = malloc(sizeof(*new_node));
     if (new_node == NULL)
         return NULL;
-    new_node->n = node->n;
-    new_node->next = node->next;
+    new_node->n = n;
+    new_node->next = next_node;
 
     return new_node;
-
 }
 
+static Node nodeCopy(Node node) {
+    if (node == NULL) return NULL;
+    Node new_node = nodeCreate(node->n, node->next);
+
+    return new_node;
+}
+
+static void nodeDestroy(Node node) {
+    if (node != NULL) {
+        free(node);
+        node = NULL;
+    }
+}
+
+void listDestroy(Node list) {
+    if (list == NULL) return;
+
+    Node next_node = list;
+
+    while (next_node) {
+        next_node = next_node->next;
+        nodeDestroy(list);
+        list = next_node;
+    }
+
+}
 
 static Node listInsertLast(Node list, Node node) {
     if (list == NULL && node == NULL) return NULL;
     if (list == NULL) return node;
     if (node == NULL) return list;
-    Node first_node = list;
-    while(list->next) {
+    Node next_node = list;
+    while(next_node->next) {
 
-        list = list->next;
+        next_node = next_node->next;
     }
 
-    list->next = nodeCopy(node);
-    return first_node;
+    next_node->next = node;
+
+    return list;
 }
-
-static Node listCopy(Node list) {
-
-    Node new_list = NULL;
-
-    while (list) {
-        Node new_node = nodeCopy(list);
-        if (new_node == NULL) {
-            listDestroy(new_list);
-            return NULL;
-        }
-
-        new_node->next = NULL;
-
-        new_list = listInsertLast(new_list, new_node);
-
-        list = list->next;
-    }
-
-    return new_list;
-}
-
-
 
 
 Node listOperate(Node node1, Node node2, IntOperatorElement operator) {
@@ -121,24 +115,19 @@ Node listOperate(Node node1, Node node2, IntOperatorElement operator) {
     Node list = NULL;
 
     while (node1) {
-        Node new_node = nodeCopy(node1);
+        int n = operator(node1->n, node2->n);
+
+        Node new_node = nodeCreate(n , NULL);
         if (new_node == NULL) {
             listDestroy(list);
             return NULL;
         }
-        int n = operator(node1->n, node2->n);
-        new_node->n = n;
-        new_node->next = NULL;
 
-        if (list == NULL)
-            list = nodeCopy(new_node);
-        else
-            listInsertLast(list, new_node);
+        list = listInsertLast(list, new_node);
+        //nodeDestroy(new_node);
 
         node1 = node1->next;
         node2 = node2->next;
-
-        free(new_node);
     }
 
     return list;
@@ -148,19 +137,19 @@ Node listOperate(Node node1, Node node2, IntOperatorElement operator) {
 
 Node maxElements(Node* list_array, int array_size) {
     if (array_size <= 0) return NULL;
-    if (array_size == 1) return listCopy(list_array[0]);
+    if (array_size == 1) return nodeCopy(list_array[0]);
 
     Node max_list = listOperate(list_array[0], list_array[1], max);
-    Node new_max_list = listCopy(max_list);
+    Node temp_list = NULL;
 
     for (int i=2; i<array_size; i++) {
+        temp_list = listOperate(max_list, list_array[i], max);
         listDestroy(max_list);
-        max_list = listOperate(new_max_list, list_array[i], max);
-        listDestroy(new_max_list);
-        new_max_list = listCopy(max_list);
+        max_list = listOperate(temp_list, list_array[i], max);
+        listDestroy(temp_list);
     }
 
-    return new_max_list;
+    return max_list;
 
 }
 
@@ -258,6 +247,7 @@ int main() {
     printf("\nmax: \n");
     Node max_node = maxElements(list, 5);
     print_list(max_node);
+    listDestroy(max_node);
 
 
     listDestroy(node1);
@@ -265,7 +255,6 @@ int main() {
     listDestroy(node3);
     listDestroy(plus_node);
     listDestroy(minus_node);
-    listDestroy(max_node);
 
      return 0;
 }
