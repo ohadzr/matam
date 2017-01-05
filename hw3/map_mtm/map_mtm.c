@@ -78,3 +78,7 @@ MapResult mapClear(Map map);
 
 
 
+#include "map_mtm.h"
+
+
+

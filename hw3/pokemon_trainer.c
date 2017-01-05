@@ -367,8 +367,6 @@ PokemonTrainerResult pokemonTrainerGoHunt(PokemonTrainer trainer,
         return POKEMON_TRAINER_NULL_ARG;
     if (trainer->location != NULL) {
     	if (strcmp(trainer->location, location) == SAME_STRINGS) {
-            printf("%s is at %s\n", trainer->name, trainer->location);//TODO: remove this
-            printf("destination is: %s\n", location);
             return POKEMON_TRAINER_ALREADY_IN_LOCATION;
         }
     }
