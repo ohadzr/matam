@@ -21,7 +21,7 @@ typedef struct node_t {
 
 struct Map_t {
     Node head;
-    Node next;
+    //Node next;
     Node iterator;
     copyMapKeyElements copyMapKey;
     copyMapDataElements copyData;
@@ -37,12 +37,16 @@ struct Map_t {
 #define ILLEGAL_MAP -1
 #define EMPTY_MAP 0
 #define ELEMENTS_EQUAL 0
-#define MAP_INTERNAL_FOREACH( type , current_key , map )                       \
-                                    for ( type current_key = mapGetFirst(map); \
-                                    current_key;                               \
-                                    current_key = mapGetNext(map) )
+#define MAP_INTERNAL_FOREACH( type , current_node , map )                      \
+                                    for ( type current_node = mapGetFirst(map);\
+                                    current_node;                              \
+                                    current_node = mapGetNext(map) )
 #define RELEASE_NODE( node , map ) {                                           \
     nodeDestroy( node , map );                                                 \
+    return NULL;                                                               \
+}
+#define RELEASE_MAP( map ) {                                                   \
+    mapDestroy( map );                                                         \
     return NULL;                                                               \
 }
 /**************************************
@@ -70,6 +74,11 @@ static void nodeDestroy( Node node , Map map ) {
         map->freeKeyElement( node->key);
         free ( node );
     }
+}
+
+static Node nodeCopy( Node node , Map map ) {
+    if ( !node ) return NULL;
+    return nodeCreate( node->key , node->data , map );
 }
 
 static void removeNodeFromMap( Map map , Node node ) {
@@ -117,7 +126,7 @@ Map mapCreate( copyMapKeyElements copyKeyElement ,
         return NULL;
 
     new_map->head = NULL;
-    new_map->next = NULL;
+    //new_map->next = NULL;
     new_map->iterator = NULL;
     new_map->copyMapKey = copyKeyElement;
     new_map->copyData = copyDataElement;
@@ -137,37 +146,59 @@ void mapDestroy( Map map ) {
 
 
 Map mapCopy( Map map ) {
-
+    if ( !map ) return NULL;
+    Map copy_map = mapCreate( map->copyMapKey , map->copyData ,
+                              map->freeKeyElement , map->freeDataElement ,
+                              map->compareKeyElements );
+    if ( !copy_map ) return NULL;
+    mapClear( copy_map );
+    if ( !map->head ) return copy_map;
+    mapGetFirst( copy_map );//TODO:  not really neccesery
+    copy_map->head = nodeCopy( map->head , map );
+    if ( !copy_map->head ) RELEASE_MAP( copy_map );
+    Node temp = copy_map->head;
+    MAP_INTERNAL_FOREACH( Node , current_node , map ) {
+        temp->next = nodeCopy( current_node , map );
+        if ( !temp->next ) RELEASE_MAP( copy_map );
+        temp = temp->next;
+    }
+    return copy_map;
 }
 
 
 int mapGetSize( Map map ) {
     if ( map == NULL ) return ILLEGAL_MAP;
     if ( map->head == NULL ) return EMPTY_MAP;
-    unsigned int  counter = 0;
-    MAP_INTERNAL_FOREACH( Node , current_key , map ) {
+    int  counter = 0; //TODO: check if need unsigned int
+    MAP_INTERNAL_FOREACH( Node , current_node , map ) {
         counter++;
     }
     return counter;
 }
 
 
-bool mapContains(Map map, MapKeyElement element);
+bool mapContains( Map map , MapKeyElement element ) {
+    if ( (!map) || (!element) ) return false;
+    MAP_INTERNAL_FOREACH( Node , current_node ,  map ) {
+        int result = map->compareKeyElements(element, current_node->key);
+        if (result == ELEMENTS_EQUAL) return true;
+    }
+    return false;
+}
 
 
 MapResult mapPut(Map map, MapKeyElement keyElement, MapDataElement dataElement){
     if ( (!map) || (!keyElement) || (!dataElement) ) return MAP_NULL_ARGUMENT;
 
-    MAP_INTERNAL_FOREACH( Node , current_key ,  map ) {
-        int result = map->compareKeyElements( keyElement , current_key );
+    MAP_INTERNAL_FOREACH( Node , current_node ,  map ) {
+        int result = map->compareKeyElements( keyElement , current_node->key );
         if ( result == ELEMENTS_EQUAL ) {
-            map->freeDataElement( current_key->data );
-            current_key->data = map->copyData( dataElement );
-            if ( current_key->data == NULL ) return MAP_OUT_OF_MEMORY;
+            map->freeDataElement( current_node->data );
+            current_node->data = map->copyData( dataElement );
+            if ( current_node->data == NULL ) return MAP_OUT_OF_MEMORY;
             return MAP_SUCCESS;
         }
     }
-
     Node new_node = nodeCreate( keyElement , dataElement , map );
     if ( new_node == NULL ) return MAP_OUT_OF_MEMORY;
     Node last_node = nodeGetLast( map ); //TODO: write func
@@ -177,15 +208,24 @@ MapResult mapPut(Map map, MapKeyElement keyElement, MapDataElement dataElement){
 }
 
 
-MapDataElement mapGet(Map map, MapKeyElement keyElement);
+MapDataElement mapGet( Map map , MapKeyElement keyElement ) {
+    if ( (!map) || (!keyElement) ) return NULL;
+    Node temp = map->iterator;
+    MAP_INTERNAL_FOREACH( Node , current_node ,  map ) {
+        int result = map->compareKeyElements( keyElement , current_node->key);
+        if (result == ELEMENTS_EQUAL) return current_node->data;
+    }
+    map->iterator = temp;
+    return NULL;
+}
 
 
 MapResult mapRemove(Map map, MapKeyElement keyElement) {
     if ( (!map) || (!keyElement) ) return MAP_NULL_ARGUMENT;
-    MAP_INTERNAL_FOREACH( Node , current_key ,  map ) {
-        int result = map->compareKeyElements(keyElement, current_key);
+    MAP_INTERNAL_FOREACH( Node , current_node ,  map ) {
+        int result = map->compareKeyElements( keyElement , current_node->key );
         if (result == ELEMENTS_EQUAL) {
-            removeNodeFromMap( map , current_key );
+            removeNodeFromMap( map , current_node );
             return MAP_SUCCESS;
         }
     }
@@ -208,15 +248,18 @@ MapKeyElement mapGetNext( Map map ) { //TODO: "mapGetNext: Advances the map iter
     if ( !map ) return NULL;
     if ( !map->iterator ) return NULL;
     if ( !map->iterator->next ) return NULL;
-    map->iterator = map->iterator->next->key;
+    map->iterator = map->iterator->next;
+    return map->iterator->key;
 }
 
 
 MapResult mapClear( Map map ) {
-    if ( map == NULL ) return MAP_NULL_ARGUMENT;
-
-    MAP_INTERNAL_FOREACH( Node , current_node , map ) {
-        removeNodeFromMap( map , current_node );
+    if ( !map ) return MAP_NULL_ARGUMENT;
+    int map_size = mapGetSize( map );
+    if ( map_size != EMPTY_MAP ) {
+        MAP_INTERNAL_FOREACH( Node , current_node , map ) {
+            removeNodeFromMap( map , current_node );
+        }
     }
         return MAP_SUCCESS;
 }
