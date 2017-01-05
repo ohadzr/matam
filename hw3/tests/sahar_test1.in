@@ -7,6 +7,7 @@ trainer add Ohad 100 paris
 trainer add Shani 100 sydney
 trainer add Gal 200 hong-kong
 trainer add Sahar 400 mumbai
+
 trainer add Itay 0 mumbai
 trainer add Tamar -1 paris
 trainer add Tomer 100 london
@@ -32,6 +33,7 @@ trainer go Ohad japan
 trainer go Ohad london
 trainer go Shani london
 trainer go Shani madrid
+
 trainer go Sahar alexandria
 trainer go Sahar saint-petersburg
 trainer go Ohad london
@@ -49,8 +51,6 @@ trainer purchase Gal candy 30
 trainer purchase Gal potion 100
 trainer purchase Ohad potion 10
 trainer purchase Ohad potion 20
-trainer purchase Ohad potion 20
-trainer purchase Ohad potion 20
 store add potion 20 1
 trainer purchase Ohad potion 20
 
@@ -58,13 +58,12 @@ trainer go Tomer alexandria
 report locations
 battle fight Ohad Shani 4 1 
 battle fight Itay Tomer 1 2
-
 pokemon heal Itay 1
 pokemon heal Shani 1
 trainer purchase Shani potion 100
 pokemon heal Shani 1
-pokemon heal Itay 2
 
+pokemon heal Itay 2
 trainer go Gal rome
 pokemon train Gal 2
 pokemon train Gal 1
