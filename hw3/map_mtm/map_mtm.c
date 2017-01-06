@@ -21,7 +21,6 @@ typedef struct node_t {
 
 struct Map_t {
     Node head;
-    //Node next;
     Node iterator;
     copyMapKeyElements copyMapKey;
     copyMapDataElements copyData;
@@ -31,16 +30,34 @@ struct Map_t {
 };
 
 /**************************************
+ *        Static declarations         *
+ **************************************/
+
+static Node nodeCreate( MapKeyElement keyElement , MapDataElement dataElement ,
+                 Map map );
+
+static void nodeDestroy( Node node , Map map );
+
+static Node nodeCopy( Node node , Map map );
+
+static void removeNodeFromMap( Map map , Node node );
+
+static Node findPreviousToNewNode( Node new_node, Map map);
+
+
+/**************************************
  *              Defines               *
  **************************************/
 
 #define ILLEGAL_MAP -1
 #define EMPTY_MAP 0
 #define ELEMENTS_EQUAL 0
+#define RIGHT_ELEMENT_FIRST 1
+#define LEFT_ELEMEMT_FIRST -1
 #define MAP_INTERNAL_FOREACH( type , current_node , map )                      \
-                                    for ( type current_node = mapGetFirst(map);\
+                                    for ( type current_node = map->head;       \
                                     current_node;                              \
-                                    current_node = mapGetNext(map) )
+                                    current_node = current_node->next )
 #define RELEASE_NODE( node , map ) {                                           \
     nodeDestroy( node , map );                                                 \
     return NULL;                                                               \
@@ -49,11 +66,12 @@ struct Map_t {
     mapDestroy( map );                                                         \
     return NULL;                                                               \
 }
+
 /**************************************
  *         Static Functions           *
  **************************************/
 
-static Node nodeCreate( MapKeyElement keyElement , MapDataElement dataElement ,
+Node nodeCreate( MapKeyElement keyElement , MapDataElement dataElement ,
                         Map map ){
     if ( (!keyElement) || (!dataElement) ) return NULL;
     Node new_node = malloc( sizeof(*new_node) );
@@ -68,7 +86,7 @@ static Node nodeCreate( MapKeyElement keyElement , MapDataElement dataElement ,
     return new_node;
 }
 
-static void nodeDestroy( Node node , Map map ) {
+void nodeDestroy( Node node , Map map ) {
     if ( node ) {
         map->freeDataElement( node->data);
         map->freeKeyElement( node->key);
@@ -76,37 +94,54 @@ static void nodeDestroy( Node node , Map map ) {
     }
 }
 
-static Node nodeCopy( Node node , Map map ) {
+Node nodeCopy( Node node , Map map ) {
     if ( !node ) return NULL;
     return nodeCreate( node->key , node->data , map );
 }
 
-static void removeNodeFromMap( Map map , Node node ) {
+void removeNodeFromMap( Map map , Node node ) {
     assert( map && node );
-    Node previous = mapGetFirst( map );
+    Node previous = map->head;
     Node after = node->next;
-    if ( map->compareKeyElements(previous->key , node->key) == ELEMENTS_EQUAL ) {
-        nodeDestroy(previous, map); //TODO: check if destroy the real one
-        map->head = NULL;
+    if ( map->compareKeyElements(previous->key , node->key) == ELEMENTS_EQUAL ){
+        nodeDestroy(previous, map);
+        map->head = after;
+        return;
     }
     while( map->compareKeyElements(node->key,previous->next->key) !=
                                                             ELEMENTS_EQUAL) {
-        previous = mapGetNext( map );
+        if ( !previous->next ) break;
+        previous = previous->next;
     }
     nodeDestroy( node , map );
     previous->next = after;
 }
 
-static Node nodeGetLast( Map map ) {
-    if ( !map )  return NULL;
-    Node node = map->head;
-    if ( !node ) return NULL;
-    mapGetFirst( map ); // TODO: check if not a leak
-    while ( node->next ) {
-        node = mapGetNext( map );
+Node findPreviousToNewNode ( Node node, Map map ) {
+    if (!map || !node) return NULL;
+    if ( !map->head ) return NULL;
+
+//    if (map->compareKeyElements( keyElement , map->head->key ) ==
+//        LEFT_ELEMENT_FIRST )
+//        return NULL;
+
+    MAP_INTERNAL_FOREACH( Node , current_node ,  map )  {
+        if ( !current_node->next ) return current_node;
+        int result = map->compareKeyElements( node->key , current_node->key );
+        if ( result != RIGHT_ELEMENT_FIRST ) return NULL;
+        else {
+            result = map->compareKeyElements(node->key,current_node->next->key);
+            if (result == LEFT_ELEMEMT_FIRST) {
+                return current_node;
+            }
+        }
     }
-    return node;
+
+    return NULL;
+
 }
+
+
 /**************************************
  *        Interface Functions         *
  **************************************/
@@ -126,7 +161,6 @@ Map mapCreate( copyMapKeyElements copyKeyElement ,
         return NULL;
 
     new_map->head = NULL;
-    //new_map->next = NULL;
     new_map->iterator = NULL;
     new_map->copyMapKey = copyKeyElement;
     new_map->copyData = copyDataElement;
@@ -138,9 +172,9 @@ Map mapCreate( copyMapKeyElements copyKeyElement ,
 }
 
 void mapDestroy( Map map ) {
-    if (map != NULL) {
-        mapClear(map);
-        free(map);
+    if ( map != NULL ) {
+        mapClear( map );
+        free( map );
     }
 }
 
@@ -150,18 +184,26 @@ Map mapCopy( Map map ) {
     Map copy_map = mapCreate( map->copyMapKey , map->copyData ,
                               map->freeKeyElement , map->freeDataElement ,
                               map->compareKeyElements );
+
     if ( !copy_map ) return NULL;
-    mapClear( copy_map );
+
     if ( !map->head ) return copy_map;
-    mapGetFirst( copy_map );//TODO:  not really neccesery
     copy_map->head = nodeCopy( map->head , map );
     if ( !copy_map->head ) RELEASE_MAP( copy_map );
+
     Node temp = copy_map->head;
+
     MAP_INTERNAL_FOREACH( Node , current_node , map ) {
+        // Skip first node (already copied)
+        if (map->compareKeyElements(current_node->key, temp->key) ==
+            ELEMENTS_EQUAL)
+            continue;
+
         temp->next = nodeCopy( current_node , map );
         if ( !temp->next ) RELEASE_MAP( copy_map );
         temp = temp->next;
     }
+
     return copy_map;
 }
 
@@ -169,7 +211,7 @@ Map mapCopy( Map map ) {
 int mapGetSize( Map map ) {
     if ( map == NULL ) return ILLEGAL_MAP;
     if ( map->head == NULL ) return EMPTY_MAP;
-    int  counter = 0; //TODO: check if need unsigned int
+    int  counter = 0;
     MAP_INTERNAL_FOREACH( Node , current_node , map ) {
         counter++;
     }
@@ -190,20 +232,32 @@ bool mapContains( Map map , MapKeyElement element ) {
 MapResult mapPut(Map map, MapKeyElement keyElement, MapDataElement dataElement){
     if ( (!map) || (!keyElement) || (!dataElement) ) return MAP_NULL_ARGUMENT;
 
+    Node new_node = nodeCreate(keyElement, dataElement, map);
+    if (!new_node) return MAP_OUT_OF_MEMORY;
+    if (!map->head) {
+        map->head = new_node;
+        return MAP_SUCCESS;
+    }
+    //Update if key exists
     MAP_INTERNAL_FOREACH( Node , current_node ,  map ) {
         int result = map->compareKeyElements( keyElement , current_node->key );
         if ( result == ELEMENTS_EQUAL ) {
             map->freeDataElement( current_node->data );
             current_node->data = map->copyData( dataElement );
             if ( current_node->data == NULL ) return MAP_OUT_OF_MEMORY;
+            nodeDestroy(new_node, map);
             return MAP_SUCCESS;
         }
     }
-    Node new_node = nodeCreate( keyElement , dataElement , map );
-    if ( new_node == NULL ) return MAP_OUT_OF_MEMORY;
-    Node last_node = nodeGetLast( map ); //TODO: write func
-    if ( last_node == NULL ) map->head = new_node;
-    last_node->next = new_node;
+
+    Node previous = findPreviousToNewNode(new_node, map);
+    if ( !previous ) {
+        new_node->next = map->head;
+        map->head = new_node;
+        return MAP_SUCCESS;
+    }
+    new_node->next = previous->next;
+    previous->next = new_node;
     return MAP_SUCCESS;
 }
 
@@ -244,7 +298,7 @@ MapKeyElement mapGetFirst( Map map ) {
 }
 
 
-MapKeyElement mapGetNext( Map map ) { //TODO: "mapGetNext: Advances the map iterator to the next key element and returns it."
+MapKeyElement mapGetNext( Map map ) {
     if ( !map ) return NULL;
     if ( !map->iterator ) return NULL;
     if ( !map->iterator->next ) return NULL;
@@ -255,12 +309,11 @@ MapKeyElement mapGetNext( Map map ) { //TODO: "mapGetNext: Advances the map iter
 
 MapResult mapClear( Map map ) {
     if ( !map ) return MAP_NULL_ARGUMENT;
-    int map_size = mapGetSize( map );
-    if ( map_size != EMPTY_MAP ) {
-        MAP_INTERNAL_FOREACH( Node , current_node , map ) {
-            removeNodeFromMap( map , current_node );
-        }
+
+    MAP_INTERNAL_FOREACH( Node , current_node , map ) {
+        removeNodeFromMap( map , current_node );
     }
-        return MAP_SUCCESS;
+
+    return MAP_SUCCESS;
 }
 

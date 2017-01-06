@@ -44,8 +44,8 @@
  * These two macros are to help you initialize a set of examples. Look at
  * list_test.h for an example of how they can be used to save a lot of code
  */
-#define SET_UP(Typename) Typename examples = setUp()
-#define TEAR_DOWN() tearDown(examples)
+//#define SET_UP(Typename) Typename examples = setUp()
+//#define TEAR_DOWN() tearDown(examples)
 
 
 #define TEST_EQUALS(res_arg, a,b) 	if (res_arg && (a != b)) { \
