@@ -1,10 +1,15 @@
-//
-// Created by ohad on 01-Jan-17.
-//
+
+/**************************************
+ *       Header files include         *
+ **************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+/**************************************
+ *              Defines               *
+ **************************************/
 
 typedef void* Element;
 typedef Element (*CopyFunction)(Element);
@@ -15,6 +20,24 @@ typedef void (*FreeFunction)(Element);
 #define LEFT_FIRST 1
 #define RIGHT_FIRST -1
 
+/**************************************
+ *             Functions              *
+ **************************************/
+
+/**
+ * function merge two arrays elements to helper array by order
+ * provided by the CompareFunction.
+ * @param elements_array1 - the first array.
+ * @param array_size1 - the first array length.
+ * @param elements_array2 - the second array.
+ * @param array_size2 - the second array length.
+ * @param helper_array - the destination array that will contain the ordered
+ * elements of both arrays.
+ * @param compare_element_function - the function defines The ratio of order
+ * between two elements.
+ * @param copy_element_function - the function copy an element.
+ * @param free_element_function - the function free element.
+ */
 void merge(Element* elements_array1,int array_size1,Element* elements_array2,
            int array_size2, Element* helper_array ,
            CompareFunction compare_element_function,
@@ -50,11 +73,21 @@ void merge(Element* elements_array1,int array_size1,Element* elements_array2,
         helper_array[i_helper] =
                 copy_element_function(elements_array2[index_array2]);
 
+    //TODO: remove
     //for (int i=0; i<array_size1+array_size2; i++)
     //    free_element_function(helper_array[i]);
 }
 
-
+/**
+ * function (recursive) sort array's element by order into destination array.
+ * @param elements_array - array to be sorted.
+ * @param array_size - array length.
+ * @param helper_array - temp array to help sort.
+ * @param copy_element_function - the function copy an element.
+ * @param compare_element_function - the function defines The ratio of order
+ * between two elements.
+ * @param free_element_function - the function free element.
+ */
 void internal_msort(Element* elements_array, int array_size,
                     Element* helper_array,CopyFunction copy_element_function,
                     CompareFunction compare_element_function,
@@ -81,10 +114,17 @@ void internal_msort(Element* elements_array, int array_size,
         free_element_function(helper_array[i]);
         helper_array[i] = NULL;
     }
-
 }
 
-
+/**
+ * merge sort is a realization algorithm to sort array.
+ * @param elements_array - the array to be sorted.
+ * @param array_size - array's length.
+ * @param copy_element_function - the function copy an element.
+ * @param compare_element_function - the function defines The ratio of order
+ * between two elements.
+ * @param free_element_function - the function free element.
+ */
 void merge_sort(Element* elements_array, int array_size,
                 CopyFunction copy_element_function,
                 CompareFunction compare_element_function,
@@ -93,7 +133,7 @@ void merge_sort(Element* elements_array, int array_size,
     Element *tmp_array = malloc(sizeof(Element) * array_size);
     internal_msort(elements_array, array_size, tmp_array,copy_element_function,
                    compare_element_function, free_element_function);
-
+    //TODO: remove
     //for (int i=0; i< array_size; i++) {
     //    free_element_function(tmp_array[i]);
     //}
@@ -103,7 +143,7 @@ void merge_sort(Element* elements_array, int array_size,
 
 
 
-/************* DELETE ********/
+/************* DELETE after ran one last time ********/
 typedef void* intElement;
 //typedef intElement integer
 

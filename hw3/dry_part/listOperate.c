@@ -1,12 +1,22 @@
-//
-// Created by ohad on 01-Jan-17.
-//
+
+/**************************************
+ *       Header files include         *
+ **************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef int (*IntOperatorElement)(int, int);
+/**************************************
+ *              Defines               *
+ **************************************/
 
+typedef int (*IntOperatorElement)(int, int);
+//#define EMPTY_LIST -1 //TODO: add line.
+#define EMPTY_LIST 0
+
+/**************************************
+ *              Structs               *
+ **************************************/
 
 typedef struct node_t* Node;
 struct node_t {
@@ -14,9 +24,8 @@ struct node_t {
     Node next;
 };
 
-
 /********** DELETE ***********/
-
+//TODO: check one last time in t2 and delete
 
 void print_list(Node node) {
     printf("Node:\t");
@@ -35,17 +44,32 @@ int plus(int n1, int n2) {
 int minus(int n1, int n2) {
     return n1-n2;
 }
-
-
 /********************/
 
+/**************************************
+ *         Static Functions           *
+ **************************************/
 
+/**
+ * function compare two integers and find witch one is bigger.
+ * @param number1 - first integer.
+ * @param number2 - second integer.
+ * @return
+ * the max integer value within the two integers.
+ */
 static int max(int number1, int number2) {
     if (number1 > number2) return number1;
     return number2;
 }
 
+/**
+ * function count how many nodes exist in list.
+ * @param list - the list to measure length .
+ * @return
+ * list length. //TODO: add: or -1 if list is empty.
+ */
 static int getListSize(Node list) {
+    //if ( list == NULL ) return EMPTY_LIST; // TODO: add check.
     int counter = 0;
     Node next_node = list;
     while (next_node) {
@@ -55,6 +79,13 @@ static int getListSize(Node list) {
     return counter;
 }
 
+/**
+ * function create new Node.
+ * @param n - the node's data argument.
+ * @param next_node - pointer to the next node in list
+ * @return
+ * NULL - if memory allocation failed, else a new Node.
+ */
 static Node nodeCreate(int n, Node next_node) {
     Node new_node = malloc(sizeof(*new_node));
     if (new_node == NULL)
@@ -65,6 +96,12 @@ static Node nodeCreate(int n, Node next_node) {
     return new_node;
 }
 
+/**
+ * function copies a node.
+ * @param node - the node to be copyed.
+ * @return
+ * NULL - if memory allocation failed or if parameter NULL.
+ */
 static Node nodeCopy(Node node) {
     if (node == NULL) return NULL;
     Node new_node = nodeCreate(node->n, node->next);
@@ -72,13 +109,21 @@ static Node nodeCopy(Node node) {
     return new_node;
 }
 
+/**
+ * function destroy all memory allocated to node.
+ * @param node
+ */
 static void nodeDestroy(Node node) {
     if (node != NULL) {
         free(node);
-        node = NULL;
+        node = NULL;//TODO: redundant
     }
 }
 
+/**
+ * function free all memory allocated to list, if list is NULL do nothing.
+ * @param list - the list to be destroyed.
+ */
 void listDestroy(Node list) {
     if (list == NULL) return;
 
@@ -92,6 +137,13 @@ void listDestroy(Node list) {
 
 }
 
+/**
+ * function add a node to list.
+ * @param list - to list to add node to.
+ * @param node - the node to be added to list.
+ * @return
+ * NULL - if two parameters is NULL, or the head of the list.
+ */
 static Node listInsertLast(Node list, Node node) {
     if (list == NULL && node == NULL) return NULL;
     if (list == NULL) return node;
@@ -107,10 +159,18 @@ static Node listInsertLast(Node list, Node node) {
     return list;
 }
 
-
+/**
+ * function activates the given operator on lists.
+ * @param node1 - the head of first list.
+ * @param node2 - the head of the second list.
+ * @param operator - the operator to activate between suitable by index Nodes.
+ * @return
+ * NULL - if one or more of the parameters is NULL, or if memory allocation,
+ * problem or if lists are empty.
+ */
 Node listOperate(Node node1, Node node2, IntOperatorElement operator) {
     if (getListSize(node1) != getListSize(node2)) return NULL;
-    if (getListSize(node1) == 0) return NULL;
+    if (getListSize(node1) == EMPTY_LIST) return NULL;
 
     Node list = NULL;
 
@@ -124,7 +184,7 @@ Node listOperate(Node node1, Node node2, IntOperatorElement operator) {
         }
 
         list = listInsertLast(list, new_node);
-        //nodeDestroy(new_node);
+        //nodeDestroy(new_node); //TODO: remove
 
         node1 = node1->next;
         node2 = node2->next;
@@ -134,6 +194,8 @@ Node listOperate(Node node1, Node node2, IntOperatorElement operator) {
 }
 
 
+//TODO: remove after check
+/********** DELETE ***********/
 
 Node maxElements(Node* list_array, int array_size) {
     if (array_size <= 0) return NULL;
@@ -258,3 +320,4 @@ int main() {
 
      return 0;
 }
+/********************/
