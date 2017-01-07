@@ -8,7 +8,7 @@
 #include <string.h>
 #include <assert.h>
 #include <stdbool.h>
-//#include "../map_mtm/map_mtm.h"
+#include "../map_mtm/map_mtm.h"
 #include "../utilities.h"
 #include "test_utilities.h"
 
@@ -45,7 +45,6 @@ typedef struct date_t {
 typedef struct food_item {
     char* name;
     int quantity;
-    Date expiration_date;
 }*Food;
 
 /**************************************
@@ -149,28 +148,6 @@ static Date dateCopy( Date date ) {
     return dateCreate( date->day , date->month , date->year );
 }
 
-/**
- * function compare dates. function assert parameters not NULL.
- * @param date1 - first date.
- * @param date2 - second date.
- * @return
- * 1 if first date is later then the second date, -1 if the second is later and
- * 0 if the dates are equal.
- */
-static int dateCompare( Date date1 , Date date2 ) {
-    assert( date1 && date2 );
-    if ( date1->year > date2->year ) return FIRST;
-    if ( date1->year < date2->year ) return SECOND;
-
-    if ( date1->month > date2->month ) return FIRST;
-    if ( date1->month < date2->month ) return SECOND;
-
-    if ( date1->day > date2->day ) return FIRST;
-    if ( date1->day > date2->day ) return SECOND;
-
-    return EQUAL;
-}
-
 /**************************************
  *          Food Functions            *
  **************************************/
@@ -210,25 +187,12 @@ int foodNameCompare(  Food food1 , Food food2 ) {
 }
 
 /**
- * function compare dates. function assert parameters not NULL.
- * @param food1 - first food item witch it's expiration_date will be compared.
- * @param food2 - second food item witch it's expiration_date will be compared.
- * @return
- * 1 if first date is later then the second date, -1 if the second is later and
- * 0 if the dates are equal.
- */
-int foodDateCompare( Food food1 , Food food2 ) {
-    assert( food1 && food2 );
-    return dateCompare( food1->expiration_date , food2->expiration_date );
-}
-
-/**
  * function free all memory allocated to given food.
  * @param food - the food to be destroy ( or eaten :) )
  */
 static void foodDestroy( Food food ) {
     if ( food ) {
-		dateFree( food->expiration_date );
+        stringDestroy(food->name);
 		free( food );
     }
 }
@@ -244,15 +208,13 @@ static void foodDestroy( Food food ) {
  * NULL - if memory allocation failed or if parameters were NULL or invalid.
  * return a new food else.
  */
-static Food foodCreate( char* name , int quantity , Date expiration_date ) {
-    if ( (!name) || (!expiration_date) || (!strlen(name)) ) return NULL;
+static Food foodCreate( char* name , int quantity ) {
+    if ( (!name) || (!strlen(name)) ) return NULL;
     if ( quantity < 0 )  return NULL;
     Food new_food = malloc(sizeof(*new_food));
     if ( !new_food ) return NULL;
 
     new_food->quantity = quantity;
-    new_food->expiration_date = dateCopy( expiration_date );
-    if( !new_food->expiration_date ) RELEASE_FOOD;
 
     new_food->name = stringCopy( name );
     if ( !new_food->name ) RELEASE_FOOD;
@@ -271,7 +233,7 @@ static Food foodCreate( char* name , int quantity , Date expiration_date ) {
  */
 static Food foodCopy( Food food ) {
     if ( !food ) return NULL;
-    return foodCreate( food->name , food->quantity , food->expiration_date);
+    return foodCreate( food->name , food->quantity );
 }
 
 /**************************************
@@ -301,12 +263,6 @@ static bool testDateCombo() {
     TEST_EQUALS(result,date2,NULL);
     TEST_EQUALS(result,date3,NULL);
 
-    TEST_EQUALS(result,dateCompare( date4 , date8 ),0);
-    TEST_EQUALS(result,dateCompare( date5 , date4 ),1);
-    TEST_EQUALS(result,dateCompare( date6 , date5 ),1);
-    TEST_EQUALS(result,dateCompare( date7 , date6 ),1);
-    TEST_EQUALS(result,dateCompare( date8 , date5 ),-1);
-
 /* ------------------------  destruction  ------------------------- */
     dateFree( date1 );
     dateFree( date2 );
@@ -323,6 +279,112 @@ static bool testDateCombo() {
 static bool testFoodCombo() {
     bool result = true;
 /* -----------------------  initialization  ----------------------- */
+
+    Food food1 = foodCreate( "Shkshoka" , 2 );
+    Food food2 = foodCreate( "Pasta" , 2 );
+    Food food3 = foodCreate( "Teremiso" , 3 );
+    Food food4 = foodCopy( food3 );
+
+    Food food5 = foodCreate( "" , 3 );
+    Food food6 = foodCreate( NULL , 3 );
+    Food food7 = foodCreate( "Pizza" , 3 );
+
+/* ----------------------------- tests ---------------------------- */
+    TEST_DIFFERENT(result,food1,NULL);
+    TEST_DIFFERENT(result,food2,NULL);
+    TEST_DIFFERENT(result,food3,NULL);
+    TEST_DIFFERENT(result,food4,NULL);
+
+    TEST_EQUALS(result,food5,NULL);
+    TEST_EQUALS(result,food6,NULL);
+    TEST_EQUALS(result,food7,NULL);
+
+    TEST_EQUALS(result,foodNameCompare( food1 , food4 ),1);
+    TEST_EQUALS(result,foodNameCompare( food3 , food4 ),0);
+
+    TEST_EQUALS(result,foodQuantityCompare( food1 , food2 ),0);
+    TEST_EQUALS(result,foodQuantityCompare( food3 , food2 ),0);
+
+/* ------------------------  destruction  ------------------------- */
+
+    foodDestroy( food1 );
+    foodDestroy( food2 );
+    foodDestroy( food3 );
+    foodDestroy( food4 );
+    foodDestroy( food5 );
+    foodDestroy( food6 );
+    foodDestroy( food7 );
+
+    return result;
+}
+
+/**************************************
+ *          Wrapper Functions         *
+ **************************************/
+
+/** wrapper function to dateCopy so it will be possible to work
+ *  with map GDT.
+ * @return
+ * valid copyed date or NULL if date NULL or memory allocation failed.
+ */
+MapDataElement dateCopyElement( MapDataElement date_element ) {
+    return dateCopy( (Date) date_element );
+}
+
+/** wrapper function to dateFree so it will be possible to work with
+ *  map GDT*/
+void dateFreeElement( MapDataElement date_element ) {
+    dateFree( (Date) date_element);
+}
+
+/** wrapper function to foodCopy so it will be possible to work with
+ *  map GDT
+ *  @return
+ * valid copyed food or NULL if food NULL or memory allocation failed .
+ */
+MapKeyElement foodCopyElement( MapKeyElement food_element ) {
+    return foodCopy( (Food) food_element );
+}
+
+/** wrapper function to foodDestroy so it will be possible to work with
+ * map GDT.
+ */
+void foodFreeElement( MapKeyElement food_element ) {
+     foodDestroy( (Food) food_element );
+}
+
+/** wrapper function to foodQuantityCompare so it will be possible to work with
+ * map GDT */
+int foodQuantityCompareElement( MapKeyElement food_element1 , MapKeyElement
+                                food_element2 ) {
+    return foodQuantityCompare( (Food) food_element1 , (Food) food_element2);
+}
+
+/** wrapper function to foodNameCompare so it will be possible to work with
+ * map GDT */
+int foodNameCompareElement( MapKeyElement food_element1 , MapKeyElement
+                            food_element2){
+    return foodNameCompare( (Food) food_element1 , (Food) food_element2 );
+}
+
+/**************************************
+ *              Map test              *
+ **************************************/
+
+static bool testGenericMapCombo() {
+    bool result = true;
+/* -----------------------  initialization  ----------------------- */
+
+    Food food1 = foodCreate( "Pomela" , 1 );
+    Food food2 = foodCreate( "Pasta" , 0 );
+    Food food3 = foodCreate( "Teremiso" , 3 );
+    Food food4 = foodCreate( "Teremiso" , 1 );
+    Food food5 = foodCopy( food3 );
+
+    Food food6 = foodCreate( "" , 3 );
+    Food food7 = foodCreate( NULL , 3 );
+    Food food8 = foodCreate( "Pizza" , 3 );
+
     Date date1 = dateCreate( -1 , 12 , 1999 );
     Date date2 = dateCreate( 7 , 0 , 1999 );
     Date date3 = dateCreate( 0 , 9 , 1999 );
@@ -333,35 +395,31 @@ static bool testFoodCombo() {
     Date date7 = dateCreate( 7 , 7 , 2005 );
     Date date8 = dateCopy( date4 );
 
-    Food food1 = foodCreate( "Shkshoka" , 2 , date5 );
-    Food food2 = foodCreate( "Pasta" , 2 , date5 );
-    Food food3 = foodCreate( "Teremiso" , 3 , date7 );
-    Food food4 = foodCopy( food3 );
+    Map map1 = mapCreate( foodCopyElement ,
+                         dateCopyElement ,
+                         foodFreeElement ,
+                         dateFreeElement ,
+                          foodQuantityCompareElement );
 
-    Food food5 = foodCreate( "" , 3 , date7 );
-    Food food6 = foodCreate( NULL , 3 , date7 );
-    Food food7 = foodCreate( "Pizza" , 3 , date3 );
+    Map map2 = mapCreate( foodCopyElement ,
+                          dateCopyElement ,
+                          foodFreeElement ,
+                          dateFreeElement ,
+                          foodNameCompareElement );
 
+    //Map map3 = mapCopy( map2 );
 /* ----------------------------- tests ---------------------------- */
     TEST_DIFFERENT(result,food1,NULL);
-    TEST_DIFFERENT(result,food2,NULL);
-    TEST_DIFFERENT(result,food3,NULL);
-    TEST_DIFFERENT(result,date4,NULL);
 
-    TEST_EQUALS(result,food5,NULL);
-    TEST_EQUALS(result,food6,NULL);
-    TEST_EQUALS(result,food7,NULL);
 
-    TEST_EQUALS(result,foodDateCompare( food1 , food2 ),0);
-    TEST_EQUALS(result,foodDateCompare( food3 , food1 ),1);
+    TEST_EQUALS(result,mapPut( map1 , MapKeyElement keyElement, MapDataElement dataElement);,NULL);
 
-    TEST_EQUALS(result,foodNameCompare( food1 , food4 ),1);
-    TEST_EQUALS(result,foodNameCompare( food3 , food4 ),0);
-
-    TEST_EQUALS(result,foodQuantityCompare( food1 , food2 ),0);
-    TEST_EQUALS(result,foodQuantityCompare( food3 , food2 ),0);
 
 /* ------------------------  destruction  ------------------------- */
+
+    mapDestroy( map1 );
+    mapDestroy( map2 );
+    mapDestroy( map3 );
 
     dateFree( date1 );
     dateFree( date2 );
@@ -379,6 +437,7 @@ static bool testFoodCombo() {
     foodDestroy( food5 );
     foodDestroy( food6 );
     foodDestroy( food7 );
+    foodDestroy( food8 );
 
     return result;
 }
@@ -386,7 +445,7 @@ static bool testFoodCombo() {
 int main() {
     RUN_TEST(testDateCombo);
     RUN_TEST(testFoodCombo);
-    //RUN_TEST(testGenericMapCombo);
+    RUN_TEST(testGenericMapCombo);
     return 0;
 }
 
