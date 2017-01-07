@@ -33,15 +33,50 @@ struct Map_t {
  *        Static declarations         *
  **************************************/
 
+/**
+ * function create a new Node.
+ * @param keyElement - points to the key that will be stored in the new node.
+ * @param dataElement - points to the suitable data fitting to the the key.
+ * @param map - contains the copy and free functions suitable to key and data.
+ * @return
+ * NULL- if one or more of the arguments is NULL, or if memory allocation failed
+ * else return a new Node.
+ */
 static Node nodeCreate( MapKeyElement keyElement , MapDataElement dataElement ,
                  Map map );
 
+/**
+ * function free all memory allocated to Node.
+ * @param node - the Node to be destroyed.
+ * @param map - contains the free functions to destroy data and key stored in.
+ */
 static void nodeDestroy( Node node , Map map );
 
+/**
+ * function copies a Node.
+ * @param node - the Node to by copyed.
+ * @param map - contains the free functions to destroy data and key stored in.
+ * @return
+ * NULL - if one or more of the arguments is NULL or if memory allocation failed
+ * else returns a copy of the exepted node.
+ */
 static Node nodeCopy( Node node , Map map );
 
+/**
+ * function removes node from map if node exists, do noting else.
+ * @param map - the  map that contains the node to be removed.
+ * @param node - the node to be removed.
+ */
 static void removeNodeFromMap( Map map , Node node );
 
+/**
+ * function locates the previous node to the the nodewe want to add to the map.
+ * @param new_node - the new node to add to map.
+ * @param map - the map to add node to.
+ * @return
+ * NULL - if one of the parameters is NULL or if map has no Nodes.
+ * else return the Node previous to be linked to map.
+ */
 static Node findPreviousToNewNode( Node new_node, Map map);
 
 
@@ -121,10 +156,6 @@ Node findPreviousToNewNode ( Node node, Map map ) {
     if (!map || !node) return NULL;
     if ( !map->head ) return NULL;
 
-//    if (map->compareKeyElements( keyElement , map->head->key ) ==
-//        LEFT_ELEMENT_FIRST )
-//        return NULL;
-
     MAP_INTERNAL_FOREACH( Node , current_node ,  map )  {
         if ( !current_node->next ) return current_node;
         int result = map->compareKeyElements( node->key , current_node->key );
@@ -138,7 +169,6 @@ Node findPreviousToNewNode ( Node node, Map map ) {
     }
 
     return NULL;
-
 }
 
 

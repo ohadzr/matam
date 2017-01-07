@@ -1,12 +1,22 @@
-//
-// Created by ohad on 01-Jan-17.
-//
+
+/**************************************
+ *       Header files include         *
+ **************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef int (*IntOperatorElement)(int, int);
+/**************************************
+ *              Defines               *
+ **************************************/
 
+typedef int (*IntOperatorElement)(int, int);
+//#define EMPTY_LIST -1 //TODO: add line.
+#define EMPTY_LIST 0
+
+/**************************************
+ *              Structs               *
+ **************************************/
 
 typedef struct node_t* Node;
 struct node_t {
@@ -14,9 +24,8 @@ struct node_t {
     Node next;
 };
 
-
 /********** DELETE ***********/
-
+//TODO: check one last time in t2 and delete
 
 void print_list(Node node) {
     printf("Node:\t");
@@ -35,28 +44,30 @@ int plus(int n1, int n2) {
 int minus(int n1, int n2) {
     return n1-n2;
 }
-
-
 /********************/
 
+/**************************************
+ *         Static Functions           *
+ **************************************/
+
 /**
- * Find which number is bigger and returns it
- *
+ * function compare two integers and find witch one is bigger.
+ * @param number1 - first integer.
+ * @param number2 - second integer.
  * @return
- *  int - bigger number
+ * the max integer value within the two integers.
  */
+
 static int max(int number1, int number2) {
     if (number1 > number2) return number1;
     return number2;
 }
 
 /**
- * Calcs the size of a given list
- * if list is null return 0
- *
+ * function count how many nodes exist in list.
+ * @param list - the list to measure length .
  * @return
- *  int - size of list
- *
+ * list length. //TODO: add: or -1 if list is empty.
  */
 static int getListSize(Node list) {
     int counter = 0;
@@ -102,14 +113,9 @@ static Node nodeCopy(Node node) {
     return new_node;
 }
 
-/**
- * Free all allocated memory of a node
- *
- */
 static void nodeDestroy(Node node) {
     if (node != NULL) {
         free(node);
-        node = NULL;
     }
 }
 
@@ -324,3 +330,4 @@ int main() {
 
      return 0;
 }
+/********************/

@@ -1,10 +1,15 @@
-//
-// Created by ohad on 01-Jan-17.
-//
+
+/**************************************
+ *       Header files include         *
+ **************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+/**************************************
+ *              Defines               *
+ **************************************/
 
 typedef void* Element;
 typedef Element (*CopyFunction)(Element);
@@ -23,6 +28,16 @@ typedef void (*FreeFunction)(Element);
  *  and free the elements using the free function
  *  before swapping always free the destination (to avoid leaks)
  *
+ * @param elements_array1 - the first array.
+ * @param array_size1 - the first array length.
+ * @param elements_array2 - the second array.
+ * @param array_size2 - the second array length.
+ * @param helper_array - the destination array that will contain the ordered
+ * elements of both arrays.
+ * @param compare_element_function - the function defines The ratio of order
+ * between two elements.
+ * @param copy_element_function - the function copy an element.
+ * @param free_element_function - the function free element.
  */
 void merge(Element* elements_array1,int array_size1,Element* elements_array2,
            int array_size2, Element* helper_array ,
@@ -65,6 +80,13 @@ void merge(Element* elements_array1,int array_size1,Element* elements_array2,
  *  first - find left and right indexes of array
  *  run recursivly splitting the array and merging it back together
  *
+ * @param elements_array - array to be sorted.
+ * @param array_size - array length.
+ * @param helper_array - temp array to help sort.
+ * @param copy_element_function - the function copy an element.
+ * @param compare_element_function - the function defines The ratio of order
+ * between two elements.
+ * @param free_element_function - the function free element.
  */
 void internal_msort(Element* elements_array, int array_size,
                     Element* helper_array,CopyFunction copy_element_function,
@@ -91,15 +113,17 @@ void internal_msort(Element* elements_array, int array_size,
         free_element_function(helper_array[i]);
         helper_array[i] = NULL;
     }
-
 }
 
-
-
 /**
- *  Perform a merge sort on a given array.
- *  allocate a temp array for swaping
- *
+ * Perform a merge sort is a realization algorithm to sort array.
+ * allocate a temp array for swaping.
+ * @param elements_array - the array to be sorted.
+ * @param array_size - array's length.
+ * @param copy_element_function - the function copy an element.
+ * @param compare_element_function - the function defines The ratio of order
+ * between two elements.
+ * @param free_element_function - the function free element.
  */
 void merge_sort(Element* elements_array, int array_size,
                 CopyFunction copy_element_function,
