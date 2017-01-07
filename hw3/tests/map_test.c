@@ -422,6 +422,23 @@ static bool testGenericMapCombo() {
 	TEST_EQUALS(result, mapPut(refrigerator, food2, date5), MAP_SUCCESS);
 	TEST_EQUALS(result, mapPut(refrigerator, food3, date6), MAP_SUCCESS);
 	TEST_EQUALS(result, mapGetSize(refrigerator), 3);
+	Food food = mapGetFirst( refrigerator );
+	TEST_EQUALS(result, strcmp("Pai",food->name) , 0);
+	food = mapGetNext( refrigerator );
+	TEST_EQUALS(result, strcmp("Pasta",food->name) , 0);
+
+
+	Map refrigerator1 = mapCopy( refrigerator );
+	food = mapGetFirst( refrigerator );
+	TEST_EQUALS(result, strcmp("Pai",food->name) , 0);
+	TEST_EQUALS(result, mapGetSize(refrigerator1), 3);
+	food = mapGetNext( refrigerator1 );
+	TEST_EQUALS(result, strcmp("Pasta",food->name) , 0);
+	food = mapGetNext( refrigerator1 );
+	TEST_EQUALS(result, strcmp("Pomela",food->name) , 0);
+	food = mapGetNext( refrigerator1 );
+	TEST_EQUALS(result, NULL , food );
+
 
 	TEST_EQUALS(result, mapPut(refrigerator, food6, date6), MAP_NULL_ARGUMENT);
 	TEST_EQUALS(result, mapPut(refrigerator, food7, date6), MAP_NULL_ARGUMENT);
@@ -472,6 +489,7 @@ static bool testGenericMapCombo() {
 	/* ------------------------  destruction  ------------------------- */
 
 	mapDestroy(refrigerator);
+	mapDestroy(refrigerator1);
 	mapDestroy(refrigerator2);
 
 	dateFree(date1);
