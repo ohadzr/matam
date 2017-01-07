@@ -26,8 +26,8 @@
    return NULL;                                                                \
 }
 
-#define FIRST 1
-#define SECOND -1
+#define FIRST -1
+#define SECOND 1
 #define EQUAL 0
 #define FEB_MAX 29
 
@@ -163,19 +163,19 @@ static Date dateCopy(Date date) {
 static int dateCompare(Date date1, Date date2) {
 	assert(date1 && date2);
 	if (date1->year > date2->year)
-		return FIRST;
-	if (date1->year < date2->year)
 		return SECOND;
+	if (date1->year < date2->year)
+		return FIRST;
 
 	if (date1->month > date2->month)
-		return FIRST;
-	if (date1->month < date2->month)
 		return SECOND;
+	if (date1->month < date2->month)
+		return FIRST;
 
 	if (date1->day > date2->day)
-		return FIRST;
-	if (date1->day > date2->day)
 		return SECOND;
+	if (date1->day > date2->day)
+		return FIRST;
 
 	return EQUAL;
 }
@@ -197,9 +197,9 @@ int foodNameCompare(Food food1, Food food2) {
 	assert(food1 && food2);
 	int result = strcmp(food1->name, food2->name);
 	if (result > 0)
-		return FIRST;
-	if (result < 0)
 		return SECOND;
+	if (result < 0)
+		return FIRST;
 
 	return EQUAL;
 }
@@ -446,27 +446,27 @@ static bool testGenericMapCombo() {
 	TEST_EQUALS(result, mapRemove(refrigerator2,food2),MAP_ITEM_DOES_NOT_EXIST);
 	TEST_EQUALS(result, mapRemove(refrigerator,food6),MAP_NULL_ARGUMENT);
 	TEST_EQUALS(result, mapRemove(refrigerator,food1),MAP_SUCCESS);
-	test_date = mapGet(refrigerator, food1);
+    test_date = mapGet(refrigerator, food1);
 	TEST_EQUALS(result,test_date ,NULL);
 
 	TEST_EQUALS(result, mapPut(refrigerator2, food8, date7), MAP_SUCCESS);
 	TEST_EQUALS(result, mapPut(refrigerator2, food3, date4), MAP_SUCCESS);
 	TEST_EQUALS(result, mapGetSize(refrigerator2), 2);
 
-//	test_date = mapGetFirst(refrigerator2);
-//	TEST_EQUALS(result, dateCompare(test_date, date4), 0);
-//	test_date = mapGetNext(refrigerator2);
-//	TEST_EQUALS(result, dateCompare(test_date, date7), 0);
-//	test_date = mapGetNext(refrigerator2);
-//	TEST_EQUALS(result, test_date, NULL);
+    Food test_food = mapGetFirst(refrigerator2);
+	TEST_EQUALS(result, strcmp("Pai",test_food->name) , 0);
+    test_food = mapGetNext(refrigerator2);
+	TEST_EQUALS(result, strcmp("Pizza",test_food->name), 0);
+	test_date = mapGetNext(refrigerator2);
+	TEST_EQUALS(result, test_date, NULL);
 
 	TEST_EQUALS(result, mapContains(refrigerator2, food3), true);
 	TEST_EQUALS(result, mapContains(refrigerator2, food1), false);
 	TEST_EQUALS(result, mapContains(refrigerator, food3), true);
 
-	test_date = mapGet(refrigerator, food8);
+    test_date = mapGet(refrigerator, food8);
 	TEST_EQUALS(result, dateCompare(test_date, date7), 0);
-	test_date = mapGet(refrigerator, food4);
+    test_date = mapGet(refrigerator, food4);
 	TEST_EQUALS(result, test_date, NULL);
 
 	/* ------------------------  destruction  ------------------------- */
