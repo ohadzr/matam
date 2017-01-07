@@ -11,7 +11,6 @@
  **************************************/
 
 typedef int (*IntOperatorElement)(int, int);
-//#define EMPTY_LIST -1 //TODO: add line.
 #define EMPTY_LIST 0
 
 /**************************************
@@ -25,7 +24,6 @@ struct node_t {
 };
 
 /********** DELETE ***********/
-//TODO: check one last time in t2 and delete
 
 void print_list(Node node) {
     printf("Node:\t");
@@ -67,7 +65,7 @@ static int max(int number1, int number2) {
  * function count how many nodes exist in list.
  * @param list - the list to measure length .
  * @return
- * list length. //TODO: add: or -1 if list is empty.
+ * list length.
  */
 static int getListSize(Node list) {
     int counter = 0;
@@ -173,7 +171,7 @@ static Node listInsertLast(Node list, Node node) {
  */
 Node listOperate(Node list1, Node list2, IntOperatorElement operator) {
     if (getListSize(list1) != getListSize(list2)) return NULL;
-    if (getListSize(list1) == 0) return NULL;
+    if (getListSize(list1) == EMPTY_LIST) return NULL;
 
     Node list = NULL;
 

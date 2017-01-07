@@ -436,7 +436,7 @@ MtmErrorCode pokemonGoStoreAddItem(Store store) {
     char* quantity_char = GET_NEXT_ARGUMENT;
     int value = stringToInt(item_value), quantity = stringToInt(quantity_char);
 
-    if (!itemIsValidArgs(value, item_name) || quantity < POSITIVE_QUANTITY)
+    if (!itemIsValidArgs(value, item_name) || quantity <= POSITIVE_QUANTITY)
         return MTM_INVALID_ARGUMENT;
     Item item = itemCreate(value, item_name);
     if (item == NULL) return MTM_OUT_OF_MEMORY;
@@ -724,9 +724,6 @@ void pokemonGo(FILE* pokedex_file, FILE* evolution_file, FILE* location_file,
 
 
 int main(int argc, char** argv) {
-    setvbuf(stdout, NULL, _IONBF, 0); //TODO: remove this
-    setvbuf(stderr, NULL, _IONBF, 0);
-
     if (isValidMainArgs(argc, argv)) {
         FILE* pokedex_file = fopen(argv[2],"r");
         FILE* evolution_file = fopen(argv[4],"r");

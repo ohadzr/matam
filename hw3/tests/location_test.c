@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 #include <stdbool.h>
-#include <stdlib.h>
 #include "../location.h"
 #include "test_utilities.h"
 /**************************************

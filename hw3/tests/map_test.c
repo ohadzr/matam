@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include <stdbool.h>
 #include "../map_mtm/map_mtm.h"
 #include "../utilities.h"
 #include "test_utilities.h"
