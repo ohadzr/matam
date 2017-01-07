@@ -9,3 +9,6 @@ add_subdirectory(hw0/part1)
 add_subdirectory(hw0/part2)
 add_subdirectory(hw2)
 add_subdirectory(hw3)
+
+set(BAR_FILES ex3_bar.c)
+add_executable(bar_test ${BAR_FILES})

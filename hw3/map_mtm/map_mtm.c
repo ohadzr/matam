@@ -152,14 +152,14 @@ void removeNodeFromMap( Map map , Node node ) {
     previous->next = after;
 }
 
-Node findPreviousToNewNode ( Node node, Map map ) {
+Node מfindPreviousToNewNode ( Node node, Map map ) {
     if (!map || !node) return NULL;
     if ( !map->head ) return NULL;
 
     MAP_INTERNAL_FOREACH( Node , current_node ,  map )  {
-        if ( !current_node->next ) return current_node;
         int result = map->compareKeyElements( node->key , current_node->key );
         if ( result != RIGHT_ELEMENT_FIRST ) return NULL;
+        if ( !current_node->next ) return current_node;
         else {
             result = map->compareKeyElements(node->key,current_node->next->key);
             if (result == LEFT_ELEMEMT_FIRST) {
@@ -343,7 +343,8 @@ MapResult mapClear( Map map ) {
     MAP_INTERNAL_FOREACH( Node , current_node , map ) {
         removeNodeFromMap( map , current_node );
     }
-    map->head = NULL;
+
+
     return MAP_SUCCESS;
 }
 
