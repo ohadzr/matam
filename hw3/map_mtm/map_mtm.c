@@ -152,7 +152,7 @@ void removeNodeFromMap( Map map , Node node ) {
     previous->next = after;
 }
 
-Node מfindPreviousToNewNode ( Node node, Map map ) {
+Node findPreviousToNewNode ( Node node, Map map ) {
     if (!map || !node) return NULL;
     if ( !map->head ) return NULL;
 
