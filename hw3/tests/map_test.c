@@ -484,6 +484,12 @@ static bool testGenericMapCombo() {
 	TEST_EQUALS(result, mapClear(refrigerator2), MAP_SUCCESS);
 	TEST_EQUALS(result, mapGetSize(refrigerator2), 0);
 
+	TEST_EQUALS(result, mapRemove(refrigerator2,food2),MAP_ITEM_DOES_NOT_EXIST);
+	TEST_EQUALS(result, mapRemove(refrigerator,food6),MAP_NULL_ARGUMENT);
+	TEST_EQUALS(result, mapRemove(refrigerator,food1),MAP_SUCCESS);
+	test_date = mapGet(refrigerator, food1);
+	TEST_EQUALS(result,test_date ,NULL);
+
 	TEST_EQUALS(result, mapPut(refrigerator2, food8, date7), MAP_SUCCESS);
 	TEST_EQUALS(result, mapPut(refrigerator2, food3, date4), MAP_SUCCESS);
 	TEST_EQUALS(result, mapGetSize(refrigerator2), 2);
