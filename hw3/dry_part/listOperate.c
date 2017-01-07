@@ -39,12 +39,25 @@ int minus(int n1, int n2) {
 
 /********************/
 
-
+/**
+ * Find which number is bigger and returns it
+ *
+ * @return
+ *  int - bigger number
+ */
 static int max(int number1, int number2) {
     if (number1 > number2) return number1;
     return number2;
 }
 
+/**
+ * Calcs the size of a given list
+ * if list is null return 0
+ *
+ * @return
+ *  int - size of list
+ *
+ */
 static int getListSize(Node list) {
     int counter = 0;
     Node next_node = list;
@@ -55,6 +68,15 @@ static int getListSize(Node list) {
     return counter;
 }
 
+
+/**
+ * Allocate a new Node struct. Node has a n property and next node property
+ *
+ * @return
+ *  New Allocated Node.
+ *  NULL if allocation failed
+ *
+ */
 static Node nodeCreate(int n, Node next_node) {
     Node new_node = malloc(sizeof(*new_node));
     if (new_node == NULL)
@@ -65,6 +87,14 @@ static Node nodeCreate(int n, Node next_node) {
     return new_node;
 }
 
+/**
+ * Allocate a new node as a copy of a given node.
+ *
+ * @return
+ *  New Allocated Node.
+ *  NULL if allocation failed, or given node is NULL
+ *
+ */
 static Node nodeCopy(Node node) {
     if (node == NULL) return NULL;
     Node new_node = nodeCreate(node->n, node->next);
@@ -72,6 +102,10 @@ static Node nodeCopy(Node node) {
     return new_node;
 }
 
+/**
+ * Free all allocated memory of a node
+ *
+ */
 static void nodeDestroy(Node node) {
     if (node != NULL) {
         free(node);
@@ -79,6 +113,10 @@ static void nodeDestroy(Node node) {
     }
 }
 
+/**
+ * Free all allocated memory of a list of nodes
+ *
+ */
 void listDestroy(Node list) {
     if (list == NULL) return;
 
@@ -92,6 +130,16 @@ void listDestroy(Node list) {
 
 }
 
+
+/**
+ * Insert a node to the end of a list.
+ *
+ * @return
+ *  NULL if both list and node are NULL
+ *  node if list is NULL
+ *  list if node is NULL, or if success
+ *
+ */
 static Node listInsertLast(Node list, Node node) {
     if (list == NULL && node == NULL) return NULL;
     if (list == NULL) return node;
@@ -107,15 +155,24 @@ static Node listInsertLast(Node list, Node node) {
     return list;
 }
 
-
-Node listOperate(Node node1, Node node2, IntOperatorElement operator) {
-    if (getListSize(node1) != getListSize(node2)) return NULL;
-    if (getListSize(node1) == 0) return NULL;
+/**
+ *  Get 2 lists of ints of the same size and an int operator function that
+ *  calc a new int. Create a new list that every int in the list is the new
+ *  int that was claculated in the operator list.
+ *
+ * @return
+ *  NULL lists are not the same size, size is zero or if allocation fails
+ *  Node list - of new ints
+ *
+ */
+Node listOperate(Node list1, Node list2, IntOperatorElement operator) {
+    if (getListSize(list1) != getListSize(list2)) return NULL;
+    if (getListSize(list1) == 0) return NULL;
 
     Node list = NULL;
 
-    while (node1) {
-        int n = operator(node1->n, node2->n);
+    while (list1) {
+        int n = operator(list1->n, list2->n);
 
         Node new_node = nodeCreate(n , NULL);
         if (new_node == NULL) {
@@ -124,17 +181,26 @@ Node listOperate(Node node1, Node node2, IntOperatorElement operator) {
         }
 
         list = listInsertLast(list, new_node);
-        //nodeDestroy(new_node);
 
-        node1 = node1->next;
-        node2 = node2->next;
+        list1 = list1->next;
+        list2 = list2->next;
     }
 
     return list;
 }
 
 
-
+/**
+ *  Get an array of Node lists at the same size and the array size and
+ *  return a new allocated list of the same size that every n inside of it
+ *  is the maximum value between all lists in that index
+ *  using @listOperte function for comparing
+ *
+ * @return
+ *  NULL if array size is zero or if allocation fails
+ *  Node list - of new max ints
+ *
+ */
 Node maxElements(Node* list_array, int array_size) {
     if (array_size <= 0) return NULL;
     if (array_size == 1) return nodeCopy(list_array[0]);
