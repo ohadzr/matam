@@ -429,7 +429,7 @@ static bool testGenericMapCombo() {
 
 
 	Map refrigerator1 = mapCopy( refrigerator );
-	food = mapGetFirst( refrigerator );
+	food = mapGetFirst( refrigerator1 );
 	TEST_EQUALS(result, strcmp("Pai",food->name) , 0);
 	TEST_EQUALS(result, mapGetSize(refrigerator1), 3);
 	food = mapGetNext( refrigerator1 );
