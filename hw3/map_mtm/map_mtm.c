@@ -343,7 +343,7 @@ MapResult mapClear( Map map ) {
     MAP_INTERNAL_FOREACH( Node , current_node , map ) {
         removeNodeFromMap( map , current_node );
     }
-
+    map->head = NULL;
     return MAP_SUCCESS;
 }
 
