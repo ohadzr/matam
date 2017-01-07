@@ -20,13 +20,14 @@ typedef void (*FreeFunction)(Element);
 #define LEFT_FIRST 1
 #define RIGHT_FIRST -1
 
-/**************************************
- *             Functions              *
- **************************************/
 
 /**
- * function merge two arrays elements to helper array by order
- * provided by the CompareFunction.
+ *  Merge between two arrays using a helper array
+ *  compare between the array's elements using the compare function
+ *  copy using the copy function
+ *  and free the elements using the free function
+ *  before swapping always free the destination (to avoid leaks)
+ *
  * @param elements_array1 - the first array.
  * @param array_size1 - the first array length.
  * @param elements_array2 - the second array.
@@ -72,14 +73,13 @@ void merge(Element* elements_array1,int array_size1,Element* elements_array2,
     for(; index_array2 < array_size2; index_array2++, helper_array++)
         helper_array[i_helper] =
                 copy_element_function(elements_array2[index_array2]);
-
-    //TODO: remove
-    //for (int i=0; i<array_size1+array_size2; i++)
-    //    free_element_function(helper_array[i]);
 }
 
 /**
- * function (recursive) sort array's element by order into destination array.
+ *  Perform a the internal merge sort on a given array.
+ *  first - find left and right indexes of array
+ *  run recursivly splitting the array and merging it back together
+ *
  * @param elements_array - array to be sorted.
  * @param array_size - array length.
  * @param helper_array - temp array to help sort.
@@ -91,8 +91,7 @@ void merge(Element* elements_array1,int array_size1,Element* elements_array2,
 void internal_msort(Element* elements_array, int array_size,
                     Element* helper_array,CopyFunction copy_element_function,
                     CompareFunction compare_element_function,
-                    FreeFunction free_element_function)
-{
+                    FreeFunction free_element_function) {
     int left = array_size / 2, right = array_size - left;
     if (array_size < 2)
         return;
@@ -117,7 +116,8 @@ void internal_msort(Element* elements_array, int array_size,
 }
 
 /**
- * merge sort is a realization algorithm to sort array.
+ * Perform a merge sort is a realization algorithm to sort array.
+ * allocate a temp array for swaping.
  * @param elements_array - the array to be sorted.
  * @param array_size - array's length.
  * @param copy_element_function - the function copy an element.
@@ -133,17 +133,14 @@ void merge_sort(Element* elements_array, int array_size,
     Element *tmp_array = malloc(sizeof(Element) * array_size);
     internal_msort(elements_array, array_size, tmp_array,copy_element_function,
                    compare_element_function, free_element_function);
-    //TODO: remove
-    //for (int i=0; i< array_size; i++) {
-    //    free_element_function(tmp_array[i]);
-    //}
 
+    // All data is freed before - only freeing tmp_array
     free(tmp_array);
 }
 
 
 
-/************* DELETE after ran one last time ********/
+/************* DELETE ********/
 typedef void* intElement;
 //typedef intElement integer
 

@@ -57,6 +57,7 @@ int minus(int n1, int n2) {
  * @return
  * the max integer value within the two integers.
  */
+
 static int max(int number1, int number2) {
     if (number1 > number2) return number1;
     return number2;
@@ -69,7 +70,6 @@ static int max(int number1, int number2) {
  * list length. //TODO: add: or -1 if list is empty.
  */
 static int getListSize(Node list) {
-    //if ( list == NULL ) return EMPTY_LIST; // TODO: add check.
     int counter = 0;
     Node next_node = list;
     while (next_node) {
@@ -79,12 +79,14 @@ static int getListSize(Node list) {
     return counter;
 }
 
+
 /**
- * function create new Node.
- * @param n - the node's data argument.
- * @param next_node - pointer to the next node in list
+ * Allocate a new Node struct. Node has a n property and next node property
+ *
  * @return
- * NULL - if memory allocation failed, else a new Node.
+ *  New Allocated Node.
+ *  NULL if allocation failed
+ *
  */
 static Node nodeCreate(int n, Node next_node) {
     Node new_node = malloc(sizeof(*new_node));
@@ -97,10 +99,12 @@ static Node nodeCreate(int n, Node next_node) {
 }
 
 /**
- * function copies a node.
- * @param node - the node to be copyed.
+ * Allocate a new node as a copy of a given node.
+ *
  * @return
- * NULL - if memory allocation failed or if parameter NULL.
+ *  New Allocated Node.
+ *  NULL if allocation failed, or given node is NULL
+ *
  */
 static Node nodeCopy(Node node) {
     if (node == NULL) return NULL;
@@ -109,20 +113,15 @@ static Node nodeCopy(Node node) {
     return new_node;
 }
 
-/**
- * function destroy all memory allocated to node.
- * @param node
- */
 static void nodeDestroy(Node node) {
     if (node != NULL) {
         free(node);
-        node = NULL;//TODO: redundant
     }
 }
 
 /**
- * function free all memory allocated to list, if list is NULL do nothing.
- * @param list - the list to be destroyed.
+ * Free all allocated memory of a list of nodes
+ *
  */
 void listDestroy(Node list) {
     if (list == NULL) return;
@@ -137,12 +136,15 @@ void listDestroy(Node list) {
 
 }
 
+
 /**
- * function add a node to list.
- * @param list - to list to add node to.
- * @param node - the node to be added to list.
+ * Insert a node to the end of a list.
+ *
  * @return
- * NULL - if two parameters is NULL, or the head of the list.
+ *  NULL if both list and node are NULL
+ *  node if list is NULL
+ *  list if node is NULL, or if success
+ *
  */
 static Node listInsertLast(Node list, Node node) {
     if (list == NULL && node == NULL) return NULL;
@@ -160,22 +162,23 @@ static Node listInsertLast(Node list, Node node) {
 }
 
 /**
- * function activates the given operator on lists.
- * @param node1 - the head of first list.
- * @param node2 - the head of the second list.
- * @param operator - the operator to activate between suitable by index Nodes.
+ *  Get 2 lists of ints of the same size and an int operator function that
+ *  calc a new int. Create a new list that every int in the list is the new
+ *  int that was claculated in the operator list.
+ *
  * @return
- * NULL - if one or more of the parameters is NULL, or if memory allocation,
- * problem or if lists are empty.
+ *  NULL lists are not the same size, size is zero or if allocation fails
+ *  Node list - of new ints
+ *
  */
-Node listOperate(Node node1, Node node2, IntOperatorElement operator) {
-    if (getListSize(node1) != getListSize(node2)) return NULL;
-    if (getListSize(node1) == EMPTY_LIST) return NULL;
+Node listOperate(Node list1, Node list2, IntOperatorElement operator) {
+    if (getListSize(list1) != getListSize(list2)) return NULL;
+    if (getListSize(list1) == 0) return NULL;
 
     Node list = NULL;
 
-    while (node1) {
-        int n = operator(node1->n, node2->n);
+    while (list1) {
+        int n = operator(list1->n, list2->n);
 
         Node new_node = nodeCreate(n , NULL);
         if (new_node == NULL) {
@@ -184,19 +187,26 @@ Node listOperate(Node node1, Node node2, IntOperatorElement operator) {
         }
 
         list = listInsertLast(list, new_node);
-        //nodeDestroy(new_node); //TODO: remove
 
-        node1 = node1->next;
-        node2 = node2->next;
+        list1 = list1->next;
+        list2 = list2->next;
     }
 
     return list;
 }
 
 
-//TODO: remove after check
-/********** DELETE ***********/
-
+/**
+ *  Get an array of Node lists at the same size and the array size and
+ *  return a new allocated list of the same size that every n inside of it
+ *  is the maximum value between all lists in that index
+ *  using @listOperte function for comparing
+ *
+ * @return
+ *  NULL if array size is zero or if allocation fails
+ *  Node list - of new max ints
+ *
+ */
 Node maxElements(Node* list_array, int array_size) {
     if (array_size <= 0) return NULL;
     if (array_size == 1) return nodeCopy(list_array[0]);
