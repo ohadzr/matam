@@ -446,6 +446,10 @@ static bool testGenericMapCombo() {
 	TEST_EQUALS(result, mapPut(refrigerator, food8, date7), MAP_SUCCESS);
 	TEST_EQUALS(result, mapGetSize(refrigerator), 4);
 
+	TEST_EQUALS(result, date1, NULL);
+	TEST_EQUALS(result, date2, NULL);
+	TEST_EQUALS(result, date3, NULL);
+
 	TEST_EQUALS(result, mapPut(refrigerator, food8, date1), MAP_NULL_ARGUMENT);
 	TEST_EQUALS(result, mapPut(refrigerator, food8, date2), MAP_NULL_ARGUMENT);
 	TEST_EQUALS(result, mapPut(refrigerator, food8, date3), MAP_NULL_ARGUMENT);
@@ -518,5 +522,6 @@ int main() {
 	RUN_TEST(testDateCombo);
 	RUN_TEST(testFoodCombo);
 	RUN_TEST(testGenericMapCombo);
+
 	return 0;
 }
