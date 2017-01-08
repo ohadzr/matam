@@ -5,7 +5,7 @@ CFLAGS = -std=c99 -Wall -pedantic-errors -Werror
 TEST_FOLDER = tests
 MAP_FOLDER = map_mtm
 
-OBJ_MAP = utilities.o
+OBJ_MAP = utilities.o ${MAP_FOLDER}/map_mtm.o
 OBJ_STORE = store.o
 OBJ_POKEMON = utilities.o pokemon.o pokedex.o store.o
 OBJ_TRAINER = utilities.o trainer.o pokedex.o store.o location.o pokemon.o
@@ -72,7 +72,7 @@ pokemon_go.o : pokemon_go.c pokedex.h set.h utilities.h pokemon_trainer.h \
 
 #################### mtm_map
 
-${MAP_FOLDER}/map_mtm.o : ${MAP_FOLDER}/map_mtm.c ${MAP_FOLDER}/map_mtm.h \
+${MAP_FOLDER}/map_mtm.o : ${MAP_FOLDER}/map_mtm.c ${MAP_FOLDER}/map_mtm.h 
 	${CC} ${CFLAGS} -c ${MAP_FOLDER}/map_mtm.c -o $@
 	
 	
@@ -121,4 +121,4 @@ ${TEST_FOLDER}/map_example_test.o : ${TEST_FOLDER}/map_example_test.c \
 clean:
 	rm -f *.o ${TEST_FOLDER}/*.o ${MAP_FOLDER}/*.o  \
     store_test pokemon_test trainer_test pokedex_test location_test \
-    pokemon_go_test map_test
+    pokemon_go_test map_test map_example_test
