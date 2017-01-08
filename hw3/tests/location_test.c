@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "../location.h"
-#include "test_utilities.h"
+#include "aux_macros.h"
 /**************************************
  *         Static Functions           *
  **************************************/

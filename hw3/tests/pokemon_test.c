@@ -1,6 +1,6 @@
 #include <stdbool.h>
 #include <string.h>
-#include "test_utilities.h"
+#include "aux_macros.h"
 #include "../pokemon.h"
 
 static bool testCombo() {

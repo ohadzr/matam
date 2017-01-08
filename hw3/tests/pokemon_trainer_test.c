@@ -1,5 +1,5 @@
 #include <stdbool.h>
-#include "test_utilities.h"
+#include "aux_macros.h"
 #include "../pokemon.h"
 #include "../pokemon_trainer.h"
 

@@ -10,6 +10,7 @@
 #include "../map_mtm/map_mtm.h"
 #include "../utilities.h"
 #include "test_utilities.h"
+#include "aux_macros.h"
 
 /**************************************
  *              Defines               *

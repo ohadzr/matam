@@ -1,5 +1,5 @@
 #include <stdbool.h>
-#include "aux_macros.h"
+#include "../hw3/tests/aux_macros.h"
 #include "pokemon.h"
 
 static bool testCombo() {
