@@ -260,7 +260,9 @@ bool mapContains( Map map , MapKeyElement element ) {
 
 
 MapResult mapPut(Map map, MapKeyElement keyElement, MapDataElement dataElement){
-    if ( (!map) || (!keyElement) || (!dataElement) ) return MAP_NULL_ARGUMENT;
+    if ( (!map) || (!keyElement) || (!dataElement) ) {
+        return MAP_NULL_ARGUMENT;
+    }
 
     Node new_node = nodeCreate(keyElement, dataElement, map);
     if (!new_node) return MAP_OUT_OF_MEMORY;
