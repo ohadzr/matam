@@ -1,8 +1,8 @@
 #ifndef TEST_UTILS_H_
 #define TEST_UTILS_H_
 
-#include <fstream>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 
 extern std::string location; // Used for finding the origin of an exception

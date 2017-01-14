@@ -5,8 +5,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -pedantic-error
 
 set (CMAKE_C_STANDARD 99)
 
-add_subdirectory(hw0/part1)
-add_subdirectory(hw0/part2)
 add_subdirectory(hw4)
 
 set(BAR_FILES ex3_bar.c)

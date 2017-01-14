@@ -4,87 +4,90 @@
 
 #include "pokemon.h"
 
-using namespace mtm::pokemongo;
+using mtm::pokemongo::Pokemon;
 using std::set;
 using std::string;
 
 
 Pokemon::Pokemon( string& species,  set<PokemonType>& types,
                   double& cp, int& level) :
-                                            name(nullptr) ,
-                                            p_types(nullptr) ,
                                             p_cp(cp) ,
                                             p_hp(MAX_HP),
-                                            p_level(level) {
+                                            p_level(level)  {
     if ( cp <= 0 || level <= 0 || species == "" ) {
         // invalid parameter
         throw PokemonInvalidArgsException();
     }
 
     name = string(species);
-    p_types = set(types);
+    p_types = set<PokemonType>(types);
 
 }
 
 
-Pokemon::Pokemon( string& species,
-                  double& cp,
-                  int& level): name(nullptr) , p_types(nullptr) ,
-                               p_hp(MAX_HP), p_cp(cp) , p_level(level) {
-    if ( cp <= 0 || level <= 0 || species == "" ) {
-        // invalid parameter
-        throw PokemonInvalidArgsException();
-    }
+//Pokemon::Pokemon( string& species,
+//                  double& cp,
+//                  int& level):  p_cp(cp), p_hp(MAX_HP),p_level(level) ,
+//                                name(nullptr) {
+//    if ( cp <= 0 || level <= 0 || species == "" ) {
+//        // invalid parameter
+//        throw PokemonInvalidArgsException();
+//    }
+//
+//    name = string(species);
+//    p_types = set<PokemonType>(GetDefaultTypes(species));
+//
+//}
 
-    name = string(species);
-    p_types = set(GetDefaultTypes(species));
 
-}
-
-
-Pokemon::Pokemon( const Pokemon& pokemon) :   name(nullptr),
-                                              p_types(nullptr),
-                                              p_cp(pokemon.p_cp),
-                                              p_hp(MAX_HP),
-                                              p_level(pokemon.p_level) {
+Pokemon::Pokemon( const Pokemon& pokemon) :   p_cp(pokemon.p_cp),
+                                              p_hp(pokemon.p_hp),
+                                              p_level(pokemon.p_level),
+                                              name(nullptr) {
     name = string(pokemon.name);
-    p_types = set(pokemon.p_types);
+    p_types = set<PokemonType>(pokemon.p_types);
 
 }
 
-Pokemon& operator=(const Pokemon& pokemon) {
-    Pokemon new_pokemon = Pokemon(pokemon);
-    return new_pokemon;
+Pokemon& Pokemon::operator=(const Pokemon& pokemon) {
+
+    name = string(pokemon.name);
+    p_types = set<PokemonType>(pokemon.p_types);
+    p_cp = pokemon.p_cp;
+    p_hp = pokemon.p_hp;
+    p_level = pokemon.p_level;
+
+    return *this;
 }
 
-bool operator==(const Pokemon& rhs) const {
+bool Pokemon::operator==(const Pokemon& rhs) const {
     double result = pokemonCompare(*this, rhs);
     //double result = (this->p_cp * this->p_level) - (rhs.p_cp * rhs.p_level); TODO: delete
     return result == 0;
 }
 
 
-bool operator!=(const Pokemon& rhs) const {
+bool Pokemon::operator!=(const Pokemon& rhs) const {
     double result = pokemonCompare(*this, rhs);
     return result != 0;
 }
 
-bool operator<(const Pokemon& rhs) const {
+bool Pokemon::operator<(const Pokemon& rhs) const {
     double result = pokemonCompare(*this, rhs);
     return result < 0;
 }
 
-bool operator>(const Pokemon& rhs) const {
+bool Pokemon::operator>(const Pokemon& rhs) const {
     double result = pokemonCompare(*this, rhs);
     return result > 0;
 }
 
-bool operator>=(const Pokemon& rhs) const {
+bool Pokemon::operator>=(const Pokemon& rhs) const {
     double result = pokemonCompare(*this, rhs);
     return result >= 0;
 }
 
-bool operator<=(const Pokemon& rhs) const {
+bool Pokemon::operator<=(const Pokemon& rhs) const {
     double result = pokemonCompare(*this, rhs);
     return result <= 0;
 }
@@ -141,8 +144,8 @@ std::ostream& mtm::pokemongo::operator<<(std::ostream& output,
     output << pokemon.p_hp << ") ";
 
     set<PokemonType>::iterator it;
-    for (it = pokemon.p_types.begin() ; it != pokemon.p_types.end(); ++it) { //TODO: check if print types by enum order
-        output << *it << " ";                                               //TODO: check if last space is valid
+    for (it = pokemon.p_types.begin() ; it != pokemon.p_types.end(); ++it) {
+        output << *it << " ";
     }
 
     output << std::endl;

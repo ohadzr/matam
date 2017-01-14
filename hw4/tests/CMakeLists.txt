@@ -5,6 +5,7 @@ link_directories(.)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -pedantic-errors -D NDEBUG")
 
-set(SOURCE_FILES pokemon_test.cpp)
+set(SOURCE_FILES pokemon_test.cpp test_utils.cc ../pokemon.cpp )
 
-add_executable(hw4 ${SOURCE_FILES})
+add_executable(hw4_pokemon_test ${SOURCE_FILES})
+
