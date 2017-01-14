@@ -29,14 +29,17 @@ typedef enum {
 
 class Pokemon {
   private:
-    /**
-     * private members - Apartment properties
-     * Squares array, price and dimension (width & length)
-     */
+    const int MAX_HP = 100;
+    const int MIN_HP = 0;
+    const int MIN_CP_BOOST = 1;
+
     std::string name;
     std::set<PokemonType> p_types;
     double p_cp;
+    double p_hp;
     int p_level;
+    static double pokemonCompare(const Pokemon& first,
+                                 const Pokemon& second);
 
   public:
   // Computes the default set of Pokemon types for a given species of Pokemons.
