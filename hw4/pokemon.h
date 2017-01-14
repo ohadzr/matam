@@ -4,6 +4,7 @@
 #include <iostream>
 #include <set>
 #include <string>
+#include "exceptions.h"
 
 namespace mtm {
 namespace pokemongo {
@@ -27,7 +28,17 @@ typedef enum {
 } PokemonType;
 
 class Pokemon {
- public:
+  private:
+    /**
+     * private members - Apartment properties
+     * Squares array, price and dimension (width & length)
+     */
+    std::string name;
+    std::set<PokemonType> p_types;
+    double p_cp;
+    int p_level;
+
+  public:
   // Computes the default set of Pokemon types for a given species of Pokemons.
   //
   // @param species the species of the Pokemon.
@@ -42,11 +53,11 @@ class Pokemon {
   // @param level the level of the Pokemon.
   // @throw PokemonInvalidArgsException if a non-positive level or CP value were
   //        passed, or if species is an empty string.
-  Pokemon(const std::string& species,
-          const std::set<PokemonType>& types,
-          const double& cp,
-          const int& level);
-  
+  Pokemon( std::string& species,
+           std::set<PokemonType>& types,
+           double& cp,
+           int& level);
+
   // Constructs a new Pokemon with the specified data and the default types for
   // its species.
   //
@@ -55,12 +66,12 @@ class Pokemon {
   // @param level the level of the Pokemon.
   // @throw PokemonInvalidArgsException if a non-positive level or CP value were
   //        passed, or if species is an empty string.
-  Pokemon(const std::string& species, const double& cp, const int& level);
+  Pokemon( std::string& species,  double& cp,  int& level);
   
   // Copy constructor.
   //
   // @param pokemon the pokemon to copy.
-  Pokemon(const Pokemon& pokemon);
+  Pokemon( const Pokemon& pokemon);
   
   // Assignment operator.
   //
