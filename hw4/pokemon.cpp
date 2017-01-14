@@ -42,8 +42,7 @@ Pokemon::Pokemon( string& species,  set<PokemonType>& types,
 
 Pokemon::Pokemon( const Pokemon& pokemon) :   p_cp(pokemon.p_cp),
                                               p_hp(pokemon.p_hp),
-                                              p_level(pokemon.p_level),
-                                              name(nullptr) {
+                                              p_level(pokemon.p_level) {
     name = string(pokemon.name);
     p_types = set<PokemonType>(pokemon.p_types);
 

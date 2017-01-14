@@ -45,7 +45,7 @@ class Pokemon {
   //
   // @param species the species of the Pokemon.
   // @return the default set of types for the given species.
-  static std::set<PokemonType> GetDefaultTypes(const std::string& species); //TODO: remove comment
+//  static std::set<PokemonType> GetDefaultTypes(const std::string& species); //TODO: remove comment
 
   // Constructs a new Pokemon with the specified data.
   //
@@ -68,7 +68,7 @@ class Pokemon {
   // @param level the level of the Pokemon.
   // @throw PokemonInvalidArgsException if a non-positive level or CP value were
   //        passed, or if species is an empty string.
-  Pokemon( std::string& species,  double& cp,  int& level); //TODO: remove comment
+//  Pokemon( std::string& species,  double& cp,  int& level); //TODO: remove comment
   
   // Copy constructor.
   //

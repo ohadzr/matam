@@ -10,7 +10,7 @@ using PN=mtm::pokemongo::Pokemon;
 using std::set;
 using std::string;
 
-bool pokemonTestExample() {
+bool pokemonTestCombo() {
 
 
     return true;
@@ -55,10 +55,10 @@ bool pokemonTestCtor() {
 
     /* -------------------  initialize one pokemon  ------------------- */
 
-    // TODO: add this test and check it on eclipse
-    string poor_pokemon_name = "poor_pokemon";
-    double poor_pokemon_cp = 80.0;
-    int poor_pokemon_level = 7;
+//    // TODO: add this test and check it on eclipse
+//    string poor_pokemon_name = "poor_pokemon";
+//    double poor_pokemon_cp = 80.0;
+//    int poor_pokemon_level = 7;
 
 
     /* -------------------  initialize one pokemon  ------------------- */
@@ -95,8 +95,8 @@ bool pokemonTestCtor() {
     ASSERT_THROW( mtm::pokemongo::PokemonInvalidArgsException,
                   PN( Bad_pokemon1_name , types3 ,
                       Bad_pokemon1_cp, Bad_pokemon1_level ));
-    ASSERT_NO_THROW( PN( poor_pokemon_name , poor_pokemon_cp,
-                         poor_pokemon_level ));
+//    ASSERT_NO_THROW( PN( poor_pokemon_name , poor_pokemon_cp, TODO: remove comments
+//                         poor_pokemon_level ));
     ASSERT_THROW( mtm::pokemongo::PokemonInvalidArgsException,
                   PN( Bad_pokemon3_name , types5 ,
                       Bad_pokemon3_cp, Bad_pokemon3_level ));
@@ -112,28 +112,25 @@ bool pokemonTestCopyCtor() {
     /********************************************************************
      *                          initialization                          *
      ********************************************************************/
-//    /* -------------------  initialize one pokemon  ------------------- */
-//
-//    set <mtm::pokemongo::PokemonType>types1 =
-//            set<mtm::pokemongo::PokemonType>();
-//    types1.insert(mtm::pokemongo::PokemonType::ELECTRIC);
-//    types1.insert(mtm::pokemongo::PokemonType::NORMAL);
-//    string pikachu_name = "Pikachu";
-//    double pikacho_cp = 30.3;
-//    int pikacho_level = 3;
-//
-//
-//    /* -------------------  initialize one pokemon  ------------------- */
-//
-//    set <mtm::pokemongo::PokemonType>types2 =
-//            set<mtm::pokemongo::PokemonType>();
-//    types2.insert(mtm::pokemongo::PokemonType::FIRE);
-//    string Cyndaquil_name = "Cyndaquil";
-//    double Cyndaquil_cp = 100.0;
-//    int Cyndaquil_level = 4;
-//
-//
-//    Pokemon( const Pokemon& pokemon);
+    /* -------------------  initialize one pokemon  ------------------- */
+
+    set <mtm::pokemongo::PokemonType>types1 =
+            set<mtm::pokemongo::PokemonType>();
+    types1.insert(mtm::pokemongo::PokemonType::ELECTRIC);
+    types1.insert(mtm::pokemongo::PokemonType::NORMAL);
+    string pikachu_name = "Pikachu";
+    double pikacho_cp = 30.3;
+    int pikacho_level = 3;
+
+
+    /********************************************************************
+     *                              tests                               *
+     ********************************************************************/
+    PN pikachu = PN( pikachu_name , types1 , pikacho_cp , pikacho_level );
+    PN pikachu_copy = PN(pikachu);
+    ASSERT_TRUE(pikachu == pikachu_copy);
+
+
     return true;
 }
 
@@ -173,17 +170,10 @@ bool pokemonTestTrain() {
     return true;
 }
 
-bool pokemonTestPrint() {
-
-
-    return true;
-}
-
 
 
 bool pokemonTest() {
-
-    RUN_TEST(pokemonTestExample);
+    RUN_TEST(pokemonTestCombo);
     RUN_TEST(pokemonTestCtor);
     RUN_TEST(pokemonTestCopyCtor);
     RUN_TEST(pokemonTestOperators);
@@ -192,7 +182,6 @@ bool pokemonTest() {
     RUN_TEST(pokemonTestHit);
     RUN_TEST(pokemonTestHeal);
     RUN_TEST(pokemonTestTrain);
-    RUN_TEST(pokemonTestPrint); //TODO: remove later
     return true;
 }
 
