@@ -3,8 +3,11 @@
 
 #include <iostream>
 #include <string>
+#include <list>
 
 #include "pokemon.h"
+#include "exceptions.h"
+
 
 namespace mtm {
 namespace pokemongo {
@@ -17,7 +20,15 @@ typedef enum {
 } Team;
 
 class Trainer {
- public:
+  private:
+    const int INIT_LEVEL = 1;
+
+    std::string t_name;
+    int t_level;
+    std::list t_pokemon_list;
+    Team t_team;
+
+  public:
   // Constructs a new trainer with the given name and team.
   //
   // @param name the name of the trainer.
