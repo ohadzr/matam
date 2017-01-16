@@ -2,6 +2,7 @@
 #define K_GRAPH_MTM_H
 
 #include "exceptions.h"
+#include <set>
 
 namespace mtm {
 
@@ -13,7 +14,12 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // A node. Represents the basic data unit in a kGraph. Has a key, a value, and
   // connected to at most k other nodes through k edges numbered from 0 to k-1.
   class Node {
-    public:
+  private:
+      KeyType key;
+      ValueType value;
+      int max_arcs;
+      std::set arcs;
+  public:
     // Constructs a new node with the given key and value.
     //
     // @param key key of the new node.

@@ -12,4 +12,4 @@ set(TRAINER_FILES trainer_test.cpp test_utils.cc ../trainer.cpp ../pokemon.cpp )
 add_executable(hw4_trainer_test ${TRAINER_FILES})
 
 set(K_GRAPH_FILES k_graph_mtm_test.cpp test_utils.cc ../k_graph_mtm.cpp )
-add_executable(hw4_pokemon_test ${K_GRAPH_FILES})
+add_executable(hw4_k_graph_test ${K_GRAPH_FILES})

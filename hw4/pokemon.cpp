@@ -25,7 +25,7 @@ Pokemon::Pokemon( string& species,  set<PokemonType>& types,
 }
 
 
-//Pokemon::Pokemon( string& species,
+//Pokemon::Pokemon( string& species, TODO:bring me back
 //                  double& cp,
 //                  int& level):  p_cp(cp), p_hp(MAX_HP),p_level(level) ,
 //                                name(nullptr) {
