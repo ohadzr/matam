@@ -57,7 +57,7 @@ class Pokemon {
   // @param level the level of the Pokemon.
   // @throw PokemonInvalidArgsException if a non-positive level or CP value were
   //        passed, or if species is an empty string.
-  Pokemon( std::string& species,
+  Pokemon( std::string& species, //TODO: bring back the consts
            std::set<PokemonType>& types,
            double& cp,
            int& level);
