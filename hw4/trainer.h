@@ -27,6 +27,7 @@ class Trainer {
     int t_level;
     std::list t_pokemon_list;
     Team t_team;
+    std::string teamToString() const;
 
   public:
   // Constructs a new trainer with the given name and team.

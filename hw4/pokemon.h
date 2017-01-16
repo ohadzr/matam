@@ -39,6 +39,8 @@ class Pokemon {
     std::set<PokemonType> p_types;
     static double pokemonCompare(const Pokemon& first,
                                  const Pokemon& second);
+    static std::string pokemonTypeToString(const
+                                           mtm::pokemongo::PokemonType type);
 
   public:
   // Computes the default set of Pokemon types for a given species of Pokemons.

@@ -5,10 +5,9 @@
 #include "trainer.h"
 
 
-
-
 using mtm::pokemongo::Trainer;
 using std::list;
+using std::string;
 
 Trainer::Trainer(const std::string& name, const Team& team) :
         t_level(INIT_LEVEL) {
@@ -147,8 +146,8 @@ bool Trainer::TryToCatch(Pokemon& pokemon) {
 std::ostream& mtm::pokemongo::operator<<(std::ostream& output,
                                          const Trainer& trainer) {
     output << trainer.t_name ;
-    output << " (" << trainer.t_level << ")" << trainer.t_team << std::endl;
-
+    output << " (" << trainer.t_level << ")" ;
+    output << trainer.teamToString() << std::endl;
 
     list<Pokemon>::iterator it;
     for (it = trainer.t_pokemon_list.begin() ;
@@ -157,4 +156,18 @@ std::ostream& mtm::pokemongo::operator<<(std::ostream& output,
     }
 
     return output;
+}
+
+
+std::string Trainer::teamToString() const {
+    switch (this->t_team) {
+        case BLUE:
+            return string("BLUE");
+        case YELLOW:
+            return string("YELLOW");
+        case RED:
+            return string("RED");
+        default:
+            return string("");
+    }
 }

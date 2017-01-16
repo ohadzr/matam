@@ -144,10 +144,46 @@ std::ostream& mtm::pokemongo::operator<<(std::ostream& output,
 
     set<PokemonType>::iterator it;
     for (it = pokemon.p_types.begin() ; it != pokemon.p_types.end(); ++it) {
-        output << *it << " ";
+        output << pokemonTypeToString(*it) << " ";
     }
 
     output << std::endl;
 
     return output;
+}
+
+
+std::string Pokemon::pokemonTypeToString(const mtm::pokemongo::PokemonType type) {
+    switch (type) {
+        case NORMAL:
+            return string("NORMAL");
+        case ROCK:
+            return string("ROCK");
+        case BUG:
+            return string("BUG");
+        case FAIRY:
+            return string("FAIRY");
+        case GROUND:
+            return string("GROUND");
+        case GRASS:
+            return string("GRASS");
+        case WATER:
+            return string("WATER");
+        case ICE:
+            return string("ICE");
+        case GHOST:
+            return string("GHOST");
+        case POISON:
+            return string("POISON");
+        case ELECTRIC:
+            return string("ELECTRIC");
+        case FIRE:
+            return string("FIRE");
+        case FLYING:
+            return string("FLYING");
+        case PSYCHIC:
+            return string("PSYCHIC");
+        default:
+            return string("");
+    }
 }
