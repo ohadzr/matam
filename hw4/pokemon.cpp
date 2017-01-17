@@ -9,46 +9,45 @@ using std::set;
 using std::string;
 
 
-Pokemon::Pokemon( string& species,  set<PokemonType>& types,
-                  double& cp, int& level) :
+Pokemon::Pokemon( const string& species,  const set<PokemonType>& types,
+                  const double& cp, const int& level) :
                                             p_cp(cp) ,
                                             p_hp(MAX_HP),
-                                            p_level(level)  {
+                                            p_level(level),
+                                            name(string(species)),
+                                            p_types(set<PokemonType>(types)) {
     if ( cp <= 0 || level <= 0 || species == "" ) {
         // invalid parameter
         throw PokemonInvalidArgsException();
     }
-
-    name = string(species);
-    p_types = set<PokemonType>(types);
-
 }
 
 
-//Pokemon::Pokemon( string& species, TODO:bring me back
-//                  double& cp,
-//                  int& level):  p_cp(cp), p_hp(MAX_HP),p_level(level) ,
-//                                name(nullptr) {
-//    if ( cp <= 0 || level <= 0 || species == "" ) {
-//        // invalid parameter
-//        throw PokemonInvalidArgsException();
-//    }
-//
-//    name = string(species);
-//    p_types = set<PokemonType>(GetDefaultTypes(species));
-//
-//}
+Pokemon::Pokemon( const string& species, //TODO:bring me back
+                  const double& cp,
+                  const int& level):  p_cp(cp) ,
+                                      p_hp(MAX_HP),
+                                      p_level(level),
+                                      name(string(species)),
+                                      p_types(GetDefaultTypes(species)) {
+    if ( cp <= 0 || level <= 0 || species == "" ) {
+        // invalid parameter
+        throw PokemonInvalidArgsException();
+    }
+}
 
 
 Pokemon::Pokemon( const Pokemon& pokemon) :   p_cp(pokemon.p_cp),
                                               p_hp(pokemon.p_hp),
-                                              p_level(pokemon.p_level) {
-    name = string(pokemon.name);
-    p_types = set<PokemonType>(pokemon.p_types);
-
+                                              p_level(pokemon.p_level),
+                                              name(string(pokemon.name)),
+                                 p_types(set<PokemonType>(pokemon.p_types)) {
 }
 
 Pokemon& Pokemon::operator=(const Pokemon& pokemon) {
+    if (this == &pokemon) {
+        return *this;
+    }
 
     name = string(pokemon.name);
     p_types = set<PokemonType>(pokemon.p_types);
@@ -104,8 +103,22 @@ double Pokemon::pokemonCompare(const Pokemon& first,
     double first_hit_power,second_hit_power;
     first_hit_power = (first.p_cp) * (first.p_level);
     second_hit_power = (second.p_cp) * (second.p_level);
+    double result = first_hit_power - second_hit_power;
+    if (result != 0)
+        return result;
 
-    return first_hit_power - second_hit_power;
+    int sum_first=0, sum_second=0;
+    set<PokemonType>::iterator it;
+
+    for (it = first.p_types.begin() ; it != first.p_types.end(); ++it) {
+        sum_first += (int) *it;
+    }
+
+    for (it = second.p_types.begin() ; it != second.p_types.end(); ++it) {
+        sum_second += (int) *it;
+    }
+
+    return sum_first - sum_second;
 }
 
 

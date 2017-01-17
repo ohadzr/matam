@@ -65,25 +65,7 @@ void Trainer::KillStrongestPokemon() {
 }
 
 bool Trainer::operator==(const Trainer& rhs) const {
-    try {
-        Pokemon left_strength = this->GetStrongestPokemon();
-        try {
-            Pokemon right_strength = rhs.GetStrongestPokemon();
-            return left_strength == right_strength;
-        }
-        catch (TrainerNoPokemonsFoundException& e) {
-                return false;
-            }
-    }
-    catch (TrainerNoPokemonsFoundException& e) {
-        try {
-            rhs.GetStrongestPokemon();
-            return false;
-        }
-        catch (TrainerNoPokemonsFoundException& e) {
-            return true;
-        }
-    }
+    return trainerCompare(*this, rhs, true);
 }
 
 
@@ -92,35 +74,15 @@ bool Trainer::operator!=(const Trainer& rhs) const {
 }
 
 bool Trainer::operator<(const Trainer& rhs) const {
-    try {
-        Pokemon left_strength = this->GetStrongestPokemon();
-        try {
-            Pokemon right_strength = rhs.GetStrongestPokemon();
-            return left_strength < right_strength;
-        }
-        catch (TrainerNoPokemonsFoundException& e) {
-            return false;
-        }
-    }
-    catch (TrainerNoPokemonsFoundException& e) {
-        try {
-            rhs.GetStrongestPokemon();
-            return false;
-        }
-        catch (TrainerNoPokemonsFoundException& e) {
-            return true;
-        }
-    }
-}
-
-bool Trainer::operator>(const Trainer& rhs) const {
-    if (*this == rhs || *this < rhs)
-        return false;
-    return true;
+    return trainerCompare(*this, rhs, false);
 }
 
 bool Trainer::operator<=(const Trainer& rhs) const {
     return (*this == rhs && *this < rhs);
+}
+
+bool Trainer::operator>(const Trainer& rhs) const {
+    return !(*this <= rhs);
 }
 
 bool Trainer::operator>=(const Trainer& rhs) const {
@@ -169,5 +131,32 @@ std::string Trainer::teamToString() const {
             return string("RED");
         default:
             return string("");
+    }
+}
+
+
+bool Trainer::trainerCompare(const Trainer& first,
+                             const Trainer& second, bool check_equal) {
+    try {
+        Pokemon left_strength = first.GetStrongestPokemon();
+        try {
+            Pokemon right_strength = second.GetStrongestPokemon();
+            if (check_equal)
+                return left_strength == right_strength;
+            else
+                return left_strength < right_strength;
+        }
+        catch (TrainerNoPokemonsFoundException& e) {
+            return false;
+        }
+    }
+    catch (TrainerNoPokemonsFoundException& e) {
+        try {
+            second.GetStrongestPokemon();
+            return false;
+        }
+        catch (TrainerNoPokemonsFoundException& e) {
+            return true;
+        }
     }
 }

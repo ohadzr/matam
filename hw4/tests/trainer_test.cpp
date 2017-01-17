@@ -4,7 +4,6 @@
 
 #include "../pokemon.h"
 #include "test_utils.h"
-#include "../../hw2/pokemon.h"
 
 using PN=mtm::pokemongo::Pokemon;
 using std::set;

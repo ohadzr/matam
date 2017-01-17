@@ -2,6 +2,7 @@
 #define K_GRAPH_MTM_H
 
 #include "exceptions.h"
+#include <vector>
 #include <set>
 
 namespace mtm {
@@ -17,35 +18,54 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   private:
       KeyType key;
       ValueType value;
-      int max_arcs;
-      std::set arcs;
+      std::vector<Node*> arcs;
+
   public:
     // Constructs a new node with the given key and value.
     //
     // @param key key of the new node.
     // @param value value of the new node.
-    Node(KeyType const &key, ValueType const &value);
 
+    Node(KeyType const &key, ValueType const &value = default_value):
+            key(key), value(value) {
+        arcs = std::vector<Node*>();
+        std::vector<Node*>::iterator it = arcs.begin();
+
+        for (int i=0; i<k ; i++) {
+            it = arcs.insert(it, nullptr);
+        }
+
+    }
     // A destructor.
-    ~Node();
+    ~Node() {}
 
     // Returns the key of the node.
     //
     // @return the key of the node.
-    KeyType const& Key() const;
+    KeyType const& Key() const {
+        return key;
+    }
 
     // Returns the value of the node.
     //
     // @return the value of the node.
-    ValueType& Value();
-    ValueType const& Value() const;
+    ValueType& Value(){
+        return value;
+    }
+    ValueType const& Value() const {
+      return value;
+    }
 
     // Returns a reference to the pointer to the neighbor node connected through
     // edge i.
     //
     // @return (reference to) a pointer to the node connected through edge i.
-    Node*& operator[](int i);
-    const Node* const operator[](int i) const;
+    Node*& operator[](int i) {
+      return arcs[i];
+    }
+    const Node* const operator[](int i) const {
+      return arcs[i];
+    }
   };
  public:
   class const_iterator;  // forward declaration
@@ -54,20 +74,26 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // moment, the iterator points either to one of the nodes in the graph, or to
   // the end of the graph.
   class iterator {
-   public:
+    private:
+      Node* curr_node;
+      KGraph* curr_graph;
+    public:
     // Constructs a new iterator that points to a given node in the given graph.
     //
     // @param node the node the new iterator points to.
     // @param graph the kGraph over which the iterator iterates.
-    iterator(Node* node, KGraph* graph);
+    iterator(Node* node, KGraph* graph) : curr_node(node), curr_graph(graph) {
+    }
  
     // A copy constructor.
     //
     // @param it the iterator to copy.
-    iterator(const iterator& it);
+    iterator(const iterator& it) : curr_node(it.curr_node),
+                                   curr_graph(it.curr_graph) {
+    }
 
     // A destructor.
-    ~iterator();
+    ~iterator() {}
 
     // Moves the iterator to point to the node that is connected to the current
     // node through edge i.
@@ -77,57 +103,102 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
     // @throw KGraphEdgeOutOfRange if i is not in the range [0,k-1]
     // @throw KGraphIteratorReachedEnd when trying to move an iterator that
     //        points to the end of the graph.
-    iterator& Move(int i);
+    iterator& Move(int i) {
+        if (i < 0 || i > k-1)
+            throw KGraphEdgeOutOfRange();
+        if (curr_node == nullptr)
+            throw KGraphIteratorReachedEnd();
+        curr_node = (*curr_node)[i];
+        return *this;
+    }
 
     // Dereferne operator. Return the key of the node pointed by the iterator.
     //
     // @return the key of the node to which the iterator points.
     // @throw KGraphIteratorReachedEnd when trying to dereference an iterator
     //        that points to the end of the graph.
-    KeyType const& operator*() const;
+    KeyType const& operator*() const {
+        if (curr_node == nullptr)
+            throw KGraphIteratorReachedEnd();
+        return curr_node->Key();
+    }
 
     // Equal operator. Two iterators are equal iff they either point to the same
     // node in the same graph, or to the end of the same graph.
     //
-    // @param rhs righ hand side operand.
+    // @param rhs right hand side operand.
     // @return true iff the iterators are equal.
-    bool operator==(const iterator& rhs) const;
+    bool operator==(const iterator& rhs) const {
+        if (curr_graph != rhs.curr_graph) //TODO: check if this enough or should I implement operator== for graph
+            return false;
+
+        // if same graph
+        if (curr_node == nullptr && rhs.curr_node == nullptr)
+            return true;
+        if (curr_node == nullptr || rhs.curr_node == nullptr)
+            return false;
+
+        return curr_node->Key() == rhs.curr_node->Key();
+    }
 
     // Not equal operator (see definition of equality above).
     //
-    // @param rhs righ hand side operand.
+    // @param rhs right hand side operand.
     // @return true iff the iterators are not equal.
-    bool operator!=(const iterator& rhs) const;
+    bool operator!=(const iterator& rhs) const {
+        return !(*this == rhs);
+    }
 
     // Equal operator for a const iterator as the right-hand side operand.
     //
-    // @param rhs righ hand side operand.
+    // @param rhs right hand side operand.
     // @return true iff the iterators are equal.
-    bool operator==(const const_iterator& rhs) const;
+    bool operator==(const const_iterator& rhs) const {
+        if (curr_graph != rhs.curr_graph) //TODO: check if this enough or should I implement operator== for graph
+            return false;
+
+        // if same graph
+        if (curr_node == nullptr && rhs.curr_node == nullptr)
+            return true;
+        if (curr_node == nullptr || rhs.curr_node == nullptr)
+            return false;
+
+        return curr_node->Key() == rhs.curr_node->Key();
+    }
 
     // Not equal operator for a const iterator as the right-hand side operand.
     //
-    // @param rhs righ hand side operand.
+    // @param rhs right hand side operand.
     // @return true iff the iterators are not equal.
-    bool operator!=(const const_iterator& rhs) const;
+    bool operator!=(const const_iterator& rhs) const {
+        return !(*this == rhs);
+    }
   };
 
   // A const iterator. Used to iterate over the data in a constant kGraph.
   // Similarly to a regular iterator, at every given moment, the iterator points
   // either to one of the nodes in the graph, or to the end of the graph.
   class const_iterator {
+  private:
+      const Node* curr_node;
+      const KGraph* curr_graph;
    public:
+      friend class iterator;
     // Constructs a new const iterator that points to a given node in the given
     // graph.
     //
     // @param node the node the new iterator points to.
     // @param graph the kGraph over which the iterator iterates.
-    const_iterator(const Node* node, const KGraph* graph);
+    const_iterator(const Node* node, const KGraph* graph) :
+            curr_node(node), curr_graph(graph) {
+    }
 
     // A copy constructor.
     //
     // @param it the iterator to copy.
-    const_iterator(const const_iterator& it);
+    const_iterator(const const_iterator& it): curr_node(it.curr_node),
+                                              curr_graph(it.curr_graph) {
+    }
 
     // Conversion from a regular iterator. Constucts a new const iterator that
     // points to the same node as the given iterator.
@@ -160,29 +231,51 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
     //
     // @param rhs righ hand side operand.
     // @return true iff the iterators are equal.
-    bool operator==(const const_iterator& rhs) const;
+    bool operator==(const const_iterator& rhs) const {
+        if (curr_graph != rhs.curr_graph) //TODO: check if this enough or should I implement operator== for graph
+            return false;
+
+        // if same graph
+        if (curr_node == nullptr && rhs.curr_node == nullptr)
+            return true;
+        if (curr_node == nullptr || rhs.curr_node == nullptr)
+            return false;
+
+        return curr_node->Key() == rhs.curr_node->Key();
+    }
 
     // Not equal operator (see definition of equality above).
     //
-    // @param rhs righ hand side operand.
+    // @param rhs right hand side operand.
     // @return true iff the iterators are not equal.
-    bool operator!=(const const_iterator& rhs) const;
+    bool operator!=(const const_iterator& rhs) const {
+        return !(*this == rhs);
+    }
   };
 
- public:
+
+    private:
+        std::set<Node> nodes;
+        static ValueType default_value;
+
+    public:
   // Constructs a new empty kGraph with the given default value.
   //
   // @param default_value the default value in the graph.
-  explicit KGraph(ValueType const& default_value);
+  explicit KGraph(ValueType const& default_value) :
+          default_value(default_value), nodes(std::set<Node>()) {
+  }
 
   // A copy constructor. Copies the given graph. The constructed graph will have
   // the exact same structure with copied data.
   //
   // @param k_graph the graph to copy.
-  KGraph(const KGraph& k_graph);
+  KGraph(const KGraph& k_graph) : default_value(k_graph.default_value),
+                                  nodes(std::set<Node>(k_graph.nodes)){
+  }
 
   // A destructor. Destroys the graph together with all resources allocated.
-  ~KGraph();
+  ~KGraph() {}
 
   // Returns an iterator to the node with the given key.
   //
@@ -190,7 +283,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @return iterator the newly constructed iterator.
   // @throw KGraphKeyNotFoundException when the given key is not found in the
   //        graph.
-  iterator BeginAt(KeyType const& i);
+  iterator BeginAt(KeyType const& i)  ;
   const_iterator BeginAt(KeyType const& i) const;
 
   // Returns an iterator to the end of the graph.
@@ -243,7 +336,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   //
   // @param key the key to return its value.
   // @return the value assigned to the given key.
-  // @throw KGraphKeyNotFoundException if the given key cannot be found in the 
+  // @throw KGraphKeyNotFoundException if the given key cannot be found in the
   //        graph.
   ValueType const& operator[](KeyType const& key) const;
 
@@ -287,6 +380,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   //        be found in the graph.
   // @throw kGraphNodesAreNotConnected if the two nodes are not connected.
   void Disconnect(KeyType const& key_u, KeyType const& key_v);
+
 };
 
 }  // namespace mtm

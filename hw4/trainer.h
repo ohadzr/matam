@@ -28,6 +28,8 @@ class Trainer {
     std::list t_pokemon_list;
     Team t_team;
     std::string teamToString() const;
+    static bool trainerCompare(const Trainer& first,
+                                 const Trainer& second, bool check_equal);
 
   public:
   // Constructs a new trainer with the given name and team.
