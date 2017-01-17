@@ -1,15 +1,22 @@
-//
-// Created by ohad on 13-Jan-17.
-//
+/**************************************
+ *       Header files include         *
+ **************************************/
 
 #include "pokemon.h"
+
+/**************************************
+ *               Using                *
+ **************************************/
 
 using mtm::pokemongo::Pokemon;
 using std::set;
 using std::string;
 
+/**************************************
+ *        Interface Functions         *
+ **************************************/
 
-Pokemon::Pokemon( const string& species,  const set<PokemonType>& types,
+Pokemon::Pokemon( const string& species, const set<PokemonType>& types,
                   const double& cp, const int& level) :
                                             p_cp(cp) ,
                                             p_hp(MAX_HP),
@@ -17,13 +24,13 @@ Pokemon::Pokemon( const string& species,  const set<PokemonType>& types,
                                             name(string(species)),
                                             p_types(set<PokemonType>(types)) {
     if ( cp <= 0 || level <= 0 || species == "" ) {
-        // invalid parameter
+        /* invalid parameter */
         throw PokemonInvalidArgsException();
     }
 }
 
 
-Pokemon::Pokemon( const string& species, //TODO:bring me back
+Pokemon::Pokemon( const string& species,
                   const double& cp,
                   const int& level):  p_cp(cp) ,
                                       p_hp(MAX_HP),
@@ -31,7 +38,7 @@ Pokemon::Pokemon( const string& species, //TODO:bring me back
                                       name(string(species)),
                                       p_types(GetDefaultTypes(species)) {
     if ( cp <= 0 || level <= 0 || species == "" ) {
-        // invalid parameter
+        /* invalid parameter */
         throw PokemonInvalidArgsException();
     }
 }
@@ -60,10 +67,8 @@ Pokemon& Pokemon::operator=(const Pokemon& pokemon) {
 
 bool Pokemon::operator==(const Pokemon& rhs) const {
     double result = pokemonCompare(*this, rhs);
-    //double result = (this->p_cp * this->p_level) - (rhs.p_cp * rhs.p_level); TODO: delete
     return result == 0;
 }
-
 
 bool Pokemon::operator!=(const Pokemon& rhs) const {
     double result = pokemonCompare(*this, rhs);
@@ -90,43 +95,12 @@ bool Pokemon::operator<=(const Pokemon& rhs) const {
     return result <= 0;
 }
 
-
-//TODO: add explanation
-/**
- *
- * @param first
- * @param second
- * @return
- */
-double Pokemon::pokemonCompare(const Pokemon& first,
-                               const Pokemon& second) {
-    double first_hit_power,second_hit_power;
-    first_hit_power = (first.p_cp) * (first.p_level);
-    second_hit_power = (second.p_cp) * (second.p_level);
-    double result = first_hit_power - second_hit_power;
-    if (result != 0)
-        return result;
-
-    int sum_first=0, sum_second=0;
-    set<PokemonType>::iterator it;
-
-    for (it = first.p_types.begin() ; it != first.p_types.end(); ++it) {
-        sum_first += (int) *it;
-    }
-
-    for (it = second.p_types.begin() ; it != second.p_types.end(); ++it) {
-        sum_second += (int) *it;
-    }
-
-    return sum_first - sum_second;
-}
-
-
 int Pokemon::Level() const {
     return p_level;
 }
 
 bool Pokemon::Hit(Pokemon& victim) {
+    if( this == &victim ) return false;
     double hit_power = p_cp * p_level;
     victim.p_hp -= hit_power;
     if (victim.p_hp <= MIN_HP) {
@@ -148,7 +122,6 @@ void Pokemon::Train(const double& boost) {
     p_cp *= boost;
 }
 
-
 std::ostream& mtm::pokemongo::operator<<(std::ostream& output,
                                          const Pokemon& pokemon) {
     output << pokemon.name ;
@@ -165,8 +138,18 @@ std::ostream& mtm::pokemongo::operator<<(std::ostream& output,
     return output;
 }
 
+/**************************************
+ *          Inner Functions           *
+ **************************************/
 
-std::string Pokemon::pokemonTypeToString(const mtm::pokemongo::PokemonType type) {
+/**
+ * function convert given enum PokemonType to string.
+ * @param type - the type to convert.
+ * @return
+ * the maching string.
+ */
+std::string Pokemon::pokemonTypeToString(const mtm::pokemongo::PokemonType
+                                         type) {
     switch (type) {
         case NORMAL:
             return string("NORMAL");
@@ -199,4 +182,33 @@ std::string Pokemon::pokemonTypeToString(const mtm::pokemongo::PokemonType type)
         default:
             return string("");
     }
+}
+/**
+ * function compare between two pokemons.
+ * @param first - the first pokemon.
+ * @param second - the second pokemon.
+ * @return
+ * possitive number if the first is bigger, negative if the second is bigger
+ * and zero if pokemons equals by the defintion of the work.
+ */
+double Pokemon::pokemonCompare(const Pokemon& first,const Pokemon& second) {
+    double first_hit_power,second_hit_power;
+    first_hit_power = (first.p_cp) * (first.p_level);
+    second_hit_power = (second.p_cp) * (second.p_level);
+    double result = first_hit_power - second_hit_power;
+    if (result != 0)
+        return result;
+
+    int sum_first=0, sum_second=0;
+    set<PokemonType>::iterator it;
+
+    for (it = first.p_types.begin() ; it != first.p_types.end(); ++it) {
+        sum_first += (int) *it;
+    }
+
+    for (it = second.p_types.begin() ; it != second.p_types.end(); ++it) {
+        sum_second += (int) *it;
+    }
+
+    return sum_first - sum_second;
 }

@@ -1,10 +1,18 @@
 #ifndef POKEMON_H
 #define POKEMON_H
 
+/**************************************
+ *       Header files include         *
+ **************************************/
+
 #include <iostream>
 #include <set>
 #include <string>
 #include "exceptions.h"
+
+/**************************************
+ *       Namespace and Classes        *
+ **************************************/
 
 namespace mtm {
 namespace pokemongo {
@@ -43,95 +51,116 @@ class Pokemon {
                                            mtm::pokemongo::PokemonType type);
 
   public:
-  // Computes the default set of Pokemon types for a given species of Pokemons.
-  //
-  // @param species the species of the Pokemon.
-  // @return the default set of types for the given species.
-  static std::set<PokemonType> GetDefaultTypes(const std::string& species); //TODO: remove comment
+   /**
+    * Computes the default set of Pokemon types for a given species of Pokemons.
+    *
+    *   @param species the species of the Pokemon.
+    *   @return
+    *   the default set of types for the given species.
+    */
+   static std::set<PokemonType> GetDefaultTypes(const std::string& species);
 
-  // Constructs a new Pokemon with the specified data.
-  //
-  // @param species the species of the Pokemon.
-  // @param types the types of the Pokemon.
-  // @param cp the CP value of the Pokemon.
-  // @param level the level of the Pokemon.
-  // @throw PokemonInvalidArgsException if a non-positive level or CP value were
-  //        passed, or if species is an empty string.
-  Pokemon( const std::string& species, //TODO: bring back the consts
+
+    /**
+     * Constructs a new Pokemon with the specified data.
+     * @param species the species of the Pokemon.
+     * @param types the types of the Pokemon.
+     * @param cp the CP value of the Pokemon.
+     * @param level the level of the Pokemon.
+     * @throw PokemonInvalidArgsException if a non-positive level or CP value
+     * were passed, or if species is an empty string.
+     */
+  Pokemon( const std::string& species,
            const std::set<PokemonType>& types,
            const double& cp,
            const int& level);
 
-  // Constructs a new Pokemon with the specified data and the default types for
-  // its species.
-  //
-  // @param species the species of the Pokemon.
-  // @param cp the CP value of the Pokemon.
-  // @param level the level of the Pokemon.
-  // @throw PokemonInvalidArgsException if a non-positive level or CP value were
-  //        passed, or if species is an empty string.
-  Pokemon( const std::string& species,  const double& cp, const int& level); //TODO: remove comment
+    /**
+     * Constructs a new Pokemon with the specified data and the default types
+     * for its species.
+     * @param species the species of the Pokemon.
+     * @param cp the CP value of the Pokemon.
+     * @param level the level of the Pokemon.
+     * @throw PokemonInvalidArgsException if a non-positive level or CP value
+     * were passed, or if species is an empty string.
+     */
+  Pokemon( const std::string& species, const double& cp, const int& level);
   
-  // Copy constructor.
-  //
-  // @param pokemon the pokemon to copy.
+   /**
+    * Copy constructor.
+    * @param pokemon the pokemon to copy.
+    */
   Pokemon( const Pokemon& pokemon);
   
-  // Assignment operator.
-  //
-  // @param pokemon assignee.
+   /**
+    * Assignment operator.
+    * @param pokemon assignee.
+    */
   Pokemon& operator=(const Pokemon& pokemon);
 
-  // Comparison operators for Pokemons. Pokemons are compared as described in
-  // the exercise sheet.
-  //
-  // @param rhs the right-hand side operand.
+   /**
+    * Comparison operators for Pokemons. Pokemons are compared as described in
+    * the exercise sheet.
+    * @param rhs the right-hand side operand.
+    */
   bool operator==(const Pokemon& rhs) const;
   bool operator!=(const Pokemon& rhs) const;
   bool operator<(const Pokemon& rhs) const;
   bool operator>(const Pokemon& rhs) const;
   bool operator<=(const Pokemon& rhs) const;
   bool operator>=(const Pokemon& rhs) const;
-  
-  // Prints the data of the Pokemon in the following format:
-  //
-  //     "<species> (<level>/<CP>/<HP>) <type1> <type2> ..."
-  //
-  // where the types are ordered by their numerical value.
-  // e.g.
-  //
-  //     pikachu (3/5.5/87) NORMAL FIRE FLYING
-  //
-  // @param output the output stream to which the data is printed.
-  // @param pokemon the pokemon whose data is printed.
-  // @return the output stream to which the data is printed.
+
+    /**
+     * Prints the data of the Pokemon in the following format:
+     * "<species> (<level>/<CP>/<HP>) <type1> <type2> ..."
+     * where the types are ordered by their numerical value.
+     * e.g.
+     * pikachu (3/5.5/87) NORMAL FIRE FLYING
+     * @param output the output stream to which the data is printed.
+     * @param pokemon the pokemon whose data is printed.
+     * @return the output stream to which the data is printed.
+     */
   friend std::ostream& operator<<(std::ostream& output, const Pokemon& pokemon);
 
-  // Returns the level of the Pokemon.
-  //
-  // @return the level of the Pokemon.
+   /**
+    * Returns the level of the Pokemon.
+    * @return
+    * the level of the Pokemon.
+    */
   int Level() const;
 
-  // "Hits" the given Pokemon by reducing its HP value by the hit power of this
-  // Pokemon.
-  //
-  // @param the Pokemon to hit.
-  // @return true iff the hitten Pokemon died (HP reached zero).
+    /**
+     * "Hits" the given Pokemon by reducing its HP value by the hit power
+     * of this Pokemon.
+     * @param the Pokemon to hit.
+     * @return
+     * true iff the hitten Pokemon died (HP reached zero).
+     */
   bool Hit(Pokemon& victim);
 
-  // Heals the Pokemon by increasing its HP to 100.
+  /**
+   * Heals the Pokemon by increasing its HP to 100.
+   */
   void Heal();
 
-  // Trains the Pokemon by multiplying its CP value by the given boost.
-  //
-  // @param boost the boost by which the CP value is multiplied.
-  // @throw PokemonInvalidArgsException if boost is not bigger than 1.
+   /**
+    * Trains the Pokemon by multiplying its CP value by the given boost.
+    * @param boost the boost by which the CP value is multiplied.
+    * @throw PokemonInvalidArgsException if boost is not bigger than 1.
+    */
   void Train(const double& boost);
 };
 
+    /**
+     * function prints given pokemon data.
+     * @param output - the out channel pokemon data will be printed to.
+     * @param pokemon - the pokemon that it's data will be printed.
+     * @return
+     * output channel.
+     */
 std::ostream& operator<<(std::ostream& output, const Pokemon& pokemon);
 
-}  // namespace pokemongo
-}  // namespace mtm
+}  /* namespace pokemongo */
+}  /* namespace mtm */
 
 #endif  // POKEMON_H
