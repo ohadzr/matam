@@ -27,12 +27,11 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
     // @param value value of the new node.
 
     Node(KeyType const &key, ValueType const &value = default_value):
-            key(key), value(value) {
+            key(KeyType(key)), value(ValueType(value)) {
         arcs = std::vector<Node*>();
-        std::vector<Node*>::iterator it = arcs.begin();
 
         for (int i=0; i<k ; i++) {
-            it = arcs.insert(it, nullptr);
+            arcs.push_back(nullptr);
         }
 
     }
@@ -77,6 +76,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
     private:
       Node* curr_node;
       KGraph* curr_graph;
+      friend class const_iterator;
     public:
     // Constructs a new iterator that points to a given node in the given graph.
     //
@@ -204,10 +204,11 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
     // points to the same node as the given iterator.
     //
     // @param it the iterator we would like to convert to const iterator.
-    const_iterator(const iterator& it);
-
+    const_iterator(const iterator& it): curr_node(it.curr_node),
+                                        curr_graph(it.curr_graph) {
+    }
     // A destructor.
-    ~const_iterator();
+    ~const_iterator() {}
 
     // Moves the iterator to point to the node that is connected to the current
     // node through edge i.
@@ -217,14 +218,25 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
     // @throw KGraphEdgeOutOfRange if i is not in the range [0,k-1]
     // @throw KGraphIteratorReachedEnd when trying to move an iterator that
     //        points to the end of the graph.
-    const_iterator& Move(int i);
+    const_iterator& Move(int i) {
+        if (i < 0 || i > k-1)
+            throw KGraphEdgeOutOfRange();
+        if (curr_node == nullptr)
+            throw KGraphIteratorReachedEnd();
+        curr_node = (*curr_node)[i];
+        return *this;
+    }
 
     // Dereferne operator. Return the key of the node pointed by the iterator.
     //
     // @return the key of the node to which the iterator points.
     // @throw KGraphIteratorReachedEnd when trying to dereference an iterator
     //        that points to the end of the graph.
-    KeyType const& operator*() const;
+    KeyType const& operator*() const {
+        if (curr_node == nullptr)
+            throw KGraphIteratorReachedEnd();
+        return curr_node->Key();
+    }
 
     // Equal operator. Two iterators are equal iff they either point to the same
     // node in the same graph, or to the end of the same graph.
@@ -263,15 +275,17 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   //
   // @param default_value the default value in the graph.
   explicit KGraph(ValueType const& default_value) :
-          default_value(default_value), nodes(std::set<Node>()) {
+          default_value(ValueType(default_value)),
+          nodes(std::set<Node>()) {
   }
 
   // A copy constructor. Copies the given graph. The constructed graph will have
   // the exact same structure with copied data.
   //
   // @param k_graph the graph to copy.
-  KGraph(const KGraph& k_graph) : default_value(k_graph.default_value),
-                                  nodes(std::set<Node>(k_graph.nodes)){
+  KGraph(const KGraph& k_graph) :
+          default_value(k_graph.default_value),
+          nodes(std::set<Node>(k_graph.nodes)) {
   }
 
   // A destructor. Destroys the graph together with all resources allocated.
@@ -283,13 +297,33 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @return iterator the newly constructed iterator.
   // @throw KGraphKeyNotFoundException when the given key is not found in the
   //        graph.
-  iterator BeginAt(KeyType const& i)  ;
-  const_iterator BeginAt(KeyType const& i) const;
+  iterator BeginAt(KeyType const& i) {
+      std::set<Node>::iterator set_iter = nodes.begin();
+      for (; set_iter != nodes.end() ; set_iter++) {
+          if ( (*set_iter).Key() == i ) {
+              Node node = *set_iter;
+              return iterator(&node ,this);
+          }
+      }
+      throw KGraphKeyNotFoundException();
+  }
+  const_iterator BeginAt(KeyType const& i) const {
+      std::set<Node>::iterator set_iter = nodes.begin();
+      for (; set_iter != nodes.end() ; set_iter++) {
+          if ( (*set_iter).Key() == i ) {
+              const Node node = *set_iter;
+              return const_iterator(&node ,this);
+          }
+      }
+      throw KGraphKeyNotFoundException();
+  }
 
   // Returns an iterator to the end of the graph.
   //
   // @return iterator an iterator to the end of the graph.
-  const_iterator End() const;
+  const_iterator End() const {
+      return const_iterator(nullptr, this);
+  }
 
   // Inserts a new node with the given data to the graph.
   //
@@ -297,21 +331,33 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @param value the value to be assigned to the new node.
   // @throw KGraphKeyAlreadyExistsExpection when trying to insert a node with a
   //        key that already exists in the graph.
-  void Insert(KeyType const& key, ValueType const& value);
+  void Insert(KeyType const& key, ValueType const& value) {
+      if (!(nodes.insert(Node(key,value)).second))
+          throw KGraphKeyAlreadyExistsExpection();
+  }
 
   // Inserts a new node with the given key and the default value to the graph.
   //
   // @param key the key to be assigned to the new node.
   // @throw KGraphKeyAlreadyExistsExpection when trying to insert a node with a
   //        key that already exists in the graph.
-  void Insert(KeyType const& key);
+  void Insert(KeyType const& key) {
+      if (!(nodes.insert(Node(key)).second))
+          throw KGraphKeyAlreadyExistsExpection();
+  }
 
   // Removes the node with the given key from the graph.
   //
   // @param key the key of the node to be removed.
   // @throw KGraphKeyNotFoundException when trying to remove a key that cannot
   //        be found in the graph.
-  void Remove(KeyType const& key);
+  void Remove(KeyType const& key) {
+      if (!Contains(key))
+          throw KGraphKeyNotFoundException();
+
+      std::set<Node>::iterator set_iter = nodes.find(Node(key));
+      nodes.erase(set_iter);
+  }
 
   // Removes the node pointed by the given iterator from the graph. If the
   // given iterator neither points to a node in this graph nor to the end of
@@ -320,7 +366,10 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @param it the iterator that points to the node to be removed.
   // @throw KGraphIteratorReachedEnd when the given iterator points to the end
   //        of the graph.
-  void Remove(const iterator& it);
+  void Remove(const iterator& it) {
+
+      nodes.erase( Node((KeyType *)it)); //TODO: is this true??
+  }
 
   // The subscript operator. Returns a reference to the value assigned to
   // the given key in the graph. If the key does not exist, inserts a new node
@@ -329,7 +378,16 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   //
   // @param key the key to return its value.
   // @return the value assigned to the given key.
-  ValueType& operator[](KeyType const& key);
+  ValueType& operator[](KeyType const& key) {
+      std::set<Node>::iterator set_iter = nodes.begin();
+      for (; set_iter != nodes.end() ; set_iter++) {
+          if ( (*set_iter).Key() == key ) {
+              return (*set_iter).Value();
+          }
+      }
+      Insert(key);
+      return this[key];
+  }
 
   // A const version of the subscript operator. Returns the value assigned to
   // the given key in the graph. If the key does not exist, throws an exception.
@@ -338,13 +396,29 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @return the value assigned to the given key.
   // @throw KGraphKeyNotFoundException if the given key cannot be found in the
   //        graph.
-  ValueType const& operator[](KeyType const& key) const;
+  ValueType const& operator[](KeyType const& key) const {
+      std::set<Node>::iterator set_iter = nodes.begin();
+      for (; set_iter != nodes.end() ; set_iter++) {
+          if ( (*set_iter).Key() == key ) {
+              return (*set_iter).Value();
+          }
+      }
+      throw KGraphKeyNotFoundException();
+  }
 
   // Checks whether the graph contains the given key.
   //
   // @param key
   // @return true iff the graph contains the given key.
-  bool Contains(KeyType const& key) const;
+  bool Contains(KeyType const& key) const {
+      std::set<Node>::iterator set_iter = nodes.begin();
+      for (; set_iter != nodes.end() ; set_iter++) {
+          if ( (*set_iter).Key() == key ) {
+              return true;
+          }
+      }
+      return false;
+  }
 
   // Connects two nodes in the graph with an edge.
   //
@@ -358,7 +432,26 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @throw KGraphNodesAlreadyConnected if the two nodes are already connected.
   // @throw KGraphEdgeAlreadyInUse if at least one of the indices of the edge at
   //        one of the nodes is already in use.
-  void Connect(KeyType const& key_u, KeyType const& key_v, int i_u, int i_v);
+  void Connect(KeyType const& key_u, KeyType const& key_v, int i_u, int i_v) {
+      if (!Contains(key_u) || !Contains(key_v))
+          throw KGraphKeyNotFoundException();
+      if (i_u < 0 || i_u > k-1 || i_v < 0 || i_v > k-1)
+          throw KGraphEdgeOutOfRange();
+
+      std::set<Node>::iterator set_iter;
+      set_iter = nodes.find(Node(key_u));
+      Node node_u = *set_iter;
+      set_iter = nodes.find(Node(key_v));
+      Node node_v = *set_iter;
+
+      if (*(node_u[i_u]) == node_v && *(node_v[i_v]) == node_u) //fixme: second part is redundant?
+          throw KGraphNodesAlreadyConnected();
+      if (node_u[i_u] != nullptr || node_v[i_v] != nullptr)
+          throw KGraphEdgeAlreadyInUse();
+
+      node_u[i_u] = &node_v;
+      node_v[i_v] = &node_u;
+  }
 
   // Connects a node to itself via a self loop.
   //
@@ -370,7 +463,23 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @throw KGraphNodesAlreadyConnected if the node is already self connected.
   // @throw KGraphEdgeAlreadyInUse if the index of the self loop is already in
   //        use.
-  void Connect(KeyType const& key, int i);
+  void Connect(KeyType const& key, int i) {
+      if (!Contains(key))
+          throw KGraphKeyNotFoundException();
+      if (i < 0 || i > k-1 )
+          throw KGraphEdgeOutOfRange();
+
+      std::set<Node>::iterator set_iter;
+      set_iter = nodes.find(Node(key));
+      Node node = *set_iter;
+
+      if (*(node[i]) == node)
+          throw KGraphNodesAlreadyConnected();
+      if (node[i] != nullptr)
+          throw KGraphEdgeAlreadyInUse();
+
+      node[i] = &node;
+  }
 
   // Disconnects two connected nodes.
   //
@@ -379,7 +488,29 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @throw KGraphKeyNotFoundException if at least one of the given keys cannot
   //        be found in the graph.
   // @throw kGraphNodesAreNotConnected if the two nodes are not connected.
-  void Disconnect(KeyType const& key_u, KeyType const& key_v);
+  void Disconnect(KeyType const& key_u, KeyType const& key_v) {
+      if (!Contains(key_u) || !Contains(key_v))
+          throw KGraphKeyNotFoundException();
+
+      std::set<Node>::iterator set_iter;
+      set_iter = nodes.find(Node(key_u));
+      Node node_u = *set_iter;
+      set_iter = nodes.find(Node(key_v));
+      Node node_v = *set_iter;
+
+      for (int i=0; i < k ; i++) {
+          if (*(node_u[i]) == node_v)
+              node_u[i] = nullptr;
+      }
+
+      for (int i=0; i < k ; i++) {
+          if (*(node_v[i]) == node_u) {
+              node_v[i] = nullptr;
+              return;
+          }
+      }
+      throw kGraphNodesAreNotConnected();
+  }
 
 };
 
