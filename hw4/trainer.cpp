@@ -1,13 +1,23 @@
-//
-// Created by ohad on 14-Jan-17.
-//
+
+/**************************************
+ *       Header files include         *
+ **************************************/
 
 #include "trainer.h"
 
+/**************************************
+ *               Using                *
+ **************************************/
 
 using mtm::pokemongo::Trainer;
-using std::list;
+using mtm::pokemongo::Pokemon;
+using mtm::pokemongo::Team;
+using std::vector;
 using std::string;
+
+/**************************************
+ *        Interface Functions         *
+ **************************************/
 
 Trainer::Trainer(const std::string& name, const Team& team) :
         t_level(INIT_LEVEL) {

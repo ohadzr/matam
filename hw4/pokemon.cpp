@@ -11,6 +11,7 @@
 using mtm::pokemongo::Pokemon;
 using std::set;
 using std::string;
+using mtm::pokemongo::PokemonType;
 
 /**************************************
  *        Interface Functions         *
@@ -30,18 +31,18 @@ Pokemon::Pokemon( const string& species, const set<PokemonType>& types,
 }
 
 
-Pokemon::Pokemon( const string& species,
-                  const double& cp,
-                  const int& level):  p_cp(cp) ,
-                                      p_hp(MAX_HP),
-                                      p_level(level),
-                                      name(string(species)),
-                                      p_types(GetDefaultTypes(species)) {
-    if ( cp <= 0 || level <= 0 || species == "" ) {
-        /* invalid parameter */
-        throw PokemonInvalidArgsException();
-    }
-}
+//Pokemon::Pokemon( const string& species,
+//                  const double& cp,
+//                  const int& level):  p_cp(cp) ,
+//                                      p_hp(MAX_HP),
+//                                      p_level(level),
+//                                      name(string(species)),
+//                                      p_types(GetDefaultTypes(species)) {
+//    if ( cp <= 0 || level <= 0 || species == "" ) {
+//        /* invalid parameter */
+//        throw PokemonInvalidArgsException();
+//    }
+//}
 
 
 Pokemon::Pokemon( const Pokemon& pokemon) :   p_cp(pokemon.p_cp),
@@ -130,7 +131,7 @@ std::ostream& mtm::pokemongo::operator<<(std::ostream& output,
 
     set<PokemonType>::iterator it;
     for (it = pokemon.p_types.begin() ; it != pokemon.p_types.end(); ++it) {
-        output << pokemonTypeToString(*it) << " ";
+        output << Pokemon::pokemonTypeToString(*it) << " ";
     }
 
     output << std::endl;

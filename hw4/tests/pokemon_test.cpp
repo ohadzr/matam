@@ -24,7 +24,7 @@ bool pokemonTestCtor() {
      ********************************************************************/
     /* -------------------  initialize one pokemon  ------------------- */
 
-    set types1 = set<PokemonType>();
+    set<PokemonType> types1 = set<PokemonType>();
     types1.insert(PokemonType::ELECTRIC);
     types1.insert(PokemonType::NORMAL);
     string pikachu_name = "Pikachu";
@@ -33,7 +33,7 @@ bool pokemonTestCtor() {
 
     /* -------------------  initialize one pokemon  ------------------- */
 
-    set types2 = set<PokemonType>();
+    set<PokemonType> types2 = set<PokemonType>();
     types2.insert(PokemonType::FIRE);
     string Cyndaquil_name = "Cyndaquil";
     double Cyndaquil_cp = 100.0;
@@ -42,7 +42,7 @@ bool pokemonTestCtor() {
     /* -------------------  initialize one pokemon  ------------------- */
 
     //check if throw empty string
-    set types3 = set<PokemonType>();
+    set<PokemonType> types3 = set<PokemonType>();
     types3.insert(PokemonType::NORMAL);
     string Bad_pokemon1_name = "";
     double Bad_pokemon1_cp = 90.9;
@@ -67,7 +67,7 @@ bool pokemonTestCtor() {
     /* -------------------  initialize one pokemon  ------------------- */
 
     //check if throw invalid level
-    set types6 = set<PokemonType>();
+    set<PokemonType> types6 = set<PokemonType>();
     types6.insert(PokemonType::GROUND);
     types6.insert(PokemonType::NORMAL);
     types6.insert(PokemonType::WATER);
@@ -236,7 +236,7 @@ bool pokemonTestPokemonCompare() {
     string myo_name = "Myo";
     double myo_cp = 3;
     int myo_level = 8;
-    Pokemon myo = Pokemon(myo_name,types3,myo_cp,myo_level);
+    Pokemon myo = Pokemon(myo_name,types4,myo_cp,myo_level);
 
     /* -------------------  initialize one pokemon  ------------------- */
 
@@ -251,8 +251,8 @@ bool pokemonTestPokemonCompare() {
      *                              tests                               *
      ********************************************************************/
 
+    ASSERT_TRUE(  !(pikachu == togopi) );
     ASSERT_TRUE(  pikachu == charmander );
-    ASSERT_TRUE(  togopi ==  pikachu );
     ASSERT_TRUE(  !(togopi ==  charmander) );
     ASSERT_TRUE(  myo !=  charmander );
     ASSERT_TRUE(  myo >  charmander );
@@ -308,7 +308,7 @@ bool pokemonTestHit() {
     string myo_name = "Myo";
     double myo_cp = 3;
     int myo_level = 8;
-    Pokemon myo = Pokemon(myo_name,types3,myo_cp,myo_level);
+    Pokemon myo = Pokemon(myo_name,types4,myo_cp,myo_level);
 
     /* -------------------  initialize one pokemon  ------------------- */
 
@@ -373,7 +373,7 @@ bool pokemonTestHeal() {
     string myo_name = "Myo";
     double myo_cp = 3;
     int myo_level = 8;
-    Pokemon myo = Pokemon(myo_name,types3,myo_cp,myo_level);
+    Pokemon myo = Pokemon(myo_name,types4,myo_cp,myo_level);
 
     /* -------------------  initialize one pokemon  ------------------- */
 
@@ -394,8 +394,11 @@ bool pokemonTestHeal() {
     ASSERT_TRUE( !myo.Hit(myo) );
     ASSERT_TRUE( pikachu.Hit(myo) );
     myo.Heal();
+    ASSERT_TRUE( !pikachu.Hit(myo) );
+    ASSERT_TRUE( !pikachu.Hit(myo) );
+    ASSERT_TRUE( !pikachu.Hit(myo) );
+    ASSERT_TRUE( !pikachu.Hit(myo) );
     ASSERT_TRUE( pikachu.Hit(myo) );
-
     return true;
 }
 
@@ -407,8 +410,7 @@ bool pokemonTestTrain() {
 
     set <PokemonType>types1 = set<PokemonType>();
     types1.insert(mtm::pokemongo::PokemonType::ELECTRIC);
-    types1.insert(mtm::pokemongo::PokemonType::NORMAL);
-    types1.insert(mtm::pokemongo::PokemonType::ROCK);
+    types1.insert(mtm::pokemongo::PokemonType::FAIRY);
     string pikachu_name = "Pikachu";
     double pikachu_cp = 6;
     int pikachu_level = 4;
@@ -416,19 +418,11 @@ bool pokemonTestTrain() {
 
     /* -------------------  initialize one pokemon  ------------------- */
 
-    set <PokemonType>types2 = set<PokemonType>();
-    string togopi_name = "Togopi";
-    double togopi_cp = 12;
-    int togopi_level = 2;
-    Pokemon togopi = Pokemon(togopi_name,types2,togopi_cp,togopi_level);
-
-    /* -------------------  initialize one pokemon  ------------------- */
-
     set <PokemonType>types3 = set<PokemonType>();
     types3.insert(mtm::pokemongo::PokemonType::FIRE);
     types3.insert(mtm::pokemongo::PokemonType::NORMAL);
     string charmander_name = "Charmander";
-    double charmander_cp = 0;
+    double charmander_cp = 1;
     int charmander_level = 6;
     Pokemon charmander = Pokemon(charmander_name,types3,charmander_cp,
                                  charmander_level);
@@ -437,20 +431,22 @@ bool pokemonTestTrain() {
 
     set <PokemonType>types4 = set<PokemonType>();
     types4.insert(mtm::pokemongo::PokemonType::PSYCHIC);
+    types4.insert(mtm::pokemongo::PokemonType::PSYCHIC);
+    types4.insert(mtm::pokemongo::PokemonType::PSYCHIC);
     string myo_name = "Myo";
-    double myo_cp = 25;
-    int myo_level = 5;
-    Pokemon myo = Pokemon(myo_name,types3,myo_cp,myo_level);
+    double myo_cp = 4;
+    int myo_level = 6;
+    Pokemon myo = Pokemon(myo_name,types4,myo_cp,myo_level);
 
     /********************************************************************
      *                              tests                               *
      ********************************************************************/
 
     ASSERT_THROW(mtm::pokemongo::PokemonInvalidArgsException,
-                 charmander.Train(2) );
-    ASSERT_TRUE( togopi == pikachu );
-    togopi.Train(2);
-    ASSERT_TRUE( togopi > pikachu );
+                 charmander.Train(0) );
+    ASSERT_TRUE( myo == pikachu );
+    myo.Train(2);
+    ASSERT_TRUE( myo > pikachu );
 
     return true;
 }

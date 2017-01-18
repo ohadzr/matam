@@ -1,13 +1,19 @@
 #ifndef TRAINER_H
 #define TRAINER_H
 
+/**************************************
+ *       Header files include         *
+ **************************************/
+
 #include <iostream>
 #include <string>
-#include <list>
-
+#include <vector>
 #include "pokemon.h"
 #include "exceptions.h"
 
+/**************************************
+ *       Namespace and Classes        *
+ **************************************/
 
 namespace mtm {
 namespace pokemongo {
@@ -25,7 +31,7 @@ class Trainer {
 
     std::string t_name;
     int t_level;
-    std::list t_pokemon_list;
+    std::vector<Pokemon> t_pokemon_list;
     Team t_team;
     std::string teamToString() const;
     static bool trainerCompare(const Trainer& first,
@@ -39,7 +45,7 @@ class Trainer {
   // @throw TrainerInvalidArgsException if name is an empty string.
   Trainer(const std::string& name, const Team& team);
 
-  // Returns a reference to the strongest Pokemon the trainer owns. Strongest 
+  // Returns a reference to the strongest Pokemon the trainer owns. Strongest
   // Pokemon is determined using the comparison operators provided by the class
   // Pokemon. If two Pokemons are of equal strength, the function returns the
   // one that was caught earlier by the trainer.
@@ -93,12 +99,12 @@ class Trainer {
   //
   // where the Pokemons are ordered from least recently caught to most recently.
   // e.g.
-  // 
+  //
   //     ash (4) YELLOW
   //     pikachu (3/5.5/87) NORMAL FIRE FLYING
   //     charmander (2/2.5/100) NORMAL BUG
   //     pikachu (7/6.5/56) FIRE
-  // 
+  //
   //
   // @param output the output stream to which the data is printed.
   // @param pokemon the pokemon whose data is printed.
