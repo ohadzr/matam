@@ -11,9 +11,20 @@ add_executable(hw4_pokemon_test ${POKEMON_FILES})
 target_link_libraries(hw4_pokemon_test ../libmtm.a)
 
 
-
 set(TRAINER_FILES trainer_test.cpp test_utils.cc ../trainer.cpp ../pokemon.cpp )
 add_executable(hw4_trainer_test ${TRAINER_FILES})
 
 set(K_GRAPH_FILES k_graph_mtm_test.cpp test_utils.cc ../k_graph_mtm.h )
 add_executable(hw4_k_graph_test ${K_GRAPH_FILES})
+
+
+set(LOCATION_FILES location_test.cpp test_utils.cc ../location.h )
+add_executable(hw4_location_test ${LOCATION_FILES})
+
+
+set(WORLD_FILES world_test.cpp test_utils.cc ../world.h )
+add_executable(hw4_world_test ${WORLD_FILES})
+
+
+set(POKEMON_GO_FILES pokemon_go_test.cpp test_utils.cc ../pokemon_go.h )
+add_executable(hw4_pokemon_go_test ${POKEMON_GO_FILES})
