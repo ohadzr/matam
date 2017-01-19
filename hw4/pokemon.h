@@ -58,7 +58,7 @@ class Pokemon {
     *   @return
     *   the default set of types for the given species.
     */
-   static std::set<PokemonType> GetDefaultTypes(const std::string& species);
+//   static std::set<PokemonType> GetDefaultTypes(const std::string& species);
 
 
     /**

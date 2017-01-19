@@ -68,8 +68,8 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   };
  public:
   class const_iterator;  // forward declaration
-  
-  // An iterator. Used to iterate over the data in a kGraph. At every given 
+
+  // An iterator. Used to iterate over the data in a kGraph. At every given
   // moment, the iterator points either to one of the nodes in the graph, or to
   // the end of the graph.
   class iterator {
@@ -84,7 +84,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
     // @param graph the kGraph over which the iterator iterates.
     iterator(Node* node, KGraph* graph) : curr_node(node), curr_graph(graph) {
     }
- 
+
     // A copy constructor.
     //
     // @param it the iterator to copy.

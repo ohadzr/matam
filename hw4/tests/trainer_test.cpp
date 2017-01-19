@@ -78,9 +78,9 @@ bool trainerTestGetStrongestPokemon() {
     ASSERT_TRUE(ash.TryToCatch(charmander));
     ASSERT_TRUE(misti.TryToCatch(togopi));
 
-    ASSERT_TRUE(ash.GetStrongestPokemon()== pikachu);
-    ASSERT_TRUE(misti.GetStrongestPokemon()== togopi);
-    ASSERT_THROW(mtm::pokemongo::TrainerNoPokemonsFoundException(),
+    ASSERT_TRUE(ash.GetStrongestPokemon() == pikachu);
+    ASSERT_TRUE(misti.GetStrongestPokemon() == togopi);
+    ASSERT_THROW(mtm::pokemongo::TrainerNoPokemonsFoundException,
     		sahar.GetStrongestPokemon());
 
     return true;

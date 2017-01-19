@@ -33,8 +33,8 @@ Pokemon& Trainer::GetStrongestPokemon() {
     Pokemon* strongest_pokemon = t_pokemon_list.front();
     for ( std::vector<Pokemon*>::iterator it = t_pokemon_list.begin();
     		it != t_pokemon_list.end() ; ++it) {
-        if (**it > *strongest_pokemon)
-            *strongest_pokemon = **it;
+        if (*(*it) > *strongest_pokemon)
+            *strongest_pokemon = *(*it);
     }
     return *strongest_pokemon;
 }
@@ -104,8 +104,9 @@ bool Trainer::TryToCatch(Pokemon& pokemon) {
 
     if ( t_level < pokemon.Level() ) return false;
 
-    Pokemon new_pokemon = Pokemon(pokemon);
-    t_pokemon_list.push_back(&new_pokemon);
+    //Pokemon new_pokemon = Pokemon(pokemon);
+    //t_pokemon_list.push_back(&new_pokemon);
+    t_pokemon_list.push_back(&pokemon);
 
     return true;
 }

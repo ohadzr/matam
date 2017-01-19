@@ -31,18 +31,18 @@ Pokemon::Pokemon( const string& species, const set<PokemonType>& types,
 }
 
 
-Pokemon::Pokemon( const string& species,
-                  const double& cp,
-                  const int& level):  p_cp(cp) ,
-                                      p_hp(MAX_HP),
-                                      p_level(level),
-                                      name(string(species)),
-                                      p_types(GetDefaultTypes(species)) {
-    if ( cp <= 0 || level <= 0 || species == "" ) {
-        /* invalid parameter */
-        throw PokemonInvalidArgsException();
-    }
-}
+//Pokemon::Pokemon( const string& species,
+//                  const double& cp,
+//                  const int& level):  p_cp(cp) ,
+//                                      p_hp(MAX_HP),
+//                                      p_level(level),
+//                                      name(string(species)),
+//                                      p_types(GetDefaultTypes(species)) {
+//    if ( cp <= 0 || level <= 0 || species == "" ) {
+//        /* invalid parameter */
+//        throw PokemonInvalidArgsException();
+//    }
+//}
 
 
 Pokemon::Pokemon( const Pokemon& pokemon) :   p_cp(pokemon.p_cp),

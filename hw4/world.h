@@ -25,24 +25,47 @@ class World{
         string name;
         Team team;
         Trainer* Leader;
+        void switchLeader(Trainer leader);
+    public:
+        Gym(const string& name );
+        ~Gym();
+        Gym( Gym& gym); //TODO: should be implemented?
+        void Arrive(Trainer& trainer) override ;
+        void Leave(Trainer& trainer) override ;
     };
+
 
     class Pokestop : public Location {
     private:
-        string name;
         std::vector<Item> item_vector;
         class Item {
         private:
             std::string type;
             int level;
+        public:
+            Item(std::string& type, int level) const;
+            ~Item();
+            Item(Item& item) const;
+            const std::string getType(const Item& item);
+            const int getLevel(const Item& item);
         };
+
+    public:
+        Pokestop();
+        ~Pokestop();
+        Pokestop(Pokestop& pokestop); //TODO: should be implemented?
+        void addItem(std::string type, int level);
+        void Arrive(Trainer& trainer) override ;
     };
 
     class Starbucks : public Location {
     private:
-        string name;
         std::vector<Pokemon*> pokemon_vector;
-
+    public:
+        Starbucks();
+        ~Starbucks();
+        Starbucks(Starbucks& starbucks);
+        void Arrive(Trainer& trainer) override ;
     };
 
  public:
