@@ -31,7 +31,7 @@ class Trainer {
 
     std::string t_name;
     int t_level;
-    std::vector<Pokemon> t_pokemon_list;
+    std::vector<Pokemon*> t_pokemon_list;
     Team t_team;
     std::string teamToString() const;
     static bool trainerCompare(const Trainer& first,

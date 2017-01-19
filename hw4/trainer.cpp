@@ -20,55 +20,45 @@ using std::string;
  **************************************/
 
 Trainer::Trainer(const std::string& name, const Team& team) :
-        t_level(INIT_LEVEL) {
+        t_name(string(name)), t_level(INIT_LEVEL),
+		t_pokemon_list(), t_team(team) {
     if (name == "")
         throw TrainerInvalidArgsException();
-
-    t_name = string(name);
-    t_pokemon_list = list<Pokemon>();
-    t_team = team;
 }
 
 
 Pokemon& Trainer::GetStrongestPokemon() {
     if (t_pokemon_list.size() == 0)
         throw TrainerNoPokemonsFoundException();
-    Pokemon strongest_pokemon = t_pokemon_list.front();
-
-    list<Pokemon>::iterator pokemon_iter;
-    for (pokemon_iter = t_pokemon_list.begin() ;
-         pokemon_iter != t_pokemon_list.end(); ++pokemon_iter) {
-        if (*pokemon_iter > strongest_pokemon)
-            strongest_pokemon = *pokemon_iter;
+    Pokemon* strongest_pokemon = t_pokemon_list.front();
+    for ( std::vector<Pokemon*>::iterator it = t_pokemon_list.begin();
+    		it != t_pokemon_list.end() ; ++it) {
+        if (**it > *strongest_pokemon)
+            *strongest_pokemon = **it;
     }
-
-    return strongest_pokemon;
+    return *strongest_pokemon;
 }
 
 
 const Pokemon& Trainer::GetStrongestPokemon() const {
     if (t_pokemon_list.size() == 0)
         throw TrainerNoPokemonsFoundException();
-    Pokemon strongest_pokemon = t_pokemon_list.front();
-
-    list<Pokemon>::const_iterator pokemon_iter;
-    for (pokemon_iter = t_pokemon_list.begin() ;
-         pokemon_iter != t_pokemon_list.end(); ++pokemon_iter) {
-        if (*pokemon_iter > strongest_pokemon)
-            strongest_pokemon = *pokemon_iter;
+    Pokemon* strongest_pokemon = t_pokemon_list.front();
+    for ( std::vector<Pokemon*>::const_iterator it = t_pokemon_list.begin();
+    		it != t_pokemon_list.end() ; ++it) {
+        if (**it > *strongest_pokemon)
+            *strongest_pokemon = **it;
     }
-
-    return strongest_pokemon;
+    return *strongest_pokemon;
 }
 
 
 void Trainer::KillStrongestPokemon() {
     Pokemon strongest_pokemon = this->GetStrongestPokemon();
-    list<Pokemon>::iterator pokemon_iter;
-    for (pokemon_iter = t_pokemon_list.begin() ;
-         pokemon_iter != t_pokemon_list.end(); ++pokemon_iter) {
-        if (*pokemon_iter == strongest_pokemon) {
-            t_pokemon_list.erase(pokemon_iter);
+    for (std::vector<Pokemon*>::iterator it = t_pokemon_list.begin() ;
+         it != t_pokemon_list.end(); ++it) {
+        if ( **it == strongest_pokemon) {
+            t_pokemon_list.erase(it);
             return;
         }
     }
@@ -111,7 +101,13 @@ Team Trainer::GetTeam() const {
 
 
 bool Trainer::TryToCatch(Pokemon& pokemon) {
-    return this->t_level >= pokemon.Level();
+
+    if ( t_level < pokemon.Level() ) return false;
+
+    Pokemon new_pokemon = Pokemon(pokemon);
+    t_pokemon_list.push_back(&new_pokemon);
+
+    return true;
 }
 
 
@@ -121,8 +117,7 @@ std::ostream& mtm::pokemongo::operator<<(std::ostream& output,
     output << " (" << trainer.t_level << ")" ;
     output << trainer.teamToString() << std::endl;
 
-    list<Pokemon>::iterator it;
-    for (it = trainer.t_pokemon_list.begin() ;
+    for (std::vector<Pokemon*>::const_iterator it = trainer.t_pokemon_list.begin() ;
          it != trainer.t_pokemon_list.end(); ++it) {
         output << *it << std::endl;
     }

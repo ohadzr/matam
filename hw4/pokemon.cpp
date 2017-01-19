@@ -101,7 +101,6 @@ int Pokemon::Level() const {
 }
 
 bool Pokemon::Hit(Pokemon& victim) {
-    if( this == &victim ) return false;
     double hit_power = p_cp * p_level;
     victim.p_hp -= hit_power;
     if (victim.p_hp <= MIN_HP) {
