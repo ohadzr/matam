@@ -6,6 +6,7 @@
 #include "location.h"
 #include "pokemon.h"
 #include "trainer.h"
+#include "k_graph.h"
 
 using std::string
 
@@ -105,6 +106,11 @@ class World{
 
   // Disable copy constructor.
   World(const World& world) = delete;
+
+private:
+    const DIRECTIONS = 4;
+    KGraph<std::string, Location, DIRECTIONS>  world_map;
+
 };
 
 std::istream& operator>>(std::istream& input, World& world);
