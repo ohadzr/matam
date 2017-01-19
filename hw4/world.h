@@ -2,7 +2,12 @@
 #define WORLD_H
 
 #include <iostream>
+#include <string>
+#include "location.h"
+#include "pokemon.h"
+#include "trainer.h"
 
+using std::string
 
 namespace mtm {
 namespace pokemongo {
@@ -15,6 +20,31 @@ static const int EAST = 2;
 static const int WEST = 3;
 
 class World{
+    class Gym : public Location {
+    private:
+        string name;
+        Team team;
+        Trainer* Leader;
+    };
+
+    class Pokestop : public Location {
+    private:
+        string name;
+        std::vector<Item> item_vector;
+        class Item {
+        private:
+            std::string type;
+            int level;
+        };
+    };
+
+    class Starbucks : public Location {
+    private:
+        string name;
+        std::vector<Pokemon*> pokemon_vector;
+
+    };
+
  public:
   // Constructs a new empty world.
   World();
