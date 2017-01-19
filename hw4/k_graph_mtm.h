@@ -5,7 +5,6 @@
 #include <vector>
 #include <set>
 
-<<<<<<< HEAD
 //namespace mtm {
 //
 //// Requirements: KeyType::opertor<,
@@ -386,8 +385,8 @@
 //
 //}  // namespace mtm
 
-#endif  // K_GRAPH_MTM_H
-=======
+//#endif  // K_GRAPH_MTM_H
+
 namespace mtm {
 
 // Requirements: KeyType::opertor<,
@@ -900,4 +899,3 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
 }  // namespace mtm
 
 #endif  // K_GRAPH_MTM_H
->>>>>>> origin/master
