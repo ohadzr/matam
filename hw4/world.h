@@ -42,7 +42,6 @@ class World {
     public:
         GYM(const string& name );
         ~GYM();
-        GYM( GYM& gym); //TODO: should be implemented?
         void Arrive(Trainer& trainer) override ;
         void Leave(Trainer& trainer) override ;
     };
@@ -66,7 +65,6 @@ class World {
     public:
         Pokestop();
         ~Pokestop();
-        Pokestop(Pokestop& pokestop); //TODO: should be implemented?
         void addItem(std::string type, int level);
         void Arrive(Trainer& trainer) override ;
     };
@@ -77,7 +75,6 @@ class World {
     public:
         Starbucks();
         ~Starbucks();
-        Starbucks(Starbucks& starbucks); //TODO: should be implemented?
         void Arrive(Trainer& trainer) override ;
     };
 

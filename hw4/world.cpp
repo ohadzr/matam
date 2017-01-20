@@ -44,8 +44,6 @@ World::Pokestop::Pokestop() : item_vector(std::vector<Item*>()) {}
 
 World::Pokestop::~Pokestop() {}
 
-World::Pokestop::Pokestop(World::Pokestop & pokestop) {}
-
 void World::Pokestop::addItem(std::string type, int level) {}
 
 void World::Pokestop::Arrive(Trainer &trainer) {}
@@ -67,8 +65,6 @@ const int World::Pokestop::Item::getLevel(const Item &item) {}
 World::Starbucks::Starbucks() {}
 
 World::Starbucks::~Starbucks() {}
-
-World::Starbucks::Starbucks(World::Starbucks &starbucks) {}
 
 void World::Starbucks::Arrive(Trainer &trainer) {}
 
