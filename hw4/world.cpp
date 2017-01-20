@@ -33,8 +33,8 @@ void World::GYM::switchLeader( Trainer& leader) {
     Leader = &leader;
 }
 
-void World::GYM::Arrive(Trainer &trainer) {
-    trainers_.push_back( &trainer );
+void World::GYM::Arrive(Trainer& trainer) {
+	Location::Arrive( trainer );
 
     if ( Leader == nullptr ) {
         GYM::switchLeader( trainer );
@@ -145,11 +145,119 @@ void GYM::updateDethResult(Trainer& first , Trainer& second , bool first_died,
 	if ( second_died ) second.KillStrongestPokemon();
 }
 
-void World::GYM::Leave(Trainer &trainer) {}
+void World::GYM::Leave(Trainer &trainer) {
+	if ( &trainer != Leader ) {
+		Location::Leave( trainer );
+		return;
+	}
+	if ( trainers_.size() == LAST_TRAINER_IN_GYM ) {
+		Location::Leave( trainer );
+		Leader = nullptr;
+		return;
+	}
+	Leader = this->findNextLeader();
+	Location::Leave( trainer );
+
+	return;
+}
+
+Trainer* GYM::findNextLeader() {
+	Trainer* red_candidate = candidateForLeadership( RED );
+	Trainer* blue_candidate = candidateForLeadership( BLUE );
+	Trainer* yellow_candidate = candidateForLeadership( YELLOW );
+
+	Trainer* team_member_usbstitute = checkTeamSubstitute( red_candidate ,
+			 blue_candidate , yellow_candidate );
+	if ( team_member_usbstitute ) return team_member_usbstitute;
+
+	Trainer* one_team_left_substitute = checkisOneTeamLeft ( red_candidate ,
+				 blue_candidate , yellow_candidate );
+
+	if ( one_team_left_substitute ) return one_team_left_substitute;
+
+	Trainer* best_out_of_two_substitute = checkBestOutOfTwoSubstitute (
+			red_candidate , blue_candidate , yellow_candidate );
+
+	return best_out_of_two_substitute;
+
+}
+
+Trainer* GYM::checkBestOutOfTwoSubstitute(Trainer* red_candidate ,
+		Trainer* blue_candidate , Trainer* yellow_candidate ) {
+	if ( red_candidate && blue_candidate ) {
+		if ( Fight( *red_candidate , *blue_candidate ) )
+			return blue_candidate;
+		return red_candidate;
+	}
+	if ( red_candidate && yellow_candidate ){
+		if ( Fight( *red_candidate , *yellow_candidate ) )
+			return yellow_candidate;
+		return red_candidate;
+	}
+	if ( blue_candidate && yellow_candidate ) {
+		if ( Fight( *blue_candidate , *yellow_candidate ) )
+			return yellow_candidate;
+		return blue_candidate;
+	}
+	return nullptr;
+}
+
+Trainer* GYM::checkTeamSubstitute(Trainer* red_candidate ,
+		Trainer* blue_candidate , Trainer* yellow_candidate ) {
+	Team home_team = Leader->GetTeam();
+	if ( red_candidate ) {
+		if ( red_candidate->GetTeam() == home_team ) return red_candidate;
+	}
+	if ( blue_candidate ) {
+		if ( blue_candidate->GetTeam() == home_team ) return blue_candidate;
+	}
+	if ( yellow_candidate ) {
+		if ( yellow_candidate->GetTeam() == home_team ) return yellow_candidate;
+	}
+	return nullptr;
+}
+
+Trainer* GYM::checkisOneTeamLeft(Trainer* red_candidate ,
+		Trainer* blue_candidate , Trainer* yellow_candidate ) {
+	if ( (red_candidate && blue_candidate) ||
+		 (red_candidate && yellow_candidate) ||
+		 (blue_candidate && yellow_candidate) )
+		return nullptr;
+
+	if ( red_candidate ) return red_candidate;
+	if ( blue_candidate ) return blue_candidate;
+	if ( yellow_candidate ) return yellow_candidate;
+
+	return nullptr;
+}
 
 
 
+Trainer* GYM::candidateForLeadership( Team team ) {
+	Trainer* candidate = nullptr;
+    for( std::vector<Trainer*>::iterator it = trainers_.begin(); it !=
+    		trainers_.end(); ++it ) {
+        if ( (*it)->GetTeam() == team ) {
+        	candidate = it;
+        	break;
+        }
+    }
 
+    for( std::vector<Trainer*>::iterator it = trainers_.begin(); it !=
+    		trainers_.end(); ++it ) {
+        if ( ((*it)->GetTeam() == team ) && ( (*it) > (*candidate) ) ) {
+        	candidate = it;
+        	break;
+        }
+    }
+
+  return candidate;
+}
+
+std::string GYM::GYMgetTeam() {
+	if ( !Leader ) return nullptr;
+	return Leader->teamToString();
+}
 
 //TODO: Pokestop
 
