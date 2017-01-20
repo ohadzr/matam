@@ -20,36 +20,36 @@ static const int SOUTH = 1;
 static const int EAST = 2;
 static const int WEST = 3;
 
-class World{
-    class Gym : public Location {
+class World {
+    class GYM : public Location {
     private:
         string name;
         Team team;
         Trainer* Leader;
         void switchLeader(Trainer leader);
     public:
-        Gym(const string& name );
-        ~Gym();
-        Gym( Gym& gym); //TODO: should be implemented?
+        GYM(const string& name );
+        ~GYM();
+        GYM( GYM& gym); //TODO: should be implemented?
         void Arrive(Trainer& trainer) override ;
         void Leave(Trainer& trainer) override ;
     };
 
 
     class Pokestop : public Location {
-    private:
-        std::vector<Item> item_vector;
-        class Item {
-        private:
-            std::string type;
-            int level;
-        public:
-            Item(std::string& type, int level) const;
-            ~Item();
-            Item(Item& item) const;
-            const std::string getType(const Item& item);
-            const int getLevel(const Item& item);
-        };
+            private:
+            std::vector<Item> item_vector;
+            class Item {
+            private:
+                std::string type;
+                int level;
+            public:
+                Item(std::string& type, int level) const;
+                ~Item();
+                Item(Item& item) const;
+                const std::string getType(const Item& item);
+                const int getLevel(const Item& item);
+            };
 
     public:
         Pokestop();
@@ -65,7 +65,7 @@ class World{
     public:
         Starbucks();
         ~Starbucks();
-        Starbucks(Starbucks& starbucks);
+        Starbucks(Starbucks& starbucks); //TODO: should be implemented?
         void Arrive(Trainer& trainer) override ;
     };
 
@@ -107,9 +107,9 @@ class World{
   // Disable copy constructor.
   World(const World& world) = delete;
 
-private:
-    const DIRECTIONS = 4;
-    KGraph<std::string, Location, DIRECTIONS>  world_map;
+ private:
+    static const DIRECTIONS = 4;
+    KGraph<std::string, Location*, DIRECTIONS>  world_map;
 
 };
 
