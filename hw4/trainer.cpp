@@ -117,9 +117,9 @@ std::ostream& mtm::pokemongo::operator<<(std::ostream& output,
     output << trainer.teamToString() << std::endl;
     //TODO: CHECK IF SIZE == 0
     for (std::vector<Pokemon*>::const_iterator it = trainer.t_pokemon_list.begin() ;
-         it != trainer.t_pokemon_list.end(); ++it) {}
+         it != trainer.t_pokemon_list.end(); ++it) {
         output << **it << std::endl;
-
+    }
 
     return output;
 }

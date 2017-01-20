@@ -53,21 +53,30 @@ void World::Pokestop::addItem(const Item& item) {
 void World::Pokestop::Arrive(Trainer &trainer) {
     for (std::vector<const Item*>::const_iterator it = item_vector.begin() ;
          it != item_vector.end(); ++it) {
-        if ((**it).getLevel() == trainer.t_level){
-
+        if ((**it).getLevel() == trainer.getLevel()){
+            trainer.addItem(Item(**it));
+            break;
         }
     }
 }
 
-World::Pokestop::Item::Item(const std::string &type, const int level) {}
+World::Pokestop::Item::Item(const std::string &type, const int level) :
+        type(string(type)), level(level){
+}
 
 World::Pokestop::Item::~Item() {}
 
-const World::Pokestop::Item::Item(const Item &item) {}
+const World::Pokestop::Item::Item(const Item &item) :
+        type(string(item.type)), level(item.level){
+}
 
-const std::string World::Pokestop::Item::getType(const Item &item) {}
+const std::string World::Pokestop::Item::getType(const Item &item) {
+    return item.type;
+}
 
-const int World::Pokestop::Item::getLevel(const Item &item) {}
+const int World::Pokestop::Item::getLevel(const Item &item) {
+    return item.level;
+}
 
 
 
