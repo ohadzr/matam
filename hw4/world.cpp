@@ -35,19 +35,30 @@ void World::GYM::Leave(Trainer &trainer) {}
 
 //TODO: Pokestop
 
-World::Pokestop::Pokestop() : item_vector(std::vector<Item*>()) {}
+World::Pokestop::Pokestop() : item_vector(std::vector<const Item*>()) {
+}
 
-World::Pokestop::~Pokestop() {}
+World::Pokestop::~Pokestop() {
+}
 
-void World::Pokestop::addItem(std::string type, int level) {}
+void World::Pokestop::addItem(const Item& item) {
+    item_vector.push_back(&item);
+}
 
-void World::Pokestop::Arrive(Trainer &trainer) {}
+void World::Pokestop::Arrive(Trainer &trainer) {
+    for (std::vector<const Item*>::const_iterator it = item_vector.begin() ;
+         it != item_vector.end(); ++it) {
+        if ((**it).getLevel() == trainer.t_level){
 
-World::Pokestop::Item::Item(std::string &type, int level) {}
+        }
+    }
+}
+
+World::Pokestop::Item::Item(const std::string &type, const int level) {}
 
 World::Pokestop::Item::~Item() {}
 
-World::Pokestop::Item::Item(Item &item) {}
+const World::Pokestop::Item::Item(const Item &item) {}
 
 const std::string World::Pokestop::Item::getType(const Item &item) {}
 

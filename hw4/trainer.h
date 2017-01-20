@@ -10,6 +10,7 @@
 #include <vector>
 #include "pokemon.h"
 #include "exceptions.h"
+#include "world.h"
 
 /**************************************
  *       Namespace and Classes        *
@@ -36,6 +37,7 @@ class Trainer {
     std::string teamToString() const;
     static bool trainerCompare(const Trainer& first,
                                  const Trainer& second, bool check_equal);
+    friend void World::Pokestop::Arrive(Trainer &trainer); //TODO: is this too wide?
 
   public:
   // Constructs a new trainer with the given name and team.

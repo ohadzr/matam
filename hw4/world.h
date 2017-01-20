@@ -37,15 +37,15 @@ class World {
 
     class Pokestop : public Location {
             private:
-            std::vector<Item*> item_vector;
+            std::vector<const Item*> item_vector;
             class Item {
             private:
                 std::string type;
                 int level;
             public:
-                Item(std::string& type, int level) const;
+                Item(const std::string& type,const int level) const;
                 ~Item();
-                Item(Item& item) const;
+                const Item(const Item& item) const;
                 const std::string getType(const Item& item);
                 const int getLevel(const Item& item);
             };
@@ -53,7 +53,7 @@ class World {
     public:
         Pokestop();
         ~Pokestop();
-        void addItem(std::string type, int level);
+        void addItem(const Item& item);
         void Arrive(Trainer& trainer) override ;
     };
 
