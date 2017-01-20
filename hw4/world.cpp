@@ -23,8 +23,6 @@ World::GYM::GYM(const string &name) {}
 
 World::GYM::~GYM(){}
 
-World::GYM::GYM(GYM &gym) {}
-
 void World::GYM::switchLeader(Trainer leader) {}
 
 void World::GYM::Arrive(Trainer &trainer) {}
@@ -40,8 +38,6 @@ void World::GYM::Leave(Trainer &trainer) {}
 World::Pokestop::Pokestop() : item_vector(std::vector<Item*>()) {}
 
 World::Pokestop::~Pokestop() {}
-
-World::Pokestop::Pokestop(World::Pokestop & pokestop) {}
 
 void World::Pokestop::addItem(std::string type, int level) {}
 
@@ -64,8 +60,6 @@ const int World::Pokestop::Item::getLevel(const Item &item) {}
 World::Starbucks::Starbucks() {}
 
 World::Starbucks::~Starbucks() {}
-
-World::Starbucks::Starbucks(World::Starbucks &starbucks) {}
 
 void World::Starbucks::Arrive(Trainer &trainer) {}
 
