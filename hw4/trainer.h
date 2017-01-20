@@ -34,7 +34,7 @@ class Trainer {
     std::string t_name;
     int t_level;
     std::vector<Pokemon*> t_pokemon_list;
-    std::vector<mtm::pokemongo::World::Pokestop::Item*> t_items;
+    std::vector<World::Pokestop::Item*> t_items;
     Team t_team;
     std::string teamToString() const;
     static bool trainerCompare(const Trainer& first,
@@ -89,10 +89,19 @@ class Trainer {
    @return the team to which the trainer belongs.*/
     Team GetTeam() const;
 
-/**   Returns the team to which the trainer belongs.
+/**   Returns the level of the trainer
 
-   @return the team to which the trainer belongs.*/
+   @return the level of the trainer.*/
     int GetLevel() const; //TODO: is this allowed? (not in basic file)
+
+/**
+ *  Add an item at the end of the trainer's item list
+ *
+ * @param item - The item to add
+ */
+    void addItem(World::Pokestop::Item& item); //TODO: is this allowed? (not in basic file)
+
+
 
 
 /**   Tries to catch a Pokemon.

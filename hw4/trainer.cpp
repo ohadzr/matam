@@ -104,6 +104,10 @@ int Trainer::GetLevel() const {
 }
 
 
+void Trainer::addItem(World::Pokestop::Item& item) {
+    t_items.push_back(&item);
+}
+
 bool Trainer::TryToCatch(Pokemon& pokemon) {
 
     if ( t_level < pokemon.Level() ) return false;

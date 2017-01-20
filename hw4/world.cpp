@@ -53,8 +53,8 @@ void World::Pokestop::addItem(const Item& item) {
 void World::Pokestop::Arrive(Trainer &trainer) {
     for (std::vector<const Item*>::const_iterator it = item_vector.begin() ;
          it != item_vector.end(); ++it) {
-        if ((**it).getLevel() == trainer.GetLevel()){
-            trainer.addItem(Item(**it));
+        if ((**it).getLevel() <= trainer.GetLevel()){
+            trainer.addItem(**it);
             item_vector.erase(it); //TODO: PROBLEM?? does this delete trainer's item?
             break;
         }
