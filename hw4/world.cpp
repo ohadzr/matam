@@ -1,13 +1,19 @@
-//
-// Created by ohad on 18-Jan-17.
-//
-
+/**************************************
+ *       Header files include         *
+ **************************************/
 
 #include "world.h"
+
+/**************************************
+ *               Using                *
+ **************************************/
 
 using mtm::pokemongo::World
 using mtm::pokemongo::Location
 
+/**************************************
+ *        Interface Functions         *
+ **************************************/
 
 World::World() :
         world_map(KGraph<std::string, Location*, DIRECTIONS>(nullptr)) {
@@ -16,14 +22,11 @@ World::World() :
 World::~World() {
 }
 
+World::GYM(const string& name) {
 
-
-//TODO: GYM
-World::GYM::GYM(const string &name) {}
+}
 
 World::GYM::~GYM(){}
-
-World::GYM::GYM(GYM &gym) {}
 
 void World::GYM::switchLeader(Trainer leader) {}
 
