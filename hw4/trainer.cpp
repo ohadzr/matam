@@ -120,7 +120,6 @@ std::ostream& mtm::pokemongo::operator<<(std::ostream& output,
          it != trainer.t_pokemon_list.end(); ++it) {
         output << **it << std::endl;
     }
-
     return output;
 }
 
