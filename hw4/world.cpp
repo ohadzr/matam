@@ -53,8 +53,9 @@ void World::Pokestop::addItem(const Item& item) {
 void World::Pokestop::Arrive(Trainer &trainer) {
     for (std::vector<const Item*>::const_iterator it = item_vector.begin() ;
          it != item_vector.end(); ++it) {
-        if ((**it).getLevel() == trainer.getLevel()){
+        if ((**it).getLevel() == trainer.GetLevel()){
             trainer.addItem(Item(**it));
+            item_vector.erase(it); //TODO: PROBLEM?? does this delete trainer's item?
             break;
         }
     }
@@ -82,9 +83,14 @@ const int World::Pokestop::Item::getLevel(const Item &item) {
 
 //TODO: Starbucks
 
-World::Starbucks::Starbucks() {}
+World::Starbucks::Starbucks() : pokemon_vector(std::vector<Pokemon*>()){}
 
 World::Starbucks::~Starbucks() {}
 
-void World::Starbucks::Arrive(Trainer &trainer) {}
+void World::Starbucks::Arrive(Trainer &trainer) {
+    std::vector<Pokemon*>::iterator it = pokemon_vector.begin();
+    if (trainer.TryToCatch(**it)) {
+        pokemon_vector.erase(it); //TODO: PROBLEM?? - check if this delete the pokemon the trainer caught - maybe send a copy of the pokemon (above)?
+    }
+}
 

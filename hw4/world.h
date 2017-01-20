@@ -7,9 +7,9 @@
 
 #include <iostream>
 #include <string>
+#include "trainer.h"
 #include "location.h"
 #include "pokemon.h"
-#include "trainer.h"
 #include "k_graph.h"
 
 /**************************************
@@ -50,10 +50,12 @@ class World {
     class Pokestop : public Location {
             private:
             std::vector<const Item*> item_vector;
+            friend class mtm::pokemongo::Trainer;
             class Item {
             private:
                 std::string type;
                 int level;
+                friend class mtm::pokemongo::Trainer;
             public:
                 Item(const std::string& type,const int level) const;
                 ~Item();

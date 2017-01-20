@@ -12,9 +12,11 @@
 #include "exceptions.h"
 #include "world.h"
 
+
 /**************************************
  *       Namespace and Classes        *
  **************************************/
+
 
 namespace mtm {
 namespace pokemongo {
@@ -29,25 +31,26 @@ typedef enum {
 class Trainer {
   private:
     const int INIT_LEVEL = 1;
-
     std::string t_name;
     int t_level;
     std::vector<Pokemon*> t_pokemon_list;
+    std::vector<mtm::pokemongo::World::Pokestop::Item*> t_items;
     Team t_team;
     std::string teamToString() const;
     static bool trainerCompare(const Trainer& first,
                                  const Trainer& second, bool check_equal);
-    friend void World::Pokestop::Arrive(Trainer &trainer); //TODO: is this too wide?
+    //friend void World::Pokestop::Arrive(Trainer &trainer); //TODO: is this too wide?
 
   public:
-/*   Constructs a new trainer with the given name and team.
+/**   Constructs a new trainer with the given name and team.
 
    @param name the name of the trainer.
    @param team the team to which the trainer belongs.
-   @throw TrainerInvalidArgsException if name is an empty string.*/
+   @throw TrainerInvalidArgsException if name is an empty string.
+   */
   Trainer(const std::string& name, const Team& team);
 
-/*   Returns a reference to the strongest Pokemon the trainer owns. Strongest
+/**   Returns a reference to the strongest Pokemon the trainer owns. Strongest
    Pokemon is determined using the comparison operators provided by the class
    Pokemon. If two Pokemons are of equal strength, the function returns the
    one that was caught earlier by the trainer.
@@ -57,13 +60,13 @@ class Trainer {
   Pokemon& GetStrongestPokemon();
   const Pokemon& GetStrongestPokemon() const;
 
-/*   Kills the strongest Pokemon. Removes the Pokemon that is returned from
+/**   Kills the strongest Pokemon. Removes the Pokemon that is returned from
    GetStrongestPokemon() from the collection of Pokemons owned by the trainer.
 
    @throw TrainerNoPokemonsException if trainer has no Pokemons.*/
   void KillStrongestPokemon();
 
-/*   Comparison operators for trainers. Trainers are compared as described in
+/**   Comparison operators for trainers. Trainers are compared as described in
    the exercise sheet.
 
    @param rhs the right-hand side operand.*/
@@ -74,25 +77,31 @@ class Trainer {
   bool operator<=(const Trainer& rhs) const;
   bool operator>=(const Trainer& rhs) const;
 
-/*   Checks whether a given trainer is in the same team as this trainer.
+/**   Checks whether a given trainer is in the same team as this trainer.
 
    @param trainer
    @return true iff trainer (argument) and this trainer belong to the same
            team.*/
   bool IsAlly(const Trainer& trainer) const;
 
-/*   Returns the team to which the trainer belongs.
+/**   Returns the team to which the trainer belongs.
 
    @return the team to which the trainer belongs.*/
-  Team GetTeam() const;
+    Team GetTeam() const;
 
-/*   Tries to catch a Pokemon.
+/**   Returns the team to which the trainer belongs.
+
+   @return the team to which the trainer belongs.*/
+    int GetLevel() const; //TODO: is this allowed? (not in basic file)
+
+
+/**   Tries to catch a Pokemon.
 
    @param pokemon the Pokemon the trainer wishes to catch.
    @return true if the attempt succeeded.*/
   bool TryToCatch(Pokemon& pokemon);
 
-/*   Prints the data of the trainer in the following format:
+/**   Prints the data of the trainer in the following format:
 
        "<name> (<level>) <team>\n
         <pokemon1>\n

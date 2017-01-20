@@ -99,6 +99,10 @@ Team Trainer::GetTeam() const {
     return this->t_team;
 }
 
+int Trainer::GetLevel() const {
+    return this->t_level;
+}
+
 
 bool Trainer::TryToCatch(Pokemon& pokemon) {
 
