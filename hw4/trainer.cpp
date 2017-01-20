@@ -21,7 +21,7 @@ using std::string;
 
 Trainer::Trainer(const std::string& name, const Team& team) :
         t_name(string(name)), t_level(INIT_LEVEL),
-		t_pokemon_list(), t_team(team) {
+		t_pokemon_list(std::vector<Pokemon*>()), t_team(team) {
     if (name == "")
         throw TrainerInvalidArgsException();
 }

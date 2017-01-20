@@ -38,7 +38,7 @@ class World {
 
     class Pokestop : public Location {
             private:
-            std::vector<Item> item_vector;
+            std::vector<Item*> item_vector;
             class Item {
             private:
                 std::string type;

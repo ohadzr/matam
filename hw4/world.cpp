@@ -37,11 +37,11 @@ void World::GYM::Leave(Trainer &trainer) {}
 
 //TODO: Pokestop
 
-World::Pokestop::Pokestop() {}
+World::Pokestop::Pokestop() : item_vector(std::vector<Item*>()) {}
 
 World::Pokestop::~Pokestop() {}
 
-World::Pokestop::Pokestop( Pokestop& pokestop) {}
+World::Pokestop::Pokestop(World::Pokestop & pokestop) {}
 
 void World::Pokestop::addItem(std::string type, int level) {}
 
@@ -65,7 +65,7 @@ World::Starbucks::Starbucks() {}
 
 World::Starbucks::~Starbucks() {}
 
-World::Starbucks::Starbucks(Starbucks &starbucks) {}
+World::Starbucks::Starbucks(World::Starbucks &starbucks) {}
 
 void World::Starbucks::Arrive(Trainer &trainer) {}
 
