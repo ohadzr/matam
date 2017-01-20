@@ -3,6 +3,7 @@
  **************************************/
 
 #include "world.h"
+#include "k_graph_mtm.h"
 
 /**************************************
  *               Using                *
@@ -94,3 +95,12 @@ void World::Starbucks::Arrive(Trainer &trainer) {
     }
 }
 
+
+
+std::istream& mtm::pokemongo::operator>>(std::istream& input, World& world) { //TODO: continue here
+    // split String Into vector
+    // check first parameter - is valid
+    // check second parameter - doesn't exist
+    // send to create by first parameter
+    // add created location to world [and save it name in the key vector???]
+}
