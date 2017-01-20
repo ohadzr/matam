@@ -33,8 +33,8 @@ Pokemon& Trainer::GetStrongestPokemon() {
     Pokemon* strongest_pokemon = t_pokemon_list.front();
     for ( std::vector<Pokemon*>::iterator it = t_pokemon_list.begin();
     		it != t_pokemon_list.end() ; ++it) {
-        if (*(*it) > *strongest_pokemon)
-            *strongest_pokemon = *(*it);
+        if (**it > *strongest_pokemon)
+            *strongest_pokemon = **it;
     }
     return *strongest_pokemon;
 }
@@ -78,7 +78,7 @@ bool Trainer::operator<(const Trainer& rhs) const {
 }
 
 bool Trainer::operator<=(const Trainer& rhs) const {
-    return (*this == rhs && *this < rhs);
+    return (*this == rhs || *this < rhs);
 }
 
 bool Trainer::operator>(const Trainer& rhs) const {
@@ -86,7 +86,7 @@ bool Trainer::operator>(const Trainer& rhs) const {
 }
 
 bool Trainer::operator>=(const Trainer& rhs) const {
-    return (*this == rhs && *this > rhs);
+    return (*this == rhs || *this > rhs);
 }
 
 
@@ -104,8 +104,6 @@ bool Trainer::TryToCatch(Pokemon& pokemon) {
 
     if ( t_level < pokemon.Level() ) return false;
 
-    //Pokemon new_pokemon = Pokemon(pokemon);
-    //t_pokemon_list.push_back(&new_pokemon);
     t_pokemon_list.push_back(&pokemon);
 
     return true;
@@ -117,16 +115,20 @@ std::ostream& mtm::pokemongo::operator<<(std::ostream& output,
     output << trainer.t_name ;
     output << " (" << trainer.t_level << ")" ;
     output << trainer.teamToString() << std::endl;
-
+    //TODO: CHECK IF SIZE == 0
     for (std::vector<Pokemon*>::const_iterator it = trainer.t_pokemon_list.begin() ;
-         it != trainer.t_pokemon_list.end(); ++it) {
-        output << *it << std::endl;
-    }
+         it != trainer.t_pokemon_list.end(); ++it) {}
+        output << **it << std::endl;
+
 
     return output;
 }
 
-
+/**
+ * function convert team enum value into string.
+ * @return
+ * the maching string.
+ */
 std::string Trainer::teamToString() const {
     switch (this->t_team) {
         case BLUE:
@@ -140,7 +142,15 @@ std::string Trainer::teamToString() const {
     }
 }
 
-
+/**
+ * function compare trainers.
+ * @param first - the first trainer.
+ * @param second - the second trainer.
+ * @param check_equal - is true if user of this function want to check if
+ * first == second, and false if user want to check another inequality operator.
+ * @return
+ * depend on check_equal value function return true if so and false if not.
+ */
 bool Trainer::trainerCompare(const Trainer& first,
                              const Trainer& second, bool check_equal) {
     try {
@@ -159,10 +169,10 @@ bool Trainer::trainerCompare(const Trainer& first,
     catch (TrainerNoPokemonsFoundException& e) {
         try {
             second.GetStrongestPokemon();
-            return false;
+            return !check_equal;
         }
         catch (TrainerNoPokemonsFoundException& e) {
-            return true;
+            return check_equal;
         }
     }
 }

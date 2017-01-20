@@ -78,8 +78,8 @@ bool trainerTestGetStrongestPokemon() {
     ASSERT_TRUE(ash.TryToCatch(charmander));
     ASSERT_TRUE(misti.TryToCatch(togopi));
 
-    ASSERT_TRUE(ash.GetStrongestPokemon() == pikachu);
-    ASSERT_TRUE(misti.GetStrongestPokemon() == togopi);
+    ASSERT_TRUE(ash.GetStrongestPokemon()== pikachu);
+    ASSERT_TRUE(misti.GetStrongestPokemon()== togopi);
     ASSERT_THROW(mtm::pokemongo::TrainerNoPokemonsFoundException,
     		sahar.GetStrongestPokemon());
 
@@ -127,7 +127,7 @@ bool trainerTestKillStrongestPokemon() {
     ash.KillStrongestPokemon();
     misti.KillStrongestPokemon();
 
-    ASSERT_THROW(mtm::pokemongo::TrainerNoPokemonsFoundException(),
+    ASSERT_THROW(mtm::pokemongo::TrainerNoPokemonsFoundException,
     		misti.GetStrongestPokemon());
     ASSERT_TRUE(ash.GetStrongestPokemon()== charmander);
 
@@ -180,8 +180,9 @@ bool trainerTestOperators() {
     ASSERT_TRUE( ash > misti );
     ASSERT_TRUE( misti > ohad );
     ASSERT_TRUE( misti >= ohad );
-    ASSERT_TRUE( sahar <= ash );
     ASSERT_TRUE( sahar < ash );
+    ASSERT_TRUE( sahar <= ash );
+
 
     misti.KillStrongestPokemon();
     ASSERT_TRUE( sahar == misti );
@@ -299,7 +300,6 @@ bool pokemonTestTryToCatch() {
     ASSERT_TRUE( ash.TryToCatch(pikachu));
     ASSERT_TRUE( misti < ash );
 
-    std::cout << ash << std::endl;
     return true;
 }
 
