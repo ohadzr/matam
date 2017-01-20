@@ -8,15 +8,14 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cmath>
 #include "pokemon.h"
 #include "exceptions.h"
-#include "world.h"
-
+#include "trainer.h"
 
 /**************************************
  *       Namespace and Classes        *
  **************************************/
-
 
 namespace mtm {
 namespace pokemongo {
@@ -31,6 +30,7 @@ typedef enum {
 class Trainer {
   private:
     const int INIT_LEVEL = 1;
+
     std::string t_name;
     int t_level;
     std::vector<Pokemon*> t_pokemon_list;
@@ -42,7 +42,7 @@ class Trainer {
     //friend void World::Pokestop::Arrive(Trainer &trainer); //TODO: is this too wide?
 
   public:
-/**   Constructs a new trainer with the given name and team.
+/*   Constructs a new trainer with the given name and team.
 
    @param name the name of the trainer.
    @param team the team to which the trainer belongs.

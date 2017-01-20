@@ -11,12 +11,13 @@
 #include "location.h"
 #include "pokemon.h"
 #include "k_graph.h"
+#include <vector>
 
 /**************************************
  *               Using                *
  **************************************/
 
-using std::string
+using std::string;
 
 /**************************************
  *       Namespace and Classes        *
@@ -35,15 +36,32 @@ static const int WEST = 3;
 class World {
     class GYM : public Location {
     private:
-        string name;
-        Team team;
-        Trainer* Leader;
-        void switchLeader(Trainer leader);
+		static const int WINNER_BONUS = 2;
+		static const int LOSER_BONUS = -1;
+         Trainer* Leader;
+        void switchLeader( Trainer& leader );
     public:
-        GYM(const string& name );
+        GYM();
         ~GYM();
         void Arrive(Trainer& trainer) override ;
         void Leave(Trainer& trainer) override ;
+        bool Fight( Trainer& first , Trainer& second );
+        /* function perform a fight between two trainers
+         *
+         * @param first - trainer no.1
+         * @param second - trainer no.2
+         * @return
+         * true if second won and false otherwise. */
+          bool GYM::fight( Trainer& first , Trainer& second );
+
+          //TODO: add comments
+          void GYM::fightOutcome( Trainer& winner, Trainer& loser );
+          bool GYM::makeFight( Trainer& first , Trainer& second );
+          bool GYM::compareByTeam( Trainer& first , Trainer& second );
+          void GYM::prepareToBattle( Trainer& first , Trainer& second );
+          void GYM::upDateBonusPoints(  Trainer& trainer , int bonus );
+          void GYM::updateDethResult(Trainer& first , Trainer& second ,
+        		  bool first_died, bool second_died );
     };
 
 
@@ -119,7 +137,11 @@ class World {
   World(const World& world) = delete;
 
  private:
-    static const DIRECTIONS = 4;
+    static const int DIRECTIONS = 4;
+    int Team_bonus_yellow;
+    int Team_bonus_red;
+    int Team_bonus_blue;
+    friend void Trainer::fightOutcome( Trainer& winner, Trainer& loser );
     KGraph<std::string, Location*, DIRECTIONS>  world_map;
 
 };
