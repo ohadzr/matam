@@ -55,7 +55,7 @@ class World {
           bool GYM::compareByTeam( Trainer& first , Trainer& second );
           void GYM::prepareToBattle( Trainer& first , Trainer& second );
           void GYM::upDateBonusPoints(  Trainer& trainer , int bonus );
-          void GYM::updateDethResult(Trainer& first , Trainer& second ,
+          void GYM::updateDeathResult(Trainer& first , Trainer& second ,
         		  bool first_died, bool second_died );
           Trainer* GYM::findNextLeader();
           Trainer* GYM::candidateForLeadership( Team team );
@@ -66,7 +66,7 @@ class World {
           Trainer* GYM::checkBestOutOfTwoSubstitute(Trainer* red_candidate ,
           		Trainer* blue_candidate , Trainer* yellow_candidate );
           std::string GYM::GYMgetTeam();
-
+    };
     class Pokestop : public Location {
             private:
             std::vector<const Item*> item_vector;

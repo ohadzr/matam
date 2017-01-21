@@ -96,16 +96,16 @@ bool GYM::makeFight( Trainer& first , Trainer& second ) {
 	bool second_died = first_strongest.Hit( second_strongest );
 
     if ( first_strongest == second_strongest){
-    	updateDethResult( first , second , first_died, second_died );
+    	updateDeathResult( first , second , first_died, second_died );
     	return compareByTeam( first , second );
     }
 
     if ( first_strongest < second_strongest ) {
-    	updateDethResult( first , second , first_died, second_died );
+    	updateDeathResult( first , second , first_died, second_died );
     	fightOutcome( second , first );
     }
     else {
-    	updateDethResult( first , second , first_died, second_died );
+    	updateDeathResult( first , second , first_died, second_died );
     	fightOutcome( first , second );
     }
 }
@@ -139,7 +139,7 @@ void GYM::prepareToBattle( Trainer& first , Trainer& second ) {
 	}
 }
 
-void GYM::updateDethResult(Trainer& first , Trainer& second , bool first_died,
+void GYM::updateDeathResult(Trainer& first , Trainer& second , bool first_died,
 						    bool second_died ) {
 	if ( first_died ) first.KillStrongestPokemon();
 	if ( second_died ) second.KillStrongestPokemon();
