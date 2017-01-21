@@ -61,12 +61,12 @@ class World {
         Trainer* checkBestOutOfTwoSubstitute(Trainer* red_candidate ,
         		Trainer* blue_candidate , Trainer* yellow_candidate );
         Team GYMgetTeam();
+        bool Fight( Trainer& first , Trainer& second );
     public:
         GYM();
         ~GYM();
         void Arrive(Trainer& trainer) override ;
         void Leave(Trainer& trainer) override ;
-        bool Fight( Trainer& first , Trainer& second );
 
 
     };
@@ -105,7 +105,7 @@ class World {
         void Arrive(Trainer& trainer) override ;
     };
 
- public:
+public:
   // Constructs a new empty world.
   World();
   
