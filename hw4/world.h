@@ -52,13 +52,13 @@ class World {
         static void upDateBonusPoints(  Trainer& trainer , int bonus );
         static void updateDeathResult(Trainer& first , Trainer& second ,
       		  bool first_died, bool second_died );
-        static Trainer* findNextLeader();
-        static Trainer* candidateForLeadership( Team team );
-        static Trainer* checkTeamSubstitute(Trainer* red_candidate ,
+        Trainer* findNextLeader();
+        Trainer* candidateForLeadership( Team team );
+        Trainer* checkTeamSubstitute(Trainer* red_candidate ,
         static Trainer* blue_candidate , Trainer* yellow_candidate );
         static Trainer* checkisOneTeamLeft(Trainer* red_candidate ,
         		Trainer* blue_candidate , Trainer* yellow_candidate );
-        static Trainer* checkBestOutOfTwoSubstitute(Trainer* red_candidate ,
+        Trainer* checkBestOutOfTwoSubstitute(Trainer* red_candidate ,
         		Trainer* blue_candidate , Trainer* yellow_candidate );
         Team GYMgetTeam();
     public:
