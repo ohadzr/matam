@@ -3,15 +3,14 @@
  **************************************/
 
 #include "world.h"
-#include "k_graph_mtm.h"
 
 /**************************************
  *               Using                *
  **************************************/
 
-using mtm::pokemongo;
+//using mtm::pokemongo;
 using mtm::pokemongo::World;
-using mtm::pokemongo::World::GYM;
+//using mtm::pokemongo::World::GYM;
 using mtm::pokemongo::Location;
 using mtm::pokemongo::Team;
 
@@ -19,7 +18,7 @@ using mtm::pokemongo::Team;
  *        Interface Functions         *
  **************************************/
 
-World::World() :Team_bonus_yellow(0),Team_bonus_red(0),Team_bonus_blue(0),
+World::World() : Team_bonus_yellow(0),Team_bonus_red(0),Team_bonus_blue(0),
         world_map(KGraph<std::string,Location*,DIRECTIONS>(nullptr)) {
 }
 
@@ -47,7 +46,7 @@ void World::GYM::Arrive(Trainer& trainer) {
     switchLeader( trainer );
 }
 
-bool GYM::Fight( Trainer& first , Trainer& second ) {
+bool World::GYM::Fight( Trainer& first , Trainer& second ) {
     try {
         Pokemon first_strongest = first.GetStrongestPokemon();
         try {
@@ -72,13 +71,13 @@ bool GYM::Fight( Trainer& first , Trainer& second ) {
     }
 }
 
-void GYM::fightOutcome( Trainer& winner, Trainer& loser ) {
+void World::GYM::fightOutcome( Trainer& winner, Trainer& loser ) {
 	winner.t_level += ceil((loser.t_level)/2);//TODO: what to do with numbers
 	upDateBonusPoints( winner , WINNER_BONUS );
 	upDateBonusPoints( loser , LOSER_BONUS );
 }
 
-void GYM::upDateBonusPoints( Trainer& trainer , int bonus ){
+void World::GYM::upDateBonusPoints( Trainer& trainer , int bonus ){
 	Team trainer_team = trainer.GetTeam();
 	switch (trainer_team) {
 	case YELLOW : Team_bonus_yellow += bonus ; break;
@@ -88,7 +87,7 @@ void GYM::upDateBonusPoints( Trainer& trainer , int bonus ){
 }
 
 //true if second win
-bool GYM::makeFight( Trainer& first , Trainer& second ) {
+bool World::GYM::makeFight( Trainer& first , Trainer& second ) {
 	Pokemon first_strongest = first.GetStrongestPokemon();
 	Pokemon second_strongest = second.GetStrongestPokemon();
 
@@ -103,43 +102,43 @@ bool GYM::makeFight( Trainer& first , Trainer& second ) {
     if ( first_strongest < second_strongest ) {
     	updateDeathResult( first , second , first_died, second_died );
     	fightOutcome( second , first );
+        return true;
     }
-    else {
-    	updateDeathResult( first , second , first_died, second_died );
-    	fightOutcome( first , second );
-    }
+
+    updateDeathResult( first , second , first_died, second_died );
+    fightOutcome( first , second );
+    return false;
+
 }
 
 //true if second bigger
-bool GYM::compareByTeam( Trainer& first , Trainer& second ) {
+bool World::GYM::compareByTeam( Trainer& first , Trainer& second ) {
 	Team first_team = first.GetTeam();
 	Team second_team = second.GetTeam();
 
 	if ( (first_team == BLUE) && (second_team == YELLOW) ) return true;
 	if ( (first_team == YELLOW) && (second_team == RED) ) return true;
-	if ( (first_team == RED) && (second_team == BLUE) ) return true;
-
-	return false;
+    return (first_team == RED) && (second_team == BLUE) ;
 }
 
-void GYM::prepareToBattle( Trainer& first , Trainer& second ) {
+void World::GYM::prepareToBattle( Trainer& first , Trainer& second ) {
 	Pokemon first_strongest = first.GetStrongestPokemon();
 	Pokemon second_strongest = second.GetStrongestPokemon();
 
-	Item* first_item = first.itemList.front() ;
-	Item* second_item = second.itemList.front() ;
+	World::Pokestop::Item* first_item = first.t_items.front() ;
+    World::Pokestop::Item* second_item = second.t_items.front() ;
 
 	if ( first_item ) {
-		if ( first_item->value == "potion" ) first_strongest.Heal();
-		else first_strongest.Train( first_item->value );
+		if ( first_item->getType() == "potion" ) first_strongest.Heal();
+		else first_strongest.Train( 1 + (first_strongest.Level())/10 ); //TODO: how to MACRO this?
 	}
 	if ( second_item ) {
-		if ( second_item->value == "potion" ) second_strongest.Heal();
-		else second_strongest.Train( second_item->value );
+		if ( second_item->getType() == "potion" ) second_strongest.Heal();
+		else second_strongest.Train( 1 + (second_strongest.Level())/10 );
 	}
 }
 
-void GYM::updateDeathResult(Trainer& first , Trainer& second , bool first_died,
+void World::GYM::updateDeathResult(Trainer& first , Trainer& second , bool first_died,
 						    bool second_died ) {
 	if ( first_died ) first.KillStrongestPokemon();
 	if ( second_died ) second.KillStrongestPokemon();
@@ -161,14 +160,14 @@ void World::GYM::Leave(Trainer &trainer) {
 	return;
 }
 
-Trainer* GYM::findNextLeader() {
+Trainer* World::GYM::findNextLeader() {
 	Trainer* red_candidate = candidateForLeadership( RED );
 	Trainer* blue_candidate = candidateForLeadership( BLUE );
 	Trainer* yellow_candidate = candidateForLeadership( YELLOW );
 
-	Trainer* team_member_usbstitute = checkTeamSubstitute( red_candidate ,
+	Trainer* team_member_susbstitute = checkTeamSubstitute( red_candidate ,
 			 blue_candidate , yellow_candidate );
-	if ( team_member_usbstitute ) return team_member_usbstitute;
+	if ( team_member_susbstitute ) return team_member_susbstitute;
 
 	Trainer* one_team_left_substitute = checkisOneTeamLeft ( red_candidate ,
 				 blue_candidate , yellow_candidate );
@@ -182,7 +181,7 @@ Trainer* GYM::findNextLeader() {
 
 }
 
-Trainer* GYM::checkBestOutOfTwoSubstitute(Trainer* red_candidate ,
+Trainer* World::GYM::checkBestOutOfTwoSubstitute(Trainer* red_candidate ,
 		Trainer* blue_candidate , Trainer* yellow_candidate ) {
 	if ( red_candidate && blue_candidate ) {
 		if ( Fight( *red_candidate , *blue_candidate ) )
@@ -202,7 +201,7 @@ Trainer* GYM::checkBestOutOfTwoSubstitute(Trainer* red_candidate ,
 	return nullptr;
 }
 
-Trainer* GYM::checkTeamSubstitute(Trainer* red_candidate ,
+Trainer* World::GYM::checkTeamSubstitute(Trainer* red_candidate ,
 		Trainer* blue_candidate , Trainer* yellow_candidate ) {
 	Team home_team = Leader->GetTeam();
 	if ( red_candidate ) {
@@ -217,7 +216,7 @@ Trainer* GYM::checkTeamSubstitute(Trainer* red_candidate ,
 	return nullptr;
 }
 
-Trainer* GYM::checkisOneTeamLeft(Trainer* red_candidate ,
+Trainer* World::GYM::checkisOneTeamLeft(Trainer* red_candidate ,
 		Trainer* blue_candidate , Trainer* yellow_candidate ) {
 	if ( (red_candidate && blue_candidate) ||
 		 (red_candidate && yellow_candidate) ||
@@ -233,30 +232,24 @@ Trainer* GYM::checkisOneTeamLeft(Trainer* red_candidate ,
 
 
 
-Trainer* GYM::candidateForLeadership( Team team ) {
+Trainer* World::GYM::candidateForLeadership( Team team ) {
 	Trainer* candidate = nullptr;
     for( std::vector<Trainer*>::iterator it = trainers_.begin(); it !=
     		trainers_.end(); ++it ) {
-        if ( (*it)->GetTeam() == team ) {
-        	candidate = it;
-        	break;
-        }
-    }
-
-    for( std::vector<Trainer*>::iterator it = trainers_.begin(); it !=
-    		trainers_.end(); ++it ) {
-        if ( ((*it)->GetTeam() == team ) && ( (*it) > (*candidate) ) ) {
-        	candidate = it;
-        	break;
+        if ( (*it)->GetTeam() == team) {
+            if (candidate == nullptr)
+                candidate = *it;
+            else if ((**it) > (*candidate))
+                candidate = *it;
         }
     }
 
   return candidate;
 }
 
-std::string GYM::GYMgetTeam() {
+Team World::GYM::GYMgetTeam() {
 	if ( !Leader ) return nullptr;
-	return Leader->teamToString();
+	return Leader->GetTeam();
 }
 
 //TODO: Pokestop
@@ -272,6 +265,8 @@ void World::Pokestop::addItem(const Item& item) {
 }
 
 void World::Pokestop::Arrive(Trainer &trainer) {
+    Location::Arrive( trainer );
+
     for (std::vector<const Item*>::const_iterator it = item_vector.begin() ;
          it != item_vector.end(); ++it) {
         if ((**it).getLevel() <= trainer.GetLevel()){
@@ -292,12 +287,12 @@ const World::Pokestop::Item::Item(const Item &item) :
         type(string(item.type)), level(item.level){
 }
 
-const std::string World::Pokestop::Item::getType(const Item &item) {
-    return item.type;
+const std::string World::Pokestop::Item::getType() {
+    return type;
 }
 
-const int World::Pokestop::Item::getLevel(const Item &item) {
-    return item.level;
+const int World::Pokestop::Item::getLevel() {
+    return level;
 }
 
 
@@ -309,6 +304,8 @@ World::Starbucks::Starbucks() : pokemon_vector(std::vector<Pokemon*>()){}
 World::Starbucks::~Starbucks() {}
 
 void World::Starbucks::Arrive(Trainer &trainer) {
+    Location::Arrive( trainer );
+
     std::vector<Pokemon*>::iterator it = pokemon_vector.begin();
     if (trainer.TryToCatch(**it)) {
         pokemon_vector.erase(it); //TODO: PROBLEM?? - check if this delete the pokemon the trainer caught - maybe send a copy of the pokemon (above)?

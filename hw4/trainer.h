@@ -9,9 +9,10 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include "trainer.h"
 #include "pokemon.h"
 #include "exceptions.h"
-#include "trainer.h"
+#include "world.h"
 
 /**************************************
  *       Namespace and Classes        *
@@ -39,7 +40,8 @@ class Trainer {
     std::string teamToString() const;
     static bool trainerCompare(const Trainer& first,
                                  const Trainer& second, bool check_equal);
-    //friend void World::Pokestop::Arrive(Trainer &trainer); //TODO: is this too wide?
+    friend void World::GYM::fightOutcome(Trainer &winner, Trainer &loser); //TODO: is this too wide?
+    friend void World::GYM::prepareToBattle(Trainer &first, Trainer &second);
 
   public:
 /*   Constructs a new trainer with the given name and team.

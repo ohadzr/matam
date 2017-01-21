@@ -50,22 +50,22 @@ class World {
         bool Fight( Trainer& first , Trainer& second );
 
           //TODO: add comments
-          void GYM::fightOutcome( Trainer& winner, Trainer& loser );
-          bool GYM::makeFight( Trainer& first , Trainer& second );
-          bool GYM::compareByTeam( Trainer& first , Trainer& second );
-          void GYM::prepareToBattle( Trainer& first , Trainer& second );
-          void GYM::upDateBonusPoints(  Trainer& trainer , int bonus );
-          void GYM::updateDeathResult(Trainer& first , Trainer& second ,
+          void fightOutcome( Trainer& winner, Trainer& loser );
+          bool makeFight( Trainer& first , Trainer& second );
+          bool compareByTeam( Trainer& first , Trainer& second );
+          void prepareToBattle( Trainer& first , Trainer& second );
+          void upDateBonusPoints(  Trainer& trainer , int bonus );
+          void updateDeathResult(Trainer& first , Trainer& second ,
         		  bool first_died, bool second_died );
-          Trainer* GYM::findNextLeader();
-          Trainer* GYM::candidateForLeadership( Team team );
-          Trainer* GYM::checkTeamSubstitute(Trainer* red_candidate ,
+          Trainer* findNextLeader();
+          Trainer* candidateForLeadership( Team team );
+          Trainer* checkTeamSubstitute(Trainer* red_candidate ,
           		Trainer* blue_candidate , Trainer* yellow_candidate );
-          Trainer* GYM::checkisOneTeamLeft(Trainer* red_candidate ,
+          Trainer* checkisOneTeamLeft(Trainer* red_candidate ,
           		Trainer* blue_candidate , Trainer* yellow_candidate );
-          Trainer* GYM::checkBestOutOfTwoSubstitute(Trainer* red_candidate ,
+          Trainer* checkBestOutOfTwoSubstitute(Trainer* red_candidate ,
           		Trainer* blue_candidate , Trainer* yellow_candidate );
-          std::string GYM::GYMgetTeam();
+          Team GYMgetTeam();
     };
     class Pokestop : public Location {
             private:
@@ -76,12 +76,14 @@ class World {
                 std::string type;
                 int level;
                 friend class mtm::pokemongo::Trainer;
+                friend void mtm::pokemongo::World::GYM::prepareToBattle(
+                        Trainer &first, Trainer &second);
             public:
                 Item(const std::string& type,const int level) const;
                 ~Item();
                 const Item(const Item& item) const;
-                const std::string getType(const Item& item);
-                const int getLevel(const Item& item);
+                const std::string getType();
+                const int getLevel();
             };
 
     public:
@@ -140,9 +142,9 @@ class World {
 
  private:
     static const int DIRECTIONS = 4;
-    int Team_bonus_yellow;
-    int Team_bonus_red;
-    int Team_bonus_blue;
+    static int Team_bonus_yellow;
+    static int Team_bonus_red;
+    static int Team_bonus_blue;
     KGraph<std::string, Location*, DIRECTIONS>  world_map;
 
 };
