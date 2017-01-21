@@ -16,6 +16,9 @@ namespace mtm {
 
 namespace pokemongo {
 
+	class ItemException : public MtmException{};
+	class ItemInvalidArgsException : public ItemException{};
+
 	class PokemonException : public MtmException {};
 	class PokemonInvalidArgsException : public PokemonException {};
 

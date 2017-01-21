@@ -7,7 +7,7 @@
 
 namespace mtm {
 
-// Requirements: KeyType::opertor<,
+// Requirements: KeyType::operator<,
 //               KeyType::operator==,
 //               KeyType and ValueType copy c'tor
 template<typename KeyType, typename ValueType, int k> class KGraph {

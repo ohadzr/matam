@@ -4,7 +4,6 @@
  **************************************/
 
 #include "trainer.h"
-#include <cmath>
 
 /**************************************
  *               Using                *
@@ -104,9 +103,16 @@ int Trainer::GetLevel() const {
     return this->t_level;
 }
 
+void Trainer::updateLevel(int new_level) {
+    t_level = new_level;
+}
 
-void Trainer::addItem(World::Pokestop::Item& item) {
+void Trainer::addItem(Item& item) {
     t_items.push_back(&item);
+}
+
+mtm::pokemongo::Item* Trainer::getOldestItem() {
+    return t_items.front();
 }
 
 bool Trainer::TryToCatch(Pokemon& pokemon) {

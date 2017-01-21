@@ -19,42 +19,109 @@ bool TestCombo() {
     /********************************************************************
     *                              tests                               *
     ********************************************************************/
-    World technion();
 
-    ASSERT_NO_THROW("GYM berlin" >> technion);
+    std::ifstream world_in("world_test.in");
+    std::string line;
+
+//    while (std::getline(world_in, line)) {
+//          std::istringstream line_stream(line);
+//          line_stream >> *world;
+//  }
+    World* technion = new World();
+
+    std::getline(world_in, line);
+    std::istringstream line_stream(line);
+    ASSERT_NO_THROW(line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    line_stream(line);
     ASSERT_THROW(mtm::pokemongo::WorldInvalidInputLineException,
-                 "POKESTOP israel POTION -10 CANDY 30 CANDY 30" >> technion);
+                 line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
     ASSERT_THROW(mtm::pokemongo::WorldInvalidInputLineException,
-                 "GM berlin" >> technion);
+                 line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
     ASSERT_THROW(mtm::pokemongo::WorldInvalidInputLineException,
-                 "POKESTO israel POTION 10 candy 30 CANDY 30" >> technion);
+                 line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
     ASSERT_THROW(mtm::pokemongo::WorldInvalidInputLineException,
-                 "POKESTOP israel POTION 10 candy 30 CANDY 30" >> technion);
+                 line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
     ASSERT_THROW(mtm::pokemongo::WorldLocationNameAlreadyUsed,
-                 "POKESTOP berlin POTION 10 CANDY 30 CANDY 30" >> technion);
+                 line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
     ASSERT_THROW(mtm::pokemongo::WorldInvalidInputLineException,
-                 "POKESTOP kanada POTION 10 CANDY 30 CANDY 0" >> technion);
+                 line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
     ASSERT_THROW(mtm::pokemongo::WorldInvalidInputLineException,
-                 "POKESTOP kanada potion 10 CANDY 30 CANDY 0" >> technion);
+                 line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
     ASSERT_THROW(mtm::pokemongo::WorldInvalidInputLineException,
-                 "POKESTOP china potion1 0CANDY 30 CANDY 0" >> technion);
+                 line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
     ASSERT_THROW(mtm::pokemongo::WorldInvalidInputLineException,
-                 "POKESTOP LA POTION  CANDY 30 CANDY 0" >> technion);
+                 line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
     ASSERT_THROW(mtm::pokemongo::WorldInvalidInputLineException,
-                 "STARBUCKS eygpt pikachu pikachu 1 2 charmander 3.45 4" >> technion);
+                 line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
     ASSERT_THROW(mtm::pokemongo::WorldInvalidInputLineException,
-                 "STARBUCKS " >> technion);
+                 line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
     ASSERT_THROW(mtm::pokemongo::WorldInvalidInputLineException,
-                 "STARBUCKS eygpt pikachu pikachu 1 2 charmander 0 4" >> technion);
+                 line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
     ASSERT_THROW(mtm::pokemongo::WorldLocationNameAlreadyUsed,
-                 "STARBUCKS eygpt pikachu 3 6 pikachu 1 2 charmander 2 4" >> technion);
+                 line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
     ASSERT_THROW(mtm::pokemongo::WorldInvalidInputLineException,
-                 "sahar eygpt pikachu 3 6 pikachu 1 2 charmander 2 4" >> technion);
-    ASSERT_NO_THROW("STARBUCKS france " >> technion);
-    ASSERT_NO_THROW("    STARBUCKS tokyo pikachu  5.4   7 " >> technion);
-    ASSERT_NO_THROW("POKESTOP china potion 60 CANDY 100 CANDY 900" >> technion);
+                 line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
+    ASSERT_NO_THROW(line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
+    ASSERT_NO_THROW(line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
+    ASSERT_NO_THROW(line_stream >> *technion);
+
+    std::getline(world_in, line);
+//    std::istringstream line_stream(line);
     ASSERT_THROW(mtm::pokemongo::WorldInvalidInputLineException,
-                 "POKESTOP akraba ALADIN 60 CANDY 100 CANDY 900" >> technion);
+                 line_stream >> *technion);
+
+
+    return true;
 }
 
 int main() {

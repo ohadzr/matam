@@ -19,14 +19,9 @@ set(K_GRAPH_FILES k_graph_mtm_test.cpp test_utils.cc ../k_graph_mtm.h )
 add_executable(hw4_k_graph_test ${K_GRAPH_FILES})
 
 
-set(LOCATION_FILES location_test.cpp test_utils.cc )
-add_executable(hw4_location_test ${LOCATION_FILES})
-#target_link_libraries(hw4_location_test libmtm.a)
-
-
-set(WORLD_FILES world_test.cpp test_utils.cc ../world.cpp)
+set(WORLD_FILES world_test.cpp test_utils.cc ../world.cpp ../pokemon.cpp ../trainer.cpp)
 add_executable(hw4_world_test ${WORLD_FILES})
-#target_link_libraries(hw4_world_test libmtm.a)
+target_link_libraries(hw4_world_test libmtm.a)
 
 
 set(POKEMON_GO_FILES pokemon_go_test.cpp test_utils.cc ../pokemon_go.cpp )

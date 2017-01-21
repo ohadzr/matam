@@ -9,10 +9,10 @@
 #include <string>
 #include <vector>
 #include <cmath>
-#include "trainer.h"
 #include "pokemon.h"
 #include "exceptions.h"
-#include "world.h"
+#include "item.h"
+
 
 /**************************************
  *       Namespace and Classes        *
@@ -35,13 +35,12 @@ class Trainer {
     std::string t_name;
     int t_level;
     std::vector<Pokemon*> t_pokemon_list;
-    std::vector<World::Pokestop::Item*> t_items;
+    std::vector<Item*> t_items;
     Team t_team;
     std::string teamToString() const;
     static bool trainerCompare(const Trainer& first,
                                  const Trainer& second, bool check_equal);
-    friend void World::GYM::fightOutcome(Trainer &winner, Trainer &loser); //TODO: is this too wide?
-    friend void World::GYM::prepareToBattle(Trainer &first, Trainer &second);
+
 
   public:
 /*   Constructs a new trainer with the given name and team.
@@ -96,15 +95,25 @@ class Trainer {
    @return the level of the trainer.*/
     int GetLevel() const; //TODO: is this allowed? (not in basic file)
 
+    void updateLevel(int new_level); //TODO: is this allowed? (not in basic file)
+
+
+
 /**
  *  Add an item at the end of the trainer's item list
  *
  * @param item - The item to add
  */
-    void addItem(World::Pokestop::Item& item); //TODO: is this allowed? (not in basic file)
+    void addItem(Item& item); //TODO: is this allowed? (not in basic file)
 
 
 
+
+/**
+ * Find the oldest item the trainer has
+ * @return The oldest item the trainer has
+ */
+    Item* getOldestItem();//TODO: is this allowed? (not in basic file)
 
 /**   Tries to catch a Pokemon.
 

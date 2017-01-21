@@ -318,7 +318,7 @@ bool trainerTest() {
     return true;
 }
 
-int main() {
-    trainerTest();
-    return 0;
-}
+//int main() {
+//    trainerTest();
+//    return 0;
+//}

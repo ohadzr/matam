@@ -16,8 +16,7 @@ using mtm::pokemongo::Team;
  *        Interface Functions         *
  **************************************/
 
-World::World() : Team_bonus_yellow(0),Team_bonus_red(0),Team_bonus_blue(0),
-        world_map(KGraph<std::string,Location*,DIRECTIONS>(nullptr)) {
+World::World() : world_map(KGraph<std::string,Location*,DIRECTIONS>(nullptr)) {
 }
 
 World::~World() {}
@@ -70,7 +69,7 @@ bool World::GYM::Fight( Trainer& first , Trainer& second ) {
 }
 
 void World::GYM::fightOutcome( Trainer& winner, Trainer& loser ) {
-	winner.t_level += ceil((loser.t_level)/2);//TODO: what to do with numbers
+	winner.updateLevel(winner.GetLevel() + (int)ceil((loser.GetLevel())/2));//TODO: what to do with numbers
 	upDateBonusPoints( winner , WINNER_BONUS );
 	upDateBonusPoints( loser , LOSER_BONUS );
 }
@@ -78,9 +77,9 @@ void World::GYM::fightOutcome( Trainer& winner, Trainer& loser ) {
 void World::GYM::upDateBonusPoints( Trainer& trainer , int bonus ){
 	Team trainer_team = trainer.GetTeam();
 	switch (trainer_team) {
-	case YELLOW : Team_bonus_yellow += bonus ; break;
-	case RED : Team_bonus_red += bonus ; break;
-	case BLUE : Team_bonus_blue += bonus ; break;
+	case YELLOW : team_bonus_yellow += bonus ; break;
+	case RED : team_bonus_red += bonus ; break;
+	case BLUE : team_bonus_blue += bonus ; break;
 	}
 }
 
@@ -123,15 +122,15 @@ void World::GYM::prepareToBattle( Trainer& first , Trainer& second ) {
 	Pokemon first_strongest = first.GetStrongestPokemon();
 	Pokemon second_strongest = second.GetStrongestPokemon();
 
-	World::Pokestop::Item* first_item = first.t_items.front() ;
-    World::Pokestop::Item* second_item = second.t_items.front() ;
+	Item* first_item = first.getOldestItem() ;
+    Item* second_item = second.getOldestItem() ;
 
 	if ( first_item ) {
-		if ( first_item->getType() == "potion" ) first_strongest.Heal();
+		if ( first_item->getType() == "POTION" ) first_strongest.Heal();
 		else first_strongest.Train( 1 + (first_strongest.Level())/10 ); //TODO: how to MACRO this?
 	}
 	if ( second_item ) {
-		if ( second_item->getType() == "potion" ) second_strongest.Heal();
+		if ( second_item->getType() == "POTION" ) second_strongest.Heal();
 		else second_strongest.Train( 1 + (second_strongest.Level())/10 );
 	}
 }
@@ -245,29 +244,40 @@ Trainer* World::GYM::candidateForLeadership( Team team ) {
   return candidate;
 }
 
-Team World::GYM::GYMgetTeam() {
-	if ( !Leader ) return nullptr;
-	return Leader->GetTeam();
-}
-
 //TODO: Pokestop
 
-World::Pokestop::Pokestop() : item_vector(std::vector<const Item*>()) {
+World::Pokestop::Pokestop(std::vector<std::string> input_vector) :
+		item_vector(std::vector<Item*>()) {
+	if (input_vector.size() % 2 != 0) //Check if args right amount of args
+		throw WorldInvalidInputLineException();
+
+	while (input_vector.size() != 0) {
+		std::string item_type = input_vector[ITEM_TYPE];
+		int item_level = atoi(input_vector[ITEM_LEVEL].c_str());
+		input_vector.erase(input_vector.begin());
+		input_vector.erase(input_vector.begin());
+
+		try {
+			Item new_item = Item(item_type, item_level);
+			item_vector.push_back(&new_item);
+		}
+		catch (ItemInvalidArgsException& e) {
+			throw WorldInvalidInputLineException();
+		}
+
+	}
+
 }
 
 World::Pokestop::~Pokestop() {
 }
 
-void World::Pokestop::addItem(const Item& item) {
-    item_vector.push_back(&item);
-}
-
 void World::Pokestop::Arrive(Trainer &trainer) {
     Location::Arrive( trainer );
 
-    for (std::vector<const Item*>::const_iterator it = item_vector.begin() ;
+    for (std::vector<Item*>::iterator it = item_vector.begin() ;
          it != item_vector.end(); ++it) {
-        if ((**it).getLevel() <= trainer.GetLevel()){
+        if ((*it)->getLevel() <= trainer.GetLevel()){
             trainer.addItem(**it);
             item_vector.erase(it); //TODO: PROBLEM?? does this delete trainer's item?
             break;
@@ -275,29 +285,33 @@ void World::Pokestop::Arrive(Trainer &trainer) {
     }
 }
 
-World::Pokestop::Item::Item(const std::string &type, const int level) :
-        type(string(type)), level(level){
-}
-
-World::Pokestop::Item::~Item() {}
-
-const World::Pokestop::Item::Item(const Item &item) :
-        type(string(item.type)), level(item.level){
-}
-
-const std::string World::Pokestop::Item::getType() {
-    return type;
-}
-
-const int World::Pokestop::Item::getLevel() {
-    return level;
-}
-
-
 
 //TODO: Starbucks
 
-World::Starbucks::Starbucks() : pokemon_vector(std::vector<Pokemon*>()){}
+World::Starbucks::Starbucks(std::vector<std::string> input_vector) :
+		pokemon_vector(std::vector<Pokemon*>()){
+
+	if (input_vector.size() % 3 != 0) //Check if args right amount of args
+		throw WorldInvalidInputLineException();
+
+	while (input_vector.size() != 0) {
+		std::string pokemon_name = input_vector[POKEMON_NAME];
+		double pokemon_cp = atof(input_vector[POKEMON_CP].c_str());
+		int pokemon_level = atoi(input_vector[POKEMON_LEVEL].c_str());
+		input_vector.erase(input_vector.begin());
+		input_vector.erase(input_vector.begin());
+		input_vector.erase(input_vector.begin());
+
+		try{
+			Pokemon new_pokemon = Pokemon(pokemon_name,
+										  pokemon_cp, pokemon_level);
+			pokemon_vector.push_back(&new_pokemon);
+		}
+		catch (PokemonInvalidArgsException& e) {
+			throw WorldInvalidInputLineException();
+		}
+	}
+}
 
 World::Starbucks::~Starbucks() {}
 
@@ -314,7 +328,7 @@ void World::Starbucks::Arrive(Trainer &trainer) {
 
 
 
-std::istream& mtm::pokemongo::operator>>(std::istream& input, World& world) { //TODO: continue here
+std::istream& mtm::pokemongo::operator>>(std::istream& input, World& world) {
     // split String Into vector
     std::vector<std::string> input_vector = World::parseInput(input);
 
@@ -343,7 +357,22 @@ std::istream& mtm::pokemongo::operator>>(std::istream& input, World& world) { //
 	return input;
 }
 
+std::vector<std::string> World::parseInput(std::istream &input) {
+	std::vector<std::string> input_vector = std::vector<std::string>();
+	std::string input_string;
+	input >> input_string;
+	std::string delimiter = " ";
 
+	size_t pos = 0;
+	std::string token;
+	while ((pos = input_string.find(delimiter)) != std::string::npos) {
+		token = input_string.substr(0, pos);
+		input_vector.push_back(std::string(token));
+		input_string.erase(0, pos + delimiter.length());
+	}
+
+	return input_vector;
+}
 
 void World::createLocationByType(std::string &location_name,
 								 std::string &location_type,

@@ -7,10 +7,12 @@
 
 #include <iostream>
 #include <string>
-#include "trainer.h"
 #include "location.h"
+#include "trainer.h"
 #include "pokemon.h"
 #include "k_graph.h"
+#include "item.h"
+#include <sstream>
 #include <vector>
 #include <set>
 
@@ -55,12 +57,11 @@ class World {
         Trainer* findNextLeader();
         Trainer* candidateForLeadership( Team team );
         Trainer* checkTeamSubstitute(Trainer* red_candidate ,
-        static Trainer* blue_candidate , Trainer* yellow_candidate );
+        Trainer* blue_candidate , Trainer* yellow_candidate );
         static Trainer* checkisOneTeamLeft(Trainer* red_candidate ,
         		Trainer* blue_candidate , Trainer* yellow_candidate );
         Trainer* checkBestOutOfTwoSubstitute(Trainer* red_candidate ,
         		Trainer* blue_candidate , Trainer* yellow_candidate );
-        Team GYMgetTeam();
         bool Fight( Trainer& first , Trainer& second );
     public:
         GYM();
@@ -71,28 +72,13 @@ class World {
 
     };
     class Pokestop : public Location {
-            private:
-            std::vector<const Item*> item_vector;
+        private:
+            std::vector<Item*> item_vector;
             friend class mtm::pokemongo::Trainer;
-            class Item {
-            private:
-                std::string type;
-                int level;
-                friend class mtm::pokemongo::Trainer;
-                friend void mtm::pokemongo::World::GYM::prepareToBattle(
-                        Trainer &first, Trainer &second);
-            public:
-                Item(const std::string& type,const int level) const;
-                ~Item();
-                const Item(const Item& item) const;
-                const std::string getType();
-                const int getLevel();
-            };
 
-    public:
-        Pokestop();
+        public:
+        Pokestop(std::vector<std::string> input_vector);
         ~Pokestop();
-        void addItem(const Item& item);
         void Arrive(Trainer& trainer) override ;
     };
 
@@ -100,7 +86,7 @@ class World {
     private:
         std::vector<Pokemon*> pokemon_vector;
     public:
-        Starbucks();
+        Starbucks(std::vector<std::string> input_vector);
         ~Starbucks();
         void Arrive(Trainer& trainer) override ;
     };
@@ -147,10 +133,16 @@ public:
     static const int DIRECTIONS = 4;
     static const int LOCATION_TYPE = 0;
     static const int LOCATION_NAME = 1;
+    static const int ITEM_TYPE = 0;
+    static const int ITEM_LEVEL = 1;
+    static const int POKEMON_NAME = 0;
+    static const int POKEMON_CP = 1;
+    static const int POKEMON_LEVEL = 2;
 
-    static int Team_bonus_yellow;
-    static int Team_bonus_red;
-    static int Team_bonus_blue;
+
+    static int team_bonus_yellow;
+    static int team_bonus_red;
+    static int team_bonus_blue;
 
     KGraph<std::string, Location*, DIRECTIONS>  world_map;
     std::set<std::string> location_names;
