@@ -8,9 +8,7 @@
  *               Using                *
  **************************************/
 
-//using mtm::pokemongo;
 using mtm::pokemongo::World;
-//using mtm::pokemongo::World::GYM;
 using mtm::pokemongo::Location;
 using mtm::pokemongo::Team;
 
@@ -318,8 +316,51 @@ void World::Starbucks::Arrive(Trainer &trainer) {
 
 std::istream& mtm::pokemongo::operator>>(std::istream& input, World& world) { //TODO: continue here
     // split String Into vector
-    // check first parameter - is valid
-    // check second parameter - doesn't exist
-    // send to create by first parameter
-    // add created location to world [and save it name in the key vector???]
+    std::vector<std::string> input_vector = World::parseInput(input);
+
+    if (input_vector.size() < 2)
+        throw WorldInvalidInputLineException();
+
+    std::string location_type = input_vector[World::LOCATION_TYPE];
+    std::string location_name = input_vector[World::LOCATION_NAME];
+    //remove from list
+    input_vector.erase(input_vector.begin());
+    input_vector.erase(input_vector.begin());
+
+    // check if first parameter is valid
+    if (! (location_type == "GYM" || location_type == "POKESTOP" ||
+			location_type == "STARBUCKS") )
+        throw WorldInvalidInputLineException();
+
+	// check if second parameter doesn't exist
+    if (world.location_names.find(location_name) != world.location_names.end())
+		throw WorldLocationNameAlreadyUsed();
+
+	World::createLocationByType(location_name, location_type,
+								input_vector, world);
+
+	world.location_names.insert(location_name);
+	return input;
+}
+
+
+
+void World::createLocationByType(std::string &location_name,
+								 std::string &location_type,
+								 std::vector<std::string> input_vector,
+								 World &world) {
+	if (location_type == "GYM") {
+		if (input_vector.size() != 0)
+			throw WorldInvalidInputLineException();
+		World::GYM new_gym = World::GYM();
+		world.world_map.Insert(location_name, &new_gym);
+	}
+	else if (location_type == "POKESTOP") {
+		World::Pokestop new_pokestop = World::Pokestop(input_vector);
+		world.world_map.Insert(location_name, &new_pokestop);
+	}
+	else {
+		World::Starbucks new_starbucks = World::Starbucks(input_vector);
+		world.world_map.Insert(location_name, &new_starbucks);
+	}
 }

@@ -12,6 +12,7 @@
 #include "pokemon.h"
 #include "k_graph.h"
 #include <vector>
+#include <set>
 
 /**************************************
  *               Using                *
@@ -142,10 +143,21 @@ class World {
 
  private:
     static const int DIRECTIONS = 4;
+    static const int LOCATION_TYPE = 0;
+    static const int LOCATION_NAME = 1;
+
     static int Team_bonus_yellow;
     static int Team_bonus_red;
     static int Team_bonus_blue;
+
     KGraph<std::string, Location*, DIRECTIONS>  world_map;
+    std::set<std::string> location_names;
+
+    static std::vector<std::string> parseInput(std::istream& input);
+    static void createLocationByType(std::string& location_name,
+                                     std::string& location_type,
+                                     std::vector<std::string> input_vector,
+                                     World& world);
 
 };
 
