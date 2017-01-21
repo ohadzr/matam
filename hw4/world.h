@@ -42,7 +42,25 @@ class World {
 		static const int LOSER_BONUS = -1;
 		static const int LAST_TRAINER_IN_GYM = 1;
          Trainer* Leader;
+         //TODO: add comments
+
         void switchLeader( Trainer& leader );
+        static void fightOutcome( Trainer& winner, Trainer& loser );
+        static bool makeFight( Trainer& first , Trainer& second );
+        static bool compareByTeam( Trainer& first , Trainer& second );
+        static void prepareToBattle( Trainer& first , Trainer& second );
+        static void upDateBonusPoints(  Trainer& trainer , int bonus );
+        static void updateDeathResult(Trainer& first , Trainer& second ,
+      		  bool first_died, bool second_died );
+        static Trainer* findNextLeader();
+        static Trainer* candidateForLeadership( Team team );
+        static Trainer* checkTeamSubstitute(Trainer* red_candidate ,
+        static Trainer* blue_candidate , Trainer* yellow_candidate );
+        static Trainer* checkisOneTeamLeft(Trainer* red_candidate ,
+        		Trainer* blue_candidate , Trainer* yellow_candidate );
+        static Trainer* checkBestOutOfTwoSubstitute(Trainer* red_candidate ,
+        		Trainer* blue_candidate , Trainer* yellow_candidate );
+        Team GYMgetTeam();
     public:
         GYM();
         ~GYM();
@@ -50,23 +68,7 @@ class World {
         void Leave(Trainer& trainer) override ;
         bool Fight( Trainer& first , Trainer& second );
 
-          //TODO: add comments
-          void fightOutcome( Trainer& winner, Trainer& loser );
-          bool makeFight( Trainer& first , Trainer& second );
-          bool compareByTeam( Trainer& first , Trainer& second );
-          void prepareToBattle( Trainer& first , Trainer& second );
-          void upDateBonusPoints(  Trainer& trainer , int bonus );
-          void updateDeathResult(Trainer& first , Trainer& second ,
-        		  bool first_died, bool second_died );
-          Trainer* findNextLeader();
-          Trainer* candidateForLeadership( Team team );
-          Trainer* checkTeamSubstitute(Trainer* red_candidate ,
-          		Trainer* blue_candidate , Trainer* yellow_candidate );
-          Trainer* checkisOneTeamLeft(Trainer* red_candidate ,
-          		Trainer* blue_candidate , Trainer* yellow_candidate );
-          Trainer* checkBestOutOfTwoSubstitute(Trainer* red_candidate ,
-          		Trainer* blue_candidate , Trainer* yellow_candidate );
-          Team GYMgetTeam();
+
     };
     class Pokestop : public Location {
             private:
