@@ -314,6 +314,8 @@ void World::Starbucks::Arrive(Trainer &trainer) {
 
 
 
+
+
 std::istream& mtm::pokemongo::operator>>(std::istream& input, World& world) { //TODO: continue here
     // split String Into vector
     // check first parameter - is valid
