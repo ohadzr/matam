@@ -10,7 +10,7 @@
 #include "location.h"
 #include "trainer.h"
 #include "pokemon.h"
-#include "k_graph.h"
+#include "k_graph_mtm.h"
 #include "item.h"
 #include <sstream>
 #include <vector>
@@ -51,7 +51,7 @@ class World {
         static bool makeFight( Trainer& first , Trainer& second );
         static bool compareByTeam( Trainer& first , Trainer& second );
         static void prepareToBattle( Trainer& first , Trainer& second );
-        static void upDateBonusPoints(  Trainer& trainer , int bonus );
+//        static void updateBonusPoints(Trainer &trainer, int bonus);
         static void updateDeathResult(Trainer& first , Trainer& second ,
       		  bool first_died, bool second_died );
         Trainer* findNextLeader();
@@ -139,10 +139,6 @@ public:
     static const int POKEMON_CP = 1;
     static const int POKEMON_LEVEL = 2;
 
-
-    static int team_bonus_yellow;
-    static int team_bonus_red;
-    static int team_bonus_blue;
 
     KGraph<std::string, Location*, DIRECTIONS>  world_map;
     std::set<std::string> location_names;

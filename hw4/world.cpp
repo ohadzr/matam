@@ -70,18 +70,20 @@ bool World::GYM::Fight( Trainer& first , Trainer& second ) {
 
 void World::GYM::fightOutcome( Trainer& winner, Trainer& loser ) {
 	winner.updateLevel(winner.GetLevel() + (int)ceil((loser.GetLevel())/2));//TODO: what to do with numbers
-	upDateBonusPoints( winner , WINNER_BONUS );
-	upDateBonusPoints( loser , LOSER_BONUS );
+    winner.updateFightBonus(WINNER_BONUS);
+    loser.updateFightBonus(LOSER_BONUS);
+//    updateBonusPoints(winner, WINNER_BONUS);
+//    updateBonusPoints(loser, LOSER_BONUS);
 }
 
-void World::GYM::upDateBonusPoints( Trainer& trainer , int bonus ){
-	Team trainer_team = trainer.GetTeam();
-	switch (trainer_team) {
-	case YELLOW : team_bonus_yellow += bonus ; break;
-	case RED : team_bonus_red += bonus ; break;
-	case BLUE : team_bonus_blue += bonus ; break;
-	}
-}
+//void World::GYM::updateBonusPoints(Trainer &trainer, int bonus){
+//	Team trainer_team = trainer.GetTeam();
+//	switch (trainer_team) {
+//	case YELLOW : team_bonus_yellow += bonus ; break;
+//	case RED : team_bonus_red += bonus ; break;
+//	case BLUE : team_bonus_blue += bonus ; break;
+//	}
+//}
 
 //true if second win
 bool World::GYM::makeFight( Trainer& first , Trainer& second ) {
@@ -146,7 +148,7 @@ void World::GYM::Leave(Trainer &trainer) {
 		Location::Leave( trainer );
 		return;
 	}
-	if ( trainers_.size() == LAST_TRAINER_IN_GYM ) {
+	if ( (int) trainers_.size() == LAST_TRAINER_IN_GYM ) {
 		Location::Leave( trainer );
 		Leader = nullptr;
 		return;

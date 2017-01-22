@@ -21,7 +21,7 @@ using std::string;
 
 Trainer::Trainer(const std::string& name, const Team& team) :
         t_name(string(name)), t_level(INIT_LEVEL),
-		t_pokemon_list(std::vector<Pokemon*>()), t_team(team) {
+		t_pokemon_list(std::vector<Pokemon*>()), t_team(team), fight_bonus(0) {
     if (name == "")
         throw TrainerInvalidArgsException();
 }
@@ -113,6 +113,11 @@ void Trainer::addItem(Item& item) {
 
 mtm::pokemongo::Item* Trainer::getOldestItem() {
     return t_items.front();
+}
+
+
+void Trainer::updateFightBonus(int bonus) {
+    fight_bonus += bonus;
 }
 
 bool Trainer::TryToCatch(Pokemon& pokemon) {

@@ -37,6 +37,7 @@ class Trainer {
     std::vector<Pokemon*> t_pokemon_list;
     std::vector<Item*> t_items;
     Team t_team;
+    int fight_bonus;
     std::string teamToString() const;
     static bool trainerCompare(const Trainer& first,
                                  const Trainer& second, bool check_equal);
@@ -114,6 +115,14 @@ class Trainer {
  * @return The oldest item the trainer has
  */
     Item* getOldestItem();//TODO: is this allowed? (not in basic file)
+
+/**
+ * Find the oldest item the trainer has
+ * @return The oldest item the trainer has
+ */
+    void updateFightBonus(int bonus);//TODO: is this allowed? (not in basic file)
+
+
 
 /**   Tries to catch a Pokemon.
 
