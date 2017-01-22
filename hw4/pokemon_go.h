@@ -1,21 +1,30 @@
 #ifndef POKEMON_GO_H
 #define POKEMON_GO_H
 
+/**************************************
+ *       Header files include         *
+ **************************************/
+
 #include <string>
 #include <vector>
-
 #include "world.h"
+
+/**************************************
+ *       Namespace and Classes        *
+ **************************************/
 
 namespace mtm {
 namespace pokemongo {
 
 class PokemonGo {
+private:
+    const World* p_world;
  public:
-  // Initilaizes a new game with the given world. This passes ownership of
-  // world, meaning the constructed PokemonGo is responsible for deleting all
-  // memory allocated by world.
-  //
-  // @param world the world in which the game takes place.
+/*   Initilaizes a new game with the given world. This passes ownership of
+   world, meaning the constructed PokemonGo is responsible for deleting all
+   memory allocated by world.
+
+   @param world the world in which the game takes place.*/
   PokemonGo(const World* world);
 
   // Disable copy and assignment.
