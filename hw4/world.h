@@ -5,12 +5,13 @@
  *       Header files include         *
  **************************************/
 
+
 #include <iostream>
 #include <string>
 #include "location.h"
 #include "trainer.h"
 #include "pokemon.h"
-#include "k_graph_mtm.h"
+#include "k_graph.h"
 #include "item.h"
 #include <sstream>
 #include <vector>
@@ -40,6 +41,7 @@ static const int WEST = 3;
 class World {
     class GYM : public Location {
     private:
+        static const int LEADER_BONUS = 10;
 		static const int WINNER_BONUS = 2;
 		static const int LOSER_BONUS = -1;
 		static const int LAST_TRAINER_IN_GYM = 1;
@@ -47,8 +49,8 @@ class World {
          //TODO: add comments
 
         void switchLeader( Trainer& leader );
-        static void fightOutcome( Trainer& winner, Trainer& loser );
-        static bool makeFight( Trainer& first , Trainer& second );
+        void fightOutcome( Trainer& winner, Trainer& loser );
+        bool makeFight( Trainer& first , Trainer& second );
         static bool compareByTeam( Trainer& first , Trainer& second );
         static void prepareToBattle( Trainer& first , Trainer& second );
 //        static void updateBonusPoints(Trainer &trainer, int bonus);
@@ -97,6 +99,8 @@ public:
   
   // A destructor.
   ~World();
+  void Connect(std::string const& key_u,
+               std::string const& key_v, int i_u, int i_v);
   
 /*   Input iterator. Scans a single line from the input stream. The line can be
    one of the following three options:
@@ -129,7 +133,7 @@ public:
   // Disable copy constructor.
   World(const World& world) = delete;
 
- private:
+private:
     static const int DIRECTIONS = 4;
     static const int LOCATION_TYPE = 0;
     static const int LOCATION_NAME = 1;
@@ -142,6 +146,9 @@ public:
 
     KGraph<std::string, Location*, DIRECTIONS>  world_map;
     std::set<std::string> location_names;
+    std::set<std::string> trainer_names;
+
+    friend class PokemonGo;
 
     static std::vector<std::string> parseInput(std::istream& input);
     static void createLocationByType(std::string& location_name,

@@ -19,11 +19,14 @@ using mtm::pokemongo::Team;
 World::World() : world_map(KGraph<std::string,Location*,DIRECTIONS>(nullptr)) {
 }
 
-World::~World() {}
+World::~World() {
+}
 
-World::GYM::GYM():Leader(nullptr){}
+World::GYM::GYM() : Leader(nullptr) {
+}
 
-World::GYM::~GYM(){}
+World::GYM::~GYM() {
+}
 
 void World::GYM::switchLeader( Trainer& leader) {
     Leader = &leader;
@@ -72,6 +75,10 @@ void World::GYM::fightOutcome( Trainer& winner, Trainer& loser ) {
 	winner.updateLevel(winner.GetLevel() + (int)ceil((loser.GetLevel())/2));//TODO: what to do with numbers
     winner.updateFightBonus(WINNER_BONUS);
     loser.updateFightBonus(LOSER_BONUS);
+	if (Leader->GetName() == loser.GetName()) {
+		Leader->updateFightBonus(-LEADER_BONUS);
+		winner.updateFightBonus(LEADER_BONUS);
+	}
 //    updateBonusPoints(winner, WINNER_BONUS);
 //    updateBonusPoints(loser, LOSER_BONUS);
 }
@@ -150,10 +157,12 @@ void World::GYM::Leave(Trainer &trainer) {
 	}
 	if ( (int) trainers_.size() == LAST_TRAINER_IN_GYM ) {
 		Location::Leave( trainer );
+		trainer.updateFightBonus(-LEADER_BONUS);
 		Leader = nullptr;
 		return;
 	}
 	Leader = this->findNextLeader();
+	Leader->updateFightBonus(LEADER_BONUS);
 	Location::Leave( trainer );
 
 	return;
@@ -394,4 +403,10 @@ void World::createLocationByType(std::string &location_name,
 		World::Starbucks new_starbucks = World::Starbucks(input_vector);
 		world.world_map.Insert(location_name, &new_starbucks);
 	}
+}
+
+
+void World::Connect(std::string const &key_u, std::string const &key_v, int i_u,
+					int i_v) {
+	world_map.Connect(key_u, key_v, i_u, i_v);
 }

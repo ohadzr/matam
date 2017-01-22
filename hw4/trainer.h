@@ -96,6 +96,10 @@ class Trainer {
    @return the level of the trainer.*/
     int GetLevel() const; //TODO: is this allowed? (not in basic file)
 
+    std::string GetName() const; //TODO: is this allowed? (not in basic file)
+
+    int GetFightBonus() const; //TODO: is this allowed? (not in basic file)
+
     void updateLevel(int new_level); //TODO: is this allowed? (not in basic file)
 
 

@@ -26,7 +26,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
     // @param key key of the new node.
     // @param value value of the new node.
 
-    Node(KeyType const &key, ValueType const &value = default_val):
+    Node(KeyType const &key, ValueType const &value = k_default_value):
             key(KeyType(key)), value(ValueType(value)) {
         arcs = std::vector<Node*>();
 
@@ -268,7 +268,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
 
     private:
         std::set<Node> nodes;
-        static ValueType default_val;
+        static ValueType k_default_value;
 
     public:
   // Constructs a new empty kGraph with the given default value.
@@ -276,7 +276,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @param default_value the default value in the graph.
   explicit KGraph(ValueType const& default_value) :
           nodes(std::set<Node>()) {
-      default_val = ValueType(default_value);
+      k_default_value = ValueType(default_value);
   }
 
   // A copy constructor. Copies the given graph. The constructed graph will have
@@ -285,7 +285,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @param k_graph the graph to copy.
   KGraph(const KGraph& k_graph) :
           nodes(std::set<Node>(k_graph.nodes)) {
-      default_val = k_graph.default_val;
+      k_default_value = k_graph.k_default_value;
   }
 
   // A destructor. Destroys the graph together with all resources allocated.

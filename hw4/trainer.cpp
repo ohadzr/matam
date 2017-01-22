@@ -195,3 +195,11 @@ bool Trainer::trainerCompare(const Trainer& first,
         }
     }
 }
+
+std::string Trainer::GetName() const {
+    return t_name;
+}
+
+int Trainer::GetFightBonus() const {
+    return fight_bonus;
+}
