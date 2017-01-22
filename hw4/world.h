@@ -143,7 +143,6 @@ private:
     static const int POKEMON_CP = 1;
     static const int POKEMON_LEVEL = 2;
 
-
     KGraph<std::string, Location*, DIRECTIONS>  world_map;
     std::set<std::string> location_names;
     std::set<std::string> trainer_names;

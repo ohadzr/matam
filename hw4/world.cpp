@@ -39,7 +39,7 @@ void World::GYM::Arrive(Trainer& trainer) {
         GYM::switchLeader( trainer );
         return;
     }
-    if ( (*Leader).GetTeam() == trainer.GetTeam() ) return;
+    if ( (*Leader).GetTeam() == trainer.GetTeam() ) return;////////////
 
     if ( !Fight( *Leader , trainer ) ) return;
 

@@ -18,15 +18,15 @@ namespace pokemongo {
 
 class PokemonGo {
 private:
+    std::set<Trainer> global_trainers;
     const World* p_world;
- public:
+public:
 /*   Initilaizes a new game with the given world. This passes ownership of
    world, meaning the constructed PokemonGo is responsible for deleting all
    memory allocated by world.
 
    @param world the world in which the game takes place.*/
   PokemonGo(const World* world);
-
   // Disable copy and assignment.
   PokemonGo(const PokemonGo&) = delete;
 
