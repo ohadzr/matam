@@ -5,6 +5,7 @@
 #include <vector>
 #include <set>
 
+
 namespace mtm {
 
 // Requirements: KeyType::operator<,
@@ -26,7 +27,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
     // @param key key of the new node.
     // @param value value of the new node.
 
-    Node(KeyType const &key, ValueType const &value = k_default_value):
+    Node(KeyType const &key, ValueType const &value):
             key(KeyType(key)), value(ValueType(value)) {
         arcs = std::vector<Node*>();
 
@@ -267,25 +268,27 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
 
 
     private:
-        std::set<Node> nodes;
-        static ValueType k_default_value;
+        std::set<Node*> nodes;
+        const ValueType k_default_value;
+
 
     public:
   // Constructs a new empty kGraph with the given default value.
   //
   // @param default_value the default value in the graph.
   explicit KGraph(ValueType const& default_value) :
-          nodes(std::set<Node>()) {
-      k_default_value = ValueType(default_value);
+          nodes(std::set<Node*>()),
+          k_default_value(ValueType(default_value)){
   }
+
 
   // A copy constructor. Copies the given graph. The constructed graph will have
   // the exact same structure with copied data.
   //
   // @param k_graph the graph to copy.
   KGraph(const KGraph& k_graph) :
-          nodes(std::set<Node>(k_graph.nodes)) {
-      k_default_value = k_graph.k_default_value;
+          nodes(std::set<Node*>(k_graph.nodes)),
+          k_default_value(k_graph.k_default_value){
   }
 
   // A destructor. Destroys the graph together with all resources allocated.
@@ -298,21 +301,21 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @throw KGraphKeyNotFoundException when the given key is not found in the
   //        graph.
   iterator BeginAt(KeyType const& i) {
-      typename std::set<Node>::iterator set_iter = nodes.begin();
+      typename std::set<Node*>::iterator set_iter = nodes.begin();
       for (; set_iter != nodes.end() ; set_iter++) {
-          if ( (*set_iter).Key() == i ) {
-              Node node = *set_iter;
-              return iterator(&node ,this);
+          if ( (*set_iter)->Key() == i ) {
+              Node* node = *set_iter;
+              return iterator(node ,this);
           }
       }
       throw KGraphKeyNotFoundException();
   }
   const_iterator BeginAt(KeyType const& i) const {
-      typename std::set<Node>::iterator set_iter = nodes.begin();
+      typename std::set<Node*>::iterator set_iter = nodes.begin();
       for (; set_iter != nodes.end() ; set_iter++) {
-          if ( (*set_iter).Key() == i ) {
-              const Node node = *set_iter;
-              return const_iterator(&node ,this);
+          if ( (*set_iter)->Key() == i ) {
+              const Node* node = *set_iter;
+              return const_iterator(node ,this);
           }
       }
       throw KGraphKeyNotFoundException();
@@ -332,8 +335,15 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @throw KGraphKeyAlreadyExistsExpection when trying to insert a node with a
   //        key that already exists in the graph.
   void Insert(KeyType const& key, ValueType const& value) {
-      if (!(nodes.insert(Node(key,value)).second))
-          throw KGraphKeyAlreadyExistsExpection();
+      typename std::set<Node*>::iterator set_iter = nodes.begin();
+      for (; set_iter != nodes.end(); set_iter++) {
+          if ((*set_iter)->Key() == key){
+              throw KGraphKeyAlreadyExistsExpection();
+          }
+      }
+      Node* node = new Node(key,value);
+      nodes.insert(node);
+
   }
 
   // Inserts a new node with the given key and the default value to the graph.
@@ -342,8 +352,14 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @throw KGraphKeyAlreadyExistsExpection when trying to insert a node with a
   //        key that already exists in the graph.
   void Insert(KeyType const& key) {
-      if (!(nodes.insert(Node(key)).second))
-          throw KGraphKeyAlreadyExistsExpection();
+      typename std::set<Node*>::iterator set_iter = nodes.begin();
+      for (; set_iter != nodes.end(); set_iter++) {
+          if ((*set_iter)->Key() == key){
+              throw KGraphKeyAlreadyExistsExpection();
+          }
+      }
+      Node* node = new Node(key, k_default_value);
+      nodes.insert(node);
   }
 
   // Removes the node with the given key from the graph.
@@ -352,11 +368,21 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @throw KGraphKeyNotFoundException when trying to remove a key that cannot
   //        be found in the graph.
   void Remove(KeyType const& key) {
-      if (!Contains(key))
-          throw KGraphKeyNotFoundException();
-
-      typename std::set<Node>::iterator set_iter = nodes.find(Node(key));
-      nodes.erase(set_iter);
+      typename std::set<Node*>::iterator set_iter = nodes.begin();
+      for (; set_iter != nodes.end(); set_iter++) {
+          if ((*set_iter)->Key() == key) {
+              Node* node = *set_iter;
+              for (int i=0; i<k ;i++){
+                  if ( (*node)[i] != nullptr ) {
+                      Disconnect((*set_iter)->Key(), ((*node)[i])->Key());
+                  }
+              }
+              delete (**set_iter);
+              nodes.erase(*set_iter);
+              return;
+          }
+      }
+      throw KGraphKeyNotFoundException();
   }
 
   // Removes the node pointed by the given iterator from the graph. If the
@@ -368,7 +394,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   //        of the graph.
   void Remove(const iterator& it) {
 
-      nodes.erase( Node((KeyType *)it)); //TODO: is this true??
+        //TODO: add me
   }
 
   // The subscript operator. Returns a reference to the value assigned to
@@ -379,10 +405,10 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @param key the key to return its value.
   // @return the value assigned to the given key.
   ValueType& operator[](KeyType const& key) {
-      typename std::set<Node>::iterator set_iter = nodes.begin();
+      typename std::set<Node*>::iterator set_iter = nodes.begin();
       for (; set_iter != nodes.end() ; set_iter++) {
-          if ( (*set_iter).Key() == key ) {
-              return (*set_iter).Value();
+          if ( (*set_iter)->Key() == key ) {
+              return (*set_iter)->Value();
           }
       }
       Insert(key);
@@ -397,10 +423,10 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @throw KGraphKeyNotFoundException if the given key cannot be found in the
   //        graph.
   ValueType const& operator[](KeyType const& key) const {
-      typename std::set<Node>::iterator set_iter = nodes.begin();
+      typename std::set<Node*>::iterator set_iter = nodes.begin();
       for (; set_iter != nodes.end() ; set_iter++) {
-          if ( (*set_iter).Key() == key ) {
-              return (*set_iter).Value();
+          if ( (*set_iter)->Key() == key ) {
+              return (*set_iter)->Value();
           }
       }
       throw KGraphKeyNotFoundException();
@@ -411,9 +437,9 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @param key
   // @return true iff the graph contains the given key.
   bool Contains(KeyType const& key) const {
-      typename std::set<Node>::iterator set_iter = nodes.begin();
-      for (; set_iter != nodes.end() ; set_iter++) {
-          if ( (*set_iter).Key() == key ) {
+      for (typename std::set<Node*>::iterator set_iter = nodes.begin();
+           set_iter != nodes.end() ; set_iter++) {
+          if ( (*set_iter)->Key() == key ) {
               return true;
           }
       }
@@ -438,19 +464,31 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
       if (i_u < 0 || i_u > k-1 || i_v < 0 || i_v > k-1)
           throw KGraphEdgeOutOfRange();
 
-      typename std::set<Node>::iterator set_iter;
-      set_iter = nodes.find(Node(key_u));
-      Node node_u = *set_iter;
-      set_iter = nodes.find(Node(key_v));
-      Node node_v = *set_iter;
+      typename std::set<Node*>::iterator set_iter;
+      set_iter = nodes.begin();
 
-      if (*(node_u[i_u]) == node_v && *(node_v[i_v]) == node_u) //fixme: second part is redundant?
-          throw KGraphNodesAlreadyConnected();
-      if (node_u[i_u] != nullptr || node_v[i_v] != nullptr)
+      Node* node_u = nullptr;
+      Node* node_v = nullptr;
+      for (; set_iter != nodes.end() ; set_iter++) {
+          if ( (*set_iter)->Key() == key_u ) {
+              node_u = *set_iter;
+          }
+          if ( (*set_iter)->Key() == key_v ) {
+              node_v = *set_iter;
+          }
+      }
+      if (node_u == nullptr || node_v == nullptr) return;
+
+      for (int i=0; i<k; i++) {
+          if ((*node_u)[i] == nullptr) continue;
+          if (((*node_u)[i])->Key() == node_v->Key())
+              throw KGraphNodesAlreadyConnected();
+      }
+      if ((*node_u)[i_u] != nullptr || (*node_v)[i_v] != nullptr)
           throw KGraphEdgeAlreadyInUse();
 
-      node_u[i_u] = &node_v;
-      node_v[i_v] = &node_u;
+      (*node_u)[i_u] = node_v;
+      (*node_v)[i_v] = node_u;
   }
 
   // Connects a node to itself via a self loop.
@@ -469,16 +507,21 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
       if (i < 0 || i > k-1 )
           throw KGraphEdgeOutOfRange();
 
-      typename std::set<Node>::iterator set_iter;
-      set_iter = nodes.find(Node(key));
-      Node node = *set_iter;
-
-      if (*(node[i]) == node)
+      typename std::set<Node*>::iterator set_iter;
+      set_iter = nodes.begin();
+      Node* node = nullptr;
+      for (; set_iter != nodes.end() ; set_iter++) {
+          if ((*set_iter)->Key() == key) {
+              node = *set_iter;
+          }
+      }
+      if (node == nullptr) return;
+      if (((*node)[i]) == node)
           throw KGraphNodesAlreadyConnected();
-      if (node[i] != nullptr)
+      if ((*node)[i] != nullptr)
           throw KGraphEdgeAlreadyInUse();
 
-      node[i] = &node;
+      (*node)[i] = node;
   }
 
   // Disconnects two connected nodes.
@@ -492,20 +535,26 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
       if (!Contains(key_u) || !Contains(key_v))
           throw KGraphKeyNotFoundException();
 
-      typename std::set<Node>::iterator set_iter;
-      set_iter = nodes.find(Node(key_u));
-      Node node_u = *set_iter;
-      set_iter = nodes.find(Node(key_v));
-      Node node_v = *set_iter;
-
-      for (int i=0; i < k ; i++) {
-          if (*(node_u[i]) == node_v)
-              node_u[i] = nullptr;
+      typename std::set<Node*>::iterator set_iter = nodes.begin();
+      Node* node_u = nullptr;
+      Node* node_v = nullptr;
+      for (; set_iter != nodes.end() ; set_iter++) {
+          if ( (*set_iter)->Key() == key_u ) {
+              node_u = *set_iter;
+          }
+          if ( (*set_iter)->Key() == key_v ) {
+              node_v = *set_iter;
+          }
       }
 
       for (int i=0; i < k ; i++) {
-          if (*(node_v[i]) == node_u) {
-              node_v[i] = nullptr;
+          if ((*node_u)[i]->Key() == node_v->Key())
+              (*node_u)[i] = nullptr;
+      }
+
+      for (int i=0; i < k ; i++) {
+          if ((*node_v)[i]->Key() == node_u->Key()) {
+              (*node_v)[i] = nullptr;
               return;
           }
       }

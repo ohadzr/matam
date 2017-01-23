@@ -27,7 +27,7 @@ using mtm::pokemongo::PokemonGo;
  **************************************/
 
 void SetUpWorld(World* world) {
-  ifstream world_in("C:\Users\S\ClionProjects\matam\hw4\tests\sahar_world_test.in");
+  ifstream world_in("C:\\Users\\ohad\\ClionProjects\\matam\\hw4\\example_test\\world.in");
   string line;
 
   while (std::getline(world_in, line)) {
