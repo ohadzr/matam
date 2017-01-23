@@ -180,7 +180,7 @@ Trainer* World::GYM::findNextLeader() {
 	Trainer* one_team_left_substitute = checkisOneTeamLeft ( red_candidate ,
 				 blue_candidate , yellow_candidate );
 
-	if ( one_team_left_substitute ) return one_team_left_substitute;
+	if ( one_team_left_substitute  ) return one_team_left_substitute;
 
 	Trainer* best_out_of_two_substitute = checkBestOutOfTwoSubstitute (
 			red_candidate , blue_candidate , yellow_candidate );

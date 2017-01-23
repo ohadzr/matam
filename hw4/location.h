@@ -1,11 +1,18 @@
 #ifndef LOCATION_H
 #define LOCATION_H
 
+/**************************************
+ *       Header files include         *
+ **************************************/
+
 #include <algorithm>
 #include <vector>
-
 #include "exceptions.h"
 #include "trainer.h"
+
+/**************************************
+ *       Namespace and Classes        *
+ **************************************/
 
 namespace mtm {
 namespace pokemongo {

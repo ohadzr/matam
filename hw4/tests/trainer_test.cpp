@@ -353,6 +353,8 @@ bool trainerTestGetsAndUpdate() {
     ohad.addItem( item3 );
     Item* ohad_item = ohad.getOldestItem();
     ASSERT_TRUE((ohad_item->getLevel() == 34)&&ohad_item->getType() == "POTION");
+
+    return true;
 }
 bool trainerTest() {
 

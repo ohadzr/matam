@@ -57,7 +57,7 @@ class World {
         static void updateDeathResult(Trainer& first , Trainer& second ,
       		  bool first_died, bool second_died );
         Trainer* findNextLeader();
-        Trainer* candidateForLeadership( Team team );
+        static Trainer* candidateForLeadership( Team team );
         Trainer* checkTeamSubstitute(Trainer* red_candidate ,
         Trainer* blue_candidate , Trainer* yellow_candidate );
         static Trainer* checkisOneTeamLeft(Trainer* red_candidate ,
