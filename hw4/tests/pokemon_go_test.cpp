@@ -4,12 +4,8 @@
 
 #include "../pokemon_go.h"
 #include <fstream>
-#include <sstream>
-#include <string>
-#include <vector>
 #include "test_utils.h"
-#include "../trainer.h"
-#include "../pokemon.h"
+
 
 
 /**************************************
@@ -27,7 +23,7 @@ using mtm::pokemongo::PokemonGo;
  **************************************/
 
 void SetUpWorld(World* world) {
-  ifstream world_in("C:\\Users\\ohad\\ClionProjects\\matam\\hw4\\example_test\\world.in");
+  ifstream world_in("C:\\Users\\ohad\\ClionProjects\\matam\\hw4\\example_test\\");
   string line;
 
   while (std::getline(world_in, line)) {

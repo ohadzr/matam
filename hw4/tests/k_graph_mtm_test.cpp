@@ -36,6 +36,10 @@ bool TestCombo() {
     ASSERT_NO_THROW(graph.Insert(four, 4));
     ASSERT_NO_THROW(graph.Insert(zero));
     ASSERT_NO_THROW(graph.Insert(no_number));
+    ASSERT_TRUE(graph["one"] == 1);
+    ASSERT_TRUE(graph["zero"] == 0);
+    ASSERT_TRUE(graph["still zero"] == 0);
+    ASSERT_TRUE(graph.Contains("still zero"));
 
     ASSERT_NO_THROW(graph.Connect(one, two, 0 ,0));
     ASSERT_THROW(KGraphNodesAlreadyConnected,
@@ -54,12 +58,29 @@ bool TestCombo() {
     ASSERT_THROW(KGraphEdgeAlreadyInUse ,graph.Connect(three, two, 1 ,0));
     ASSERT_NO_THROW(graph.Connect("three", "two", 0 ,1));
 
+    ASSERT_NO_THROW(graph.Connect(two, 2));
+    ASSERT_THROW(KGraphEdgeOutOfRange, graph.Connect(two, 3));
+    ASSERT_THROW(KGraphEdgeOutOfRange ,graph.Connect(two, -1));
+    ASSERT_NO_THROW(graph.Disconnect(two, one));
+    ASSERT_NO_THROW(graph.Connect(one, two, 0 ,0));
+
+    ASSERT_TRUE(graph.Contains(one));
+    ASSERT_TRUE(graph.Contains(four));
+    ASSERT_FALSE(graph.Contains("five"));
+
+    KGraph<string, int, 3>::iterator it = graph.BeginAt(four);
+    ASSERT_TRUE(*it == "four");
+    ASSERT_NO_THROW(graph.Remove(it));
+    ASSERT_THROW(KGraphKeyNotFoundException, graph.Remove("five"));
+    it = graph.BeginAt(one);
+    ASSERT_NO_THROW(it.Move(2));
+    ASSERT_THROW(KGraphIteratorReachedEnd, graph.Remove(it));
 
 
     return true;
 }
 
-int main() {
-    RUN_TEST(TestCombo);
-    return 0;
-}
+//int main() {
+//    RUN_TEST(TestCombo);
+//    return 0;
+//}

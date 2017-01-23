@@ -292,7 +292,12 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   }
 
   // A destructor. Destroys the graph together with all resources allocated.
-  ~KGraph() {}
+  ~KGraph() {
+      typename std::set<Node*>::iterator set_iter = nodes.begin();
+      for (; set_iter != nodes.end() ; set_iter++) {
+          delete (*set_iter); //TODO: shouldnt delete all new Nodes?
+      }
+  }
 
   // Returns an iterator to the node with the given key.
   //
@@ -377,8 +382,8 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
                       Disconnect((*set_iter)->Key(), ((*node)[i])->Key());
                   }
               }
-              delete (**set_iter);
-              nodes.erase(*set_iter);
+              delete (*set_iter);
+              nodes.erase(set_iter);
               return;
           }
       }
@@ -393,8 +398,8 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   // @throw KGraphIteratorReachedEnd when the given iterator points to the end
   //        of the graph.
   void Remove(const iterator& it) {
-
-        //TODO: add me
+      KeyType key = it.operator*();
+      Remove(key);
   }
 
   // The subscript operator. Returns a reference to the value assigned to
@@ -412,7 +417,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
           }
       }
       Insert(key);
-      return this[key];
+      return (*this)[key];
   }
 
   // A const version of the subscript operator. Returns the value assigned to
