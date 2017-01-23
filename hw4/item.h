@@ -6,6 +6,7 @@
  *       Header files include         *
  **************************************/
 
+#include <iostream>
 #include "exceptions.h"
 
 /**************************************
