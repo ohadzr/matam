@@ -125,7 +125,7 @@ bool TestCombo() {
     return true;
 }
 
-//int main() {
-//    RUN_TEST(TestCombo);
-//    return 0;
-//}
+int main() {
+    RUN_TEST(TestCombo);
+    return 0;
+}
