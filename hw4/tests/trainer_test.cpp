@@ -14,6 +14,7 @@ using mtm::pokemongo::Pokemon;
 using mtm::pokemongo::PokemonType;
 using mtm::pokemongo::Trainer;
 using mtm::pokemongo::Team;
+using mtm::pokemongo::Item;
 
 using std::set;
 using std::vector;
@@ -190,7 +191,7 @@ bool trainerTestOperators() {
     return true;
 }
 
-bool pokemonTestIsAlly() {
+bool trainerTestIsAlly() {
     /********************************************************************
      *                          initialization                          *
      ********************************************************************/
@@ -228,7 +229,7 @@ bool pokemonTestIsAlly() {
     return true;
 }
 
-bool pokemonTestGetTeam() {
+bool trainerTestGetTeam() {
     /********************************************************************
      *                          initialization                          *
      ********************************************************************/
@@ -265,7 +266,7 @@ bool pokemonTestGetTeam() {
     return true;
 }
 
-bool pokemonTestTryToCatch() {
+bool trainerTestTryToCatch() {
     /********************************************************************
      *                          initialization                          *
      ********************************************************************/
@@ -303,16 +304,66 @@ bool pokemonTestTryToCatch() {
     return true;
 }
 
+bool trainerTestGetsAndUpdate() {
+    /********************************************************************
+     *                          initialization                          *
+     ********************************************************************/
+    /* -------------------  initialize one pokemon  ------------------- */
 
+    set <PokemonType>types1 = set<PokemonType>();
+    types1.insert(mtm::pokemongo::PokemonType::ELECTRIC);
+
+    Pokemon pikachu = Pokemon("Pikachu",types1,6,1);
+
+    /* -------------------  initialize one pokemon  ------------------- */
+
+    set <PokemonType>types2 = set<PokemonType>();
+    types2.insert(mtm::pokemongo::PokemonType::PSYCHIC);
+
+    Pokemon togopi = Pokemon("Togopi",types2,4,1);
+
+    /* --------------------  initialize trainers  --------------------- */
+
+    Trainer ash = Trainer("Ash",Team::BLUE);
+    Trainer misti = Trainer("Misti",Team::YELLOW);
+    Trainer ohad = Trainer("Ohad",Team::YELLOW);
+
+    /* --------------------    initialize items    --------------------- */
+    Item item1 = Item("POTION", 20);
+    Item item2 = Item("CANDY", 10);
+    Item item3 = Item("POTION", 34);
+
+    /********************************************************************
+     *                              tests                               *
+     ********************************************************************/
+    ASSERT_TRUE( misti.GetName() == "Misti");
+    ASSERT_TRUE( ohad.GetName() == "Ohad");
+    ASSERT_TRUE( ash.GetLevel() == 1 );
+    ASSERT_TRUE( ash.TryToCatch(togopi));
+    ASSERT_TRUE( ash.GetLevel() == 1 );
+    ash.updateLevel(4);
+    ASSERT_TRUE( ash.GetLevel() == 4 );
+    ASSERT_TRUE( ash.TryToCatch(pikachu));
+    ASSERT_TRUE( ash.GetFightBonus() == 0 );
+    ash.updateFightBonus(3);
+    ASSERT_TRUE( ash.GetFightBonus() == 3 );
+    ohad.addItem( item1 );
+    ohad.addItem( item2 );
+    ohad.addItem( item2 );
+    ohad.addItem( item3 );
+    Item* ohad_item = ohad.getOldestItem();
+    ASSERT_TRUE((ohad_item->getLevel() == 34)&&ohad_item->getType() == "POTION");
+}
 bool trainerTest() {
 
     RUN_TEST(trainerTestCtor);
     RUN_TEST(trainerTestGetStrongestPokemon);
     RUN_TEST(trainerTestKillStrongestPokemon);
     RUN_TEST(trainerTestOperators);
-    RUN_TEST(pokemonTestIsAlly);
-    RUN_TEST(pokemonTestGetTeam);
-    RUN_TEST(pokemonTestTryToCatch);
+    RUN_TEST(trainerTestIsAlly);
+    RUN_TEST(trainerTestGetTeam);
+    RUN_TEST(trainerTestTryToCatch);
+    RUN_TEST(trainerTestGetsAndUpdate);
 	/* print test will be tested in pokemon go */
 
     return true;
