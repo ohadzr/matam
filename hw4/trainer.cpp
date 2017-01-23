@@ -21,11 +21,18 @@ using std::string;
 
 Trainer::Trainer(const std::string& name, const Team& team) :
         t_name(string(name)), t_level(INIT_LEVEL),
-		t_pokemon_list(std::vector<Pokemon*>()), t_team(team), fight_bonus(0) {
+		t_pokemon_list(std::vector<Pokemon*>()),t_items(std::vector<Item*>()),
+        t_team(team), fight_bonus(0) {
     if (name == "")
         throw TrainerInvalidArgsException();
 }
 
+Trainer::~Trainer() {
+    for ( std::vector<Item*>::iterator it = t_items.begin();
+          it != t_items.end() ; ++it) {
+        delete(**it);
+    }
+}
 
 Pokemon& Trainer::GetStrongestPokemon() {
     if (t_pokemon_list.size() == 0)
@@ -113,7 +120,7 @@ void Trainer::addItem(Item& item) {
 
 mtm::pokemongo::Item* Trainer::getOldestItem() {
     Item* item = t_items.front();
-    t_items.erase(t_items.begin()); //TODO: does this delete real item?
+    t_items.erase(t_items.begin());
     return item;
 }
 

@@ -20,6 +20,15 @@ World::World() : world_map(KGraph<std::string,Location*,DIRECTIONS>(nullptr)) {
 }
 
 World::~World() {
+	std::set<std::string>::iterator it = location_names.begin();
+	for( ;it != location_names.end(); ++it ) {
+		std::string location_name = *it;
+		std::vector<Trainer*> trainers = world_map[location_name]->GetTrainers();
+		std::vector<Trainer*>::const_iterator trainer_it = trainers.begin();
+		for (; trainer_it != trainers.end(); trainer_it++) {
+			delete *trainer_it;
+		}
+	}
 }
 
 World::GYM::GYM() : Leader(nullptr) {
@@ -137,10 +146,12 @@ void World::GYM::prepareToBattle( Trainer& first , Trainer& second ) {
 	if ( first_item ) {
 		if ( first_item->getType() == "POTION" ) first_strongest.Heal();
 		else first_strongest.Train( 1 + (first_strongest.Level())/10 ); //TODO: make private
+		delete first_item;
 	}
 	if ( second_item ) {
 		if ( second_item->getType() == "POTION" ) second_strongest.Heal();
 		else second_strongest.Train( 1 + (second_strongest.Level())/10 );
+		delete first_item;
 	}
 }
 

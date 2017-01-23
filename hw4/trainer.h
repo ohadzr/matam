@@ -52,6 +52,11 @@ class Trainer {
    */
   Trainer(const std::string& name, const Team& team);
 
+    /**
+     * destructor of trainer, free all memory allocations.
+     */
+    ~Trainer();
+
 /**   Returns a reference to the strongest Pokemon the trainer owns. Strongest
    Pokemon is determined using the comparison operators provided by the class
    Pokemon. If two Pokemons are of equal strength, the function returns the
