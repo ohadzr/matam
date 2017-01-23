@@ -39,7 +39,7 @@ void World::GYM::Arrive(Trainer& trainer) {
         GYM::switchLeader( trainer );
         return;
     }
-    if ( (*Leader).GetTeam() == trainer.GetTeam() ) return;////////////
+    if ( (*Leader).GetTeam() == trainer.GetTeam() ) return;
 
     if ( !Fight( *Leader , trainer ) ) return;
 
@@ -136,7 +136,7 @@ void World::GYM::prepareToBattle( Trainer& first , Trainer& second ) {
 
 	if ( first_item ) {
 		if ( first_item->getType() == "POTION" ) first_strongest.Heal();
-		else first_strongest.Train( 1 + (first_strongest.Level())/10 ); //TODO: how to MACRO this?
+		else first_strongest.Train( 1 + (first_strongest.Level())/10 ); //TODO: make private
 	}
 	if ( second_item ) {
 		if ( second_item->getType() == "POTION" ) second_strongest.Heal();
@@ -369,15 +369,18 @@ std::istream& mtm::pokemongo::operator>>(std::istream& input, World& world) {
 std::vector<std::string> World::parseInput(std::istream &input) {
 	std::vector<std::string> input_vector = std::vector<std::string>();
 	std::string input_string;
-	input >> input_string;
-	std::string delimiter = " ";
-
-	size_t pos = 0;
-	std::string token;
-	while ((pos = input_string.find(delimiter)) != std::string::npos) {
-		token = input_string.substr(0, pos);
-		input_vector.push_back(std::string(token));
-		input_string.erase(0, pos + delimiter.length());
+//	input >> input_string;
+//	std::string delimiter = " ";
+//
+//	size_t pos = 0;
+//	std::string token;
+//	while ((pos = input_string.find(delimiter)) != std::string::npos) {
+//		token = input_string.substr(0, pos);
+//		input_vector.push_back(std::string(token));
+//		input_string.erase(0, pos + delimiter.length());
+//	}
+	while (input >> input_string){
+		input_vector.push_back(input_string);
 	}
 
 	return input_vector;
