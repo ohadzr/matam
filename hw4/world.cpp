@@ -255,7 +255,6 @@ Trainer* World::GYM::candidateForLeadership( Team team ) {
   return candidate;
 }
 
-//TODO: Pokestop
 
 World::Pokestop::Pokestop(std::vector<std::string> input_vector) :
 		item_vector(std::vector<Item*>()) {
@@ -297,7 +296,6 @@ void World::Pokestop::Arrive(Trainer &trainer) {
 }
 
 
-//TODO: Starbucks
 
 World::Starbucks::Starbucks(std::vector<std::string> input_vector) :
 		pokemon_vector(std::vector<Pokemon*>()){

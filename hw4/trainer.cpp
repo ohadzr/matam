@@ -112,7 +112,9 @@ void Trainer::addItem(Item& item) {
 }
 
 mtm::pokemongo::Item* Trainer::getOldestItem() {
-    return t_items.front();
+    Item* item = t_items.front();
+    t_items.erase(t_items.begin()); //TODO: does this delete real item?
+    return item;
 }
 
 
@@ -135,7 +137,6 @@ std::ostream& mtm::pokemongo::operator<<(std::ostream& output,
     output << trainer.t_name ;
     output << " (" << trainer.t_level << ")" ;
     output << trainer.teamToString() << std::endl;
-    //TODO: CHECK IF SIZE == 0
     for (std::vector<Pokemon*>::const_iterator it = trainer.t_pokemon_list.begin() ;
          it != trainer.t_pokemon_list.end(); ++it) {
         output << **it << std::endl;

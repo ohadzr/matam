@@ -295,7 +295,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   ~KGraph() {
       typename std::set<Node*>::iterator set_iter = nodes.begin();
       for (; set_iter != nodes.end() ; set_iter++) {
-          delete (*set_iter); //TODO: shouldnt delete all new Nodes?
+          delete (*set_iter);
       }
   }
 
