@@ -464,7 +464,7 @@ bool pokemonTest() {
     return true;
 }
 
-int main() {
-    pokemonTest();
-    return 0;
-}
+//int main() {
+//    pokemonTest();
+//    return 0;
+//}

@@ -15,7 +15,7 @@ using mtm::pokemongo::World;
  *               Tests                *
  **************************************/
 
-bool TestCombo() {
+bool TestComboWorld() {
     /********************************************************************
     *                              tests                               *
     ********************************************************************/
@@ -130,6 +130,6 @@ bool TestCombo() {
 }
 
 int main() {
-    RUN_TEST(TestCombo);
+    RUN_TEST(TestComboWorld);
     return 0;
 }
