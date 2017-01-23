@@ -95,6 +95,10 @@ bool TestCombo() {
                  line_stream12 >> *technion);
 
     std::getline(world_in, line);
+        std::istringstream line_stream13_a(line);
+        ASSERT_NO_THROW(line_stream13_a >> *technion);
+
+    std::getline(world_in, line);
     std::istringstream line_stream13(line);
     ASSERT_THROW(mtm::pokemongo::WorldLocationNameAlreadyUsed,
                  line_stream13 >> *technion);
