@@ -35,7 +35,7 @@ target_link_libraries(hw4_world_test libmtm.a)
 
 set(POKEMON_GO_FILES pokemon_go_test.cpp test_utils.cc ../pokemon_go.cpp )
 add_executable(hw4_pokemon_go_test ${POKEMON_GO_FILES})
-#target_link_libraries(hw4_pokemon_go_test libmtm.a)
+target_link_libraries(hw4_pokemon_go_test libmtm.a)
 
 set(ITEM_FILES item_test.cpp test_utils.cc ../item.cpp )
 add_executable(hw4_item_test ${ITEM_FILES})

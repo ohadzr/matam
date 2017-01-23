@@ -268,8 +268,8 @@ World::Pokestop::Pokestop(std::vector<std::string> input_vector) :
 		input_vector.erase(input_vector.begin());
 
 		try {
-			Item new_item = Item(item_type, item_level);
-			item_vector.push_back(&new_item);
+			Item* new_item = new Item(item_type, item_level);
+			item_vector.push_back(new_item);
 		}
 		catch (ItemInvalidArgsException& e) {
 			throw WorldInvalidInputLineException();
@@ -369,16 +369,7 @@ std::istream& mtm::pokemongo::operator>>(std::istream& input, World& world) {
 std::vector<std::string> World::parseInput(std::istream &input) {
 	std::vector<std::string> input_vector = std::vector<std::string>();
 	std::string input_string;
-//	input >> input_string;
-//	std::string delimiter = " ";
-//
-//	size_t pos = 0;
-//	std::string token;
-//	while ((pos = input_string.find(delimiter)) != std::string::npos) {
-//		token = input_string.substr(0, pos);
-//		input_vector.push_back(std::string(token));
-//		input_string.erase(0, pos + delimiter.length());
-//	}
+
 	while (input >> input_string){
 		input_vector.push_back(input_string);
 	}
