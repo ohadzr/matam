@@ -11,7 +11,8 @@
 using mtm::pokemongo::World;
 using mtm::pokemongo::Location;
 using mtm::pokemongo::Team;
-
+using mtm::pokemongo::PokemonType;
+using std::set;
 /**************************************
  *        Interface Functions         *
  **************************************/
@@ -299,8 +300,8 @@ void World::Pokestop::Arrive(Trainer &trainer) {
     for (std::vector<Item*>::iterator it = item_vector.begin() ;
          it != item_vector.end(); ++it) {
         if ((*it)->getLevel() <= trainer.GetLevel()){
-            trainer.addItem(**it);
-            item_vector.erase(it); //TODO: PROBLEM?? does this delete trainer's item?
+            trainer.addItem(*it);
+            item_vector.erase(it);
             break;
         }
     }
@@ -323,7 +324,8 @@ World::Starbucks::Starbucks(std::vector<std::string> input_vector) :
 		input_vector.erase(input_vector.begin());
 
 		try{
-			Pokemon new_pokemon = Pokemon(pokemon_name,
+			//Pokemon new_pokemon = Pokemon(pokemon_name, TODO:delete next line and remove comment
+            Pokemon new_pokemon = Pokemon(pokemon_name, std::set<PokemonType>(),
 										  pokemon_cp, pokemon_level);
 			pokemon_vector.push_back(&new_pokemon);
 		}
@@ -380,7 +382,7 @@ std::istream& mtm::pokemongo::operator>>(std::istream& input, World& world) {
 std::vector<std::string> World::parseInput(std::istream &input) {
 	std::vector<std::string> input_vector = std::vector<std::string>();
 	std::string input_string;
-
+	// TODO: ADD parsing int and float
 	while (input >> input_string){
 		input_vector.push_back(input_string);
 	}

@@ -23,7 +23,7 @@ using mtm::pokemongo::PokemonGo;
  **************************************/
 
 void SetUpWorld(World* world) {
-  ifstream world_in("C:\\Users\\ohad\\ClionProjects\\matam\\hw4\\tests\\world_test.in");
+  ifstream world_in("C:\\Users\\ohad\\ClionProjects\\matam\\hw4\\tests\\sahar_world_test.in");
   string line;
 
   while (std::getline(world_in, line)) {
@@ -42,19 +42,19 @@ bool TestPokemonGo() {
   SetUpWorld(earth);
   ostringstream output;
 
-  earth->Connect("hong-kong", "rome", NORTH, SOUTH);
-  earth->Connect("hong-kong", "tokyo", SOUTH, NORTH);
-  earth->Connect("mumbai", "hong-kong", EAST, WEST);
-  earth->Connect("mumbai", "berlin", NORTH, SOUTH);
-  earth->Connect("mumbai", "alexandria", WEST, EAST);
-  earth->Connect("shanghi", "mumbai", NORTH, SOUTH);
-  earth->Connect("shanghi", "berlin", SOUTH, NORTH);
-  earth->Connect("paris", "berlin", WEST, EAST);
-  earth->Connect("paris", "london", SOUTH, NORTH);
-  earth->Connect("paris", "madrid", NORTH, SOUTH);
-  earth->Connect("berlin", "tazmania", NORTH, SOUTH);
-  earth->Connect("tokyo", "saint-petesburg", SOUTH, NORTH);
-  earth->Connect("london", "alexandria", EAST, WEST);
+  ASSERT_NO_THROW(earth->Connect("hong-kong", "rome", NORTH, SOUTH));
+  ASSERT_NO_THROW(earth->Connect("hong-kong", "tokyo", SOUTH, NORTH));
+  ASSERT_NO_THROW(earth->Connect("mumbai", "hong-kong", EAST, WEST));
+  ASSERT_NO_THROW(earth->Connect("mumbai", "berlin", NORTH, SOUTH));
+  ASSERT_NO_THROW(earth->Connect("mumbai", "alexandria", WEST, EAST));
+  ASSERT_NO_THROW(earth->Connect("shanghai", "mumbai", NORTH, SOUTH));
+  //ASSERT_NO_THROW(earth->Connect("shanghai", "berlin", SOUTH, NORTH));
+  ASSERT_NO_THROW(earth->Connect("paris", "berlin", WEST, EAST));
+  ASSERT_NO_THROW(earth->Connect("paris", "london", SOUTH, NORTH));
+  ASSERT_NO_THROW(earth->Connect("paris", "madrid", NORTH, SOUTH));
+  ASSERT_NO_THROW(earth->Connect("berlin", "tazmania", NORTH, SOUTH));
+  ASSERT_NO_THROW(earth->Connect("tokyo", "saint-petersburg", SOUTH, NORTH));
+  ASSERT_NO_THROW(earth->Connect("london", "alexandria", EAST, WEST));
 
   PokemonGo pokemon_go( earth );
 
@@ -102,9 +102,9 @@ bool TestPokemonGo() {
      pokemon_go.GetTrainersIn("berlin");
   ASSERT_EQUAL( trainers_in_berlin.size() , 3 );
 
-  output << *trainers_in_berlin[0];
-  output << *trainers_in_berlin[1];
-  output << *trainers_in_berlin[2];
+  output << *(trainers_in_berlin[0]);
+  output << *(trainers_in_berlin[1]);
+  output << *(trainers_in_berlin[2]);
 
   ASSERT_EQUAL(output.str(),
                "Sahar 1 RED\n"
@@ -132,8 +132,8 @@ bool TestPokemonGo() {
 }
 
 
-//int main() {
-//    TestPokemonGo();
-//
-//    return 0;
-//}
+int main() {
+    TestPokemonGo();
+
+    return 0;
+}

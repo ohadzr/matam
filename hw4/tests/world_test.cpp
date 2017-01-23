@@ -118,7 +118,8 @@ bool TestComboWorld() {
 
     std::getline(world_in, line);
     std::istringstream line_stream17(line);
-    ASSERT_NO_THROW(line_stream17 >> *technion);
+    ASSERT_THROW(mtm::pokemongo::WorldInvalidInputLineException,
+                 line_stream17 >> *technion);
 
     std::getline(world_in, line);
     std::istringstream line_stream18(line);
@@ -129,7 +130,7 @@ bool TestComboWorld() {
     return true;
 }
 
-int main() {
-    RUN_TEST(TestComboWorld);
-    return 0;
-}
+//int main() {
+//    RUN_TEST(TestComboWorld);
+//    return 0;
+//}

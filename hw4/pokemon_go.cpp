@@ -22,7 +22,7 @@ PokemonGo::~PokemonGo(){}
 void PokemonGo::AddTrainer(const std::string& name, const Team& team,
                            const std::string& location){
     try {
-        Trainer trainer = Trainer(name, team);
+        Trainer* trainer = new Trainer(name, team);
 
         if (p_world->trainer_names.find(name) !=
                 p_world->trainer_names.end())
@@ -32,7 +32,7 @@ void PokemonGo::AddTrainer(const std::string& name, const Team& team,
                 p_world->location_names.end()))
             throw PokemonGoLocationNotFoundException();
 
-        p_world->world_map[location]->Arrive(trainer);     //TODO: Does this keep trainer or after function delete it?
+        p_world->world_map[location]->Arrive(*trainer);
     }
 
     catch (TrainerInvalidArgsException& e) {

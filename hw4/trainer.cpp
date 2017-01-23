@@ -114,8 +114,8 @@ void Trainer::updateLevel(int new_level) {
     t_level = new_level;
 }
 
-void Trainer::addItem(Item& item) {
-    t_items.push_back(&item);
+void Trainer::addItem(Item* item) {
+    t_items.push_back(item);
 }
 
 mtm::pokemongo::Item* Trainer::getOldestItem() {

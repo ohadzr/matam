@@ -114,7 +114,7 @@ class Trainer {
  *
  * @param item - The item to add
  */
-    void addItem(Item& item); //TODO: is this allowed? (not in basic file)
+    void addItem(Item* item); //TODO: is this allowed? (not in basic file)
 
 
 

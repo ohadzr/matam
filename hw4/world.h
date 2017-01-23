@@ -11,7 +11,7 @@
 #include "location.h"
 #include "trainer.h"
 #include "pokemon.h"
-#include "k_graph.h"
+#include "k_graph_mtm.h"
 #include "item.h"
 #include <sstream>
 #include <vector>
@@ -99,7 +99,7 @@ public:
   
   // A destructor.
   ~World();
-  void Connect(std::string const& key_u,
+  void Connect(std::string const& key_u, //TODO: remove this after inherit KGRAPH
                std::string const& key_v, int i_u, int i_v);
   
 /*   Input iterator. Scans a single line from the input stream. The line can be

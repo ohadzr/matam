@@ -347,10 +347,10 @@ bool trainerTestGetsAndUpdate() {
     ASSERT_TRUE( ash.GetFightBonus() == 0 );
     ash.updateFightBonus(3);
     ASSERT_TRUE( ash.GetFightBonus() == 3 );
-    ohad.addItem( item1 );
-    ohad.addItem( item2 );
-    ohad.addItem( item2 );
-    ohad.addItem( item3 );
+    ohad.addItem( &item1 );
+    ohad.addItem( &item2 );
+    ohad.addItem( &item2 );
+    ohad.addItem( &item3 );
     Item* ohad_item = ohad.getOldestItem();
     ASSERT_TRUE((ohad_item->getLevel() == 34)&&ohad_item->getType() == "POTION");
 
