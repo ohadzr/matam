@@ -32,6 +32,11 @@ World::~World() {
 //			delete *trainer_it;
 //		}
 //	}
+	std::set<std::string>::iterator it = location_names.begin();
+	for( ;it != location_names.end(); ++it ) {
+		std::string location_name = *it;
+		delete world_map[location_name];
+	}
 }
 
 World::GYM::GYM() : Leader(nullptr){
@@ -352,7 +357,12 @@ World::Starbucks::Starbucks(std::vector<std::string>& input_vector) :
 	}
 }
 
-World::Starbucks::~Starbucks() {}
+World::Starbucks::~Starbucks() {
+	for ( std::vector<Pokemon*>::iterator it = pokemon_vector.begin();
+		  it != pokemon_vector.end() ; ++it) {
+		delete *it;
+	}
+}
 
 void World::Starbucks::Arrive(Trainer &trainer) {
     Location::Arrive( trainer );
