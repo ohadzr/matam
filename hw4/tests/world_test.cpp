@@ -95,8 +95,8 @@ bool TestComboWorld() {
                  line_stream12 >> *technion);
 
     std::getline(world_in, line);
-        std::istringstream line_stream13_a(line);
-        ASSERT_NO_THROW(line_stream13_a >> *technion);
+    std::istringstream line_stream13_a(line);
+    ASSERT_NO_THROW(line_stream13_a >> *technion);
 
     std::getline(world_in, line);
     std::istringstream line_stream13(line);

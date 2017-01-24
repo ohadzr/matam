@@ -75,11 +75,11 @@ class World {
     };
     class Pokestop : public Location {
         private:
-            std::vector<Item*> item_vector;
+            std::vector<Item*> item_vector = std::vector<Item*>();
             friend class mtm::pokemongo::Trainer;
 
         public:
-        Pokestop(std::vector<std::string> input_vector);
+        Pokestop(std::vector<std::string>& input_vector);
         ~Pokestop();
         void Arrive(Trainer& trainer) override ;
     };
@@ -88,7 +88,7 @@ class World {
     private:
         std::vector<Pokemon*> pokemon_vector;
     public:
-        Starbucks(std::vector<std::string> input_vector);
+        Starbucks(std::vector<std::string>& input_vector);
         ~Starbucks();
         void Arrive(Trainer& trainer) override ;
     };
