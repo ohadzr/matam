@@ -24,9 +24,11 @@ void PokemonGo::AddTrainer(const std::string& name, const Team& team,
     try {
         Trainer* trainer = new Trainer(name, team);
 
-        if (p_world->trainer_names.find(name) !=
-                p_world->trainer_names.end())
+        try {
+            WhereIs(name);
             throw PokemonGoTrainerNameAlreadyUsedExcpetion();
+        }
+        catch (PokemonGoTrainerNotFoundExcpetion& e) {}
 
         if (!(p_world->location_names.find(location) !=
                 p_world->location_names.end()))
@@ -34,7 +36,6 @@ void PokemonGo::AddTrainer(const std::string& name, const Team& team,
 
         p_world->world_map[location]->Arrive(*trainer);
     }
-
     catch (TrainerInvalidArgsException& e) {
         throw PokemonGoInvalidArgsException();
     }
@@ -50,7 +51,7 @@ void PokemonGo::MoveTrainer(const std::string& trainer_name,
 
     std::vector<Trainer*>::const_iterator trainer_it = trainers.begin();
     for (; trainer_it != trainers.end(); trainer_it++) {
-        if (trainer->GetName() == trainer_name) {
+        if ((*trainer_it)->GetName() == trainer_name) {
             trainer = *trainer_it;
         }
     }
@@ -60,14 +61,12 @@ void PokemonGo::MoveTrainer(const std::string& trainer_name,
             p_world->world_map.BeginAt(location);
     try {
         std::string next_location = *(it.Move(dir));
-        p_world->world_map[location]->Leave(*trainer);
         p_world->world_map[next_location]->Arrive(*trainer);
+        p_world->world_map[location]->Leave(*trainer);
     }
     catch (KGraphIteratorReachedEnd& e) {
         throw PokemonGoReachedDeadEndException();
     }
-
-
 }
 
 
@@ -109,3 +108,4 @@ int PokemonGo::GetScore(const Team& team) {
 
     return team_score;
 }
+

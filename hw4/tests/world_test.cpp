@@ -21,7 +21,7 @@ bool TestComboWorld() {
     ********************************************************************/
 
 
-    std::ifstream world_in("C:\\Users\\ohad\\ClionProjects\\matam\\hw4\\tests\\world_test.in");
+    std::ifstream world_in("tests/world_test.in");
     std::string line;
 
 //    while (std::getline(world_in, line)) {
@@ -126,11 +126,12 @@ bool TestComboWorld() {
     ASSERT_THROW(mtm::pokemongo::WorldInvalidInputLineException,
                  line_stream18 >> *technion);
 
+    delete technion;
 
     return true;
 }
 
-//int main() {
-//    RUN_TEST(TestComboWorld);
-//    return 0;
-//}
+int main() {
+    RUN_TEST(TestComboWorld);
+    return 0;
+}

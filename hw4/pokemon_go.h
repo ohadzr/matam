@@ -18,7 +18,6 @@ namespace pokemongo {
 
 class PokemonGo {
 private:
-    std::set<Trainer> global_trainers;
     const World* p_world;
 public:
 /*   Initilaizes a new game with the given world. This passes ownership of
@@ -81,6 +80,7 @@ public:
   // @param team
   // @return the score of team.
   int GetScore(const Team& team);
+
 };
 
 }  // namespace pokemongo

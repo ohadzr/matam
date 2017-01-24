@@ -17,7 +17,7 @@ using namespace std;
  *               Tests                *
  **************************************/
 
-bool TestCombo() {
+bool TestComboKGraph() {
 
 
     KGraph<string, int, 3> graph = KGraph<string, int, 3>(0);
@@ -81,6 +81,6 @@ bool TestCombo() {
 }
 
 //int main() {
-//    RUN_TEST(TestCombo);
+//    RUN_TEST(TestComboKGraph);
 //    return 0;
 //}

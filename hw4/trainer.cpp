@@ -30,7 +30,7 @@ Trainer::Trainer(const std::string& name, const Team& team) :
 Trainer::~Trainer() {
     for ( std::vector<Item*>::iterator it = t_items.begin();
           it != t_items.end() ; ++it) {
-        delete(**it);
+        delete *it;
     }
 }
 
@@ -65,6 +65,7 @@ void Trainer::KillStrongestPokemon() {
     for (std::vector<Pokemon*>::iterator it = t_pokemon_list.begin() ;
          it != t_pokemon_list.end(); ++it) {
         if ( **it == strongest_pokemon) {
+            delete *it;
             t_pokemon_list.erase(it);
             return;
         }
@@ -119,6 +120,8 @@ void Trainer::addItem(Item* item) {
 }
 
 mtm::pokemongo::Item* Trainer::getOldestItem() {
+    if (t_items.size() == 0)
+        return nullptr;
     Item* item = t_items.front();
     t_items.erase(t_items.begin());
     return item;
@@ -142,11 +145,11 @@ bool Trainer::TryToCatch(Pokemon& pokemon) {
 std::ostream& mtm::pokemongo::operator<<(std::ostream& output,
                                          const Trainer& trainer) {
     output << trainer.t_name ;
-    output << " (" << trainer.t_level << ")" ;
+    output << " (" << trainer.t_level << ") " ;
     output << trainer.teamToString() << std::endl;
     for (std::vector<Pokemon*>::const_iterator it = trainer.t_pokemon_list.begin() ;
          it != trainer.t_pokemon_list.end(); ++it) {
-        output << **it << std::endl;
+        output << (**it) << std::endl;
     }
     return output;
 }

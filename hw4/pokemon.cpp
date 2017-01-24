@@ -125,15 +125,13 @@ void Pokemon::Train(const double& boost) {
 std::ostream& mtm::pokemongo::operator<<(std::ostream& output,
                                          const Pokemon& pokemon) {
     output << pokemon.name ;
-    output << " (" << pokemon.p_level << "/" << pokemon.p_cp << "/";
-    output << pokemon.p_hp << ") ";
+    output << "(" << pokemon.p_level << "/" << pokemon.p_cp << "/";
+    output << pokemon.p_hp << ")";
 
     set<PokemonType>::iterator it;
     for (it = pokemon.p_types.begin() ; it != pokemon.p_types.end(); ++it) {
         output << Pokemon::pokemonTypeToString(*it) << " ";
     }
-
-    output << std::endl;
 
     return output;
 }

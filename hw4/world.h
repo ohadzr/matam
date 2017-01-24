@@ -145,7 +145,6 @@ private:
 
     KGraph<std::string, Location*, DIRECTIONS>  world_map;
     std::set<std::string> location_names;
-    std::set<std::string> trainer_names;
 
     friend class PokemonGo;
 

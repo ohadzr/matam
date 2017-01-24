@@ -17,22 +17,25 @@ using std::set;
  *        Interface Functions         *
  **************************************/
 
-World::World() : world_map(KGraph<std::string,Location*,DIRECTIONS>(nullptr)) {
+World::World() : world_map(KGraph<std::string,Location*,DIRECTIONS>(nullptr)),
+				 location_names(std::set<std::string>()) {
 }
 
 World::~World() {
-	std::set<std::string>::iterator it = location_names.begin();
-	for( ;it != location_names.end(); ++it ) {
-		std::string location_name = *it;
-		std::vector<Trainer*> trainers = world_map[location_name]->GetTrainers();
-		std::vector<Trainer*>::const_iterator trainer_it = trainers.begin();
-		for (; trainer_it != trainers.end(); trainer_it++) {
-			delete *trainer_it;
-		}
-	}
+//	std::set<std::string>::iterator it = location_names.begin();
+//	for( ;it != location_names.end(); ++it ) {
+//		std::string location_name = *it;
+//		std::vector<Trainer*> trainers =
+//				world_map[location_name]->GetTrainers();
+//		std::vector<Trainer*>::const_iterator trainer_it = trainers.begin();
+//		for (; trainer_it != trainers.end(); trainer_it++) {
+//			delete *trainer_it;
+//		}
+//	}
 }
 
-World::GYM::GYM() : Leader(nullptr) {
+World::GYM::GYM() : Leader(nullptr){
+	trainers_ = std::vector<Trainer*>(); //TODO: check if needed
 }
 
 World::GYM::~GYM() {
@@ -47,6 +50,7 @@ void World::GYM::Arrive(Trainer& trainer) {
 
     if ( Leader == nullptr ) {
         GYM::switchLeader( trainer );
+		trainer.updateFightBonus(LEADER_BONUS);
         return;
     }
     if ( (*Leader).GetTeam() == trainer.GetTeam() ) return;
@@ -82,7 +86,8 @@ bool World::GYM::Fight( Trainer& first , Trainer& second ) {
 }
 
 void World::GYM::fightOutcome( Trainer& winner, Trainer& loser ) {
-	winner.updateLevel(winner.GetLevel() + (int)ceil((loser.GetLevel())/2));//TODO: what to do with numbers
+	int new_level = winner.GetLevel() +(int)ceil(((double) loser.GetLevel())/2);
+	winner.updateLevel(new_level);//TODO: what to do with numbers
     winner.updateFightBonus(WINNER_BONUS);
     loser.updateFightBonus(LOSER_BONUS);
 	if (Leader->GetName() == loser.GetName()) {
@@ -107,8 +112,10 @@ bool World::GYM::makeFight( Trainer& first , Trainer& second ) {
 	Pokemon first_strongest = first.GetStrongestPokemon();
 	Pokemon second_strongest = second.GetStrongestPokemon();
 
-	bool first_died = second_strongest.Hit( first_strongest );
-	bool second_died = first_strongest.Hit( second_strongest );
+	bool first_died = (second.GetStrongestPokemon()).Hit(
+			first.GetStrongestPokemon());
+	bool second_died = (first.GetStrongestPokemon()).Hit(
+			second.GetStrongestPokemon());
 
     if ( first_strongest == second_strongest){
     	updateDeathResult( first , second , first_died, second_died );
@@ -270,7 +277,8 @@ Trainer* World::GYM::candidateForLeadership( Team team ) {
 
 World::Pokestop::Pokestop(std::vector<std::string> input_vector) :
 		item_vector(std::vector<Item*>()) {
-	if (input_vector.size() % 2 != 0) //Check if args right amount of args
+	trainers_ = std::vector<Trainer*>();
+	if (input_vector.size() % 2 != 0) //Check if right amount of args
 		throw WorldInvalidInputLineException();
 
 	while (input_vector.size() != 0) {
@@ -280,10 +288,15 @@ World::Pokestop::Pokestop(std::vector<std::string> input_vector) :
 		input_vector.erase(input_vector.begin());
 
 		try {
-			Item* new_item = new Item(item_type, item_level);
+			Item item = Item(item_type, item_level);
+			Item* new_item = new Item(item);
 			item_vector.push_back(new_item);
 		}
 		catch (ItemInvalidArgsException& e) {
+			for ( std::vector<Item*>::iterator it = item_vector.begin();
+				  it != item_vector.end() ; ++it) {
+				delete *it;
+			}
 			throw WorldInvalidInputLineException();
 		}
 
@@ -292,6 +305,10 @@ World::Pokestop::Pokestop(std::vector<std::string> input_vector) :
 }
 
 World::Pokestop::~Pokestop() {
+	for ( std::vector<Item*>::iterator it = item_vector.begin();
+		  it != item_vector.end() ; ++it) {
+		delete *it;
+	}
 }
 
 void World::Pokestop::Arrive(Trainer &trainer) {
@@ -310,8 +327,8 @@ void World::Pokestop::Arrive(Trainer &trainer) {
 
 
 World::Starbucks::Starbucks(std::vector<std::string> input_vector) :
-		pokemon_vector(std::vector<Pokemon*>()){
-
+		pokemon_vector(std::vector<Pokemon*>()) {
+	trainers_ = (std::vector<Trainer*>());
 	if (input_vector.size() % 3 != 0) //Check if args right amount of args
 		throw WorldInvalidInputLineException();
 
@@ -325,11 +342,15 @@ World::Starbucks::Starbucks(std::vector<std::string> input_vector) :
 
 		try{
 			//Pokemon new_pokemon = Pokemon(pokemon_name, TODO:delete next line and remove comment
-            Pokemon new_pokemon = Pokemon(pokemon_name, std::set<PokemonType>(),
+            Pokemon* new_pokemon = new Pokemon(pokemon_name, std::set<PokemonType>(),
 										  pokemon_cp, pokemon_level);
-			pokemon_vector.push_back(&new_pokemon);
+			pokemon_vector.push_back(new_pokemon);
 		}
 		catch (PokemonInvalidArgsException& e) {
+			std::vector<Pokemon*>::iterator it = pokemon_vector.begin();
+			for( ;it != pokemon_vector.end(); ++it ) {
+					delete *it;
+			}
 			throw WorldInvalidInputLineException();
 		}
 	}
@@ -394,19 +415,28 @@ void World::createLocationByType(std::string &location_name,
 								 std::string &location_type,
 								 std::vector<std::string> input_vector,
 								 World &world) {
-	if (location_type == "GYM") {
-		if (input_vector.size() != 0)
-			throw WorldInvalidInputLineException();
-		World::GYM new_gym = World::GYM();
-		world.world_map.Insert(location_name, &new_gym);
+	try {
+		if (location_type == "GYM") {
+			if (input_vector.size() != 0)
+				throw WorldInvalidInputLineException();
+			World::GYM* new_gym = new World::GYM();
+			world.world_map.Insert(location_name, new_gym);
+		}
+		else if (location_type == "POKESTOP") {
+			World::Pokestop* new_pokestop = new World::Pokestop(input_vector);
+			world.world_map.Insert(location_name, new_pokestop);
+		}
+		else {
+			World::Starbucks* new_starbucks = new World::Starbucks(input_vector);
+			world.world_map.Insert(location_name, new_starbucks);
+		}
 	}
-	else if (location_type == "POKESTOP") {
-		World::Pokestop new_pokestop = World::Pokestop(input_vector);
-		world.world_map.Insert(location_name, &new_pokestop);
-	}
-	else {
-		World::Starbucks new_starbucks = World::Starbucks(input_vector);
-		world.world_map.Insert(location_name, &new_starbucks);
+	catch (WorldInvalidInputLineException& e) {
+		std::set<std::string>::iterator it = world.location_names.begin();
+		for( ;it != world.location_names.end(); ++it ) {
+			std::string location_str = *it;
+				delete world.world_map[location_str];
+		}
 	}
 }
 

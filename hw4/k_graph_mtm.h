@@ -412,8 +412,9 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   ValueType& operator[](KeyType const& key) {
       typename std::set<Node*>::iterator set_iter = nodes.begin();
       for (; set_iter != nodes.end() ; set_iter++) {
-          if ( (*set_iter)->Key() == key ) {
-              return (*set_iter)->Value();
+          Node node = (**set_iter);
+          if ( node.Key() == key ) {
+              return node.Value();
           }
       }
       Insert(key);
@@ -430,8 +431,9 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   ValueType const& operator[](KeyType const& key) const {
       typename std::set<Node*>::iterator set_iter = nodes.begin();
       for (; set_iter != nodes.end() ; set_iter++) {
-          if ( (*set_iter)->Key() == key ) {
-              return (*set_iter)->Value();
+          Node node = (**set_iter);
+          if ( node.Key() == key ) {
+              return node.Value();
           }
       }
       throw KGraphKeyNotFoundException();
