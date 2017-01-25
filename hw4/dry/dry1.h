@@ -11,19 +11,14 @@
 #include <vector>
 
 
-
-
-
-template <class iterator, typename stream_type, typename generic_stream ,typename obj_operator>
-std::set<stream_type> dry1_algo (iterator begin, iterator end){
+template <class iterator, typename stream_type ,typename obj_operator>
+std::set<stream_type> dry1_algorithem (iterator begin, iterator end){
     std::set<stream_type> collection_set = std::set<stream_type>();
 
     iterator it = begin;
     int index = 0;
     for (;  it != end; it++) {
-        generic_stream left(begin ,begin + index);
-        generic_stream right(begin + index, end);
-        if (obj_operator()(left,right))
+        if (obj_operator()(begin, begin+index, begin+index,end))
             collection_set.insert(*it);
         index++;
     }
@@ -32,12 +27,19 @@ std::set<stream_type> dry1_algo (iterator begin, iterator end){
 }
 
 
-
-class LessThan {
+class HighBeforeMe {
 public:
-    LessThan() {}
-    bool operator()(std::vector<int> m, std::vector<int> n) const {
-        return m.size() >= n.size();
+    HighBeforeMe() {}
+    bool operator()(std::vector<int>::iterator left_begin,
+                    std::vector<int>::iterator left_end,
+                    std::vector<int>::iterator right_begin,
+                    std::vector<int>::iterator right_end) const {
+        std::vector<int>::iterator it = left_begin;
+        for ( ; it != left_end; it ++){
+            if (*it > *right_begin)
+                return true;
+        }
+        return false;
     }
 };
 

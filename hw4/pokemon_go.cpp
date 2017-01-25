@@ -88,7 +88,10 @@ std::string PokemonGo::WhereIs(const std::string& trainer_name) {
 const std::vector<Trainer*>& PokemonGo::GetTrainersIn(
                                     const std::string& location) {
     Location* real_location = (*p_world)[location];
-    return real_location->GetTrainers();
+    const std::vector<Trainer*>& trainers = real_location->GetTrainers();
+    int a = trainers.size();
+    if (a < 0) return trainers;
+    return trainers;
 }
 
 int PokemonGo::GetScore(const Team& team) {

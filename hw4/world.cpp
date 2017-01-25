@@ -275,7 +275,6 @@ Trainer* World::GYM::candidateForLeadership( Team team ) {
 
 
 World::Pokestop::Pokestop(std::vector<std::string>& input_vector) {
-	trainers_ = std::vector<Trainer*>();
 	if (input_vector.size() % 2 != 0) //Check if right amount of args
 		throw WorldInvalidInputLineException();
 
