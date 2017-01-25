@@ -17,7 +17,7 @@ using std::set;
  *        Interface Functions         *
  **************************************/
 
-World::World() : world_map(KGraph<std::string,Location*,DIRECTIONS>(nullptr)),
+World::World() : KGraph(KGraph<std::string, Location*, DIRECTIONS>(nullptr)),
 				 location_names(std::set<std::string>()) {
 }
 
@@ -32,14 +32,9 @@ World::~World() {
 //			delete *trainer_it;
 //		}
 //	}
-	std::set<std::string>::iterator it = location_names.begin();
-	for( ;it != location_names.end(); ++it ) {
-		std::string location_name = *it;
-		delete world_map[location_name];
-	}
 }
 
-World::GYM::GYM() : Leader(nullptr){
+World::GYM::GYM() : Leader(nullptr) {
 }
 
 World::GYM::~GYM() {
@@ -280,6 +275,7 @@ Trainer* World::GYM::candidateForLeadership( Team team ) {
 
 
 World::Pokestop::Pokestop(std::vector<std::string>& input_vector) {
+	trainers_ = std::vector<Trainer*>();
 	if (input_vector.size() % 2 != 0) //Check if right amount of args
 		throw WorldInvalidInputLineException();
 
@@ -399,7 +395,7 @@ std::istream& mtm::pokemongo::operator>>(std::istream& input, World& world) {
     if (world.location_names.find(location_name) != world.location_names.end())
 		throw WorldLocationNameAlreadyUsed();
 
-	World::createLocationByType(location_name, location_type,
+	world.createLocationByType(location_name, location_type,
 								input_vector, world);
 
 	world.location_names.insert(location_name);
@@ -424,21 +420,15 @@ void World::createLocationByType(std::string &location_name,
 	if (location_type == "GYM") {
 		if (input_vector.size() != 0)
 			throw WorldInvalidInputLineException();
-		World::GYM* new_gym = new World::GYM();
-		world.world_map.Insert(location_name, new_gym);
+		World::GYM new_gym = World::GYM();
+		this->Insert(location_name, &new_gym);
 	}
 	else if (location_type == "POKESTOP") {
-		World::Pokestop* new_pokestop = new World::Pokestop(input_vector);
-		world.world_map.Insert(location_name, new_pokestop);
+		World::Pokestop new_pokestop = World::Pokestop(input_vector);
+		this->Insert(location_name, &new_pokestop);
 	}
 	else {
-		World::Starbucks* new_starbucks = new World::Starbucks(input_vector);
-		world.world_map.Insert(location_name, new_starbucks);
+		World::Starbucks new_starbucks = World::Starbucks(input_vector);
+		this->Insert(location_name, &new_starbucks);
 	}
-}
-
-
-void World::Connect(std::string const &key_u, std::string const &key_v, int i_u,
-					int i_v) {
-	world_map.Connect(key_u, key_v, i_u, i_v);
 }

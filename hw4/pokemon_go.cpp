@@ -34,7 +34,7 @@ void PokemonGo::AddTrainer(const std::string& name, const Team& team,
                 p_world->location_names.end()))
             throw PokemonGoLocationNotFoundException();
 
-        p_world->world_map[location]->Arrive(*trainer);
+        (*p_world)[location]->Arrive(*trainer);
     }
     catch (TrainerInvalidArgsException& e) {
         throw PokemonGoInvalidArgsException();
@@ -58,11 +58,11 @@ void PokemonGo::MoveTrainer(const std::string& trainer_name,
     if (trainer == nullptr) throw PokemonGoTrainerNotFoundExcpetion();
 
     KGraph<std::string, Location*, World::DIRECTIONS>::const_iterator it =
-            p_world->world_map.BeginAt(location);
+            p_world->BeginAt(location);
     try {
         std::string next_location = *(it.Move(dir));
-        p_world->world_map[next_location]->Arrive(*trainer);
-        p_world->world_map[location]->Leave(*trainer);
+        (*p_world)[next_location]->Arrive(*trainer);
+        (*p_world)[location]->Leave(*trainer);
     }
     catch (KGraphIteratorReachedEnd& e) {
         throw PokemonGoReachedDeadEndException();
@@ -87,8 +87,10 @@ std::string PokemonGo::WhereIs(const std::string& trainer_name) {
 
 const std::vector<Trainer*>& PokemonGo::GetTrainersIn(
                                     const std::string& location) {
-    return p_world->world_map[location]->GetTrainers();
+    Location* real_location = (*p_world)[location];
+    return real_location->GetTrainers();
 }
+
 int PokemonGo::GetScore(const Team& team) {
     int team_score = 0;
     // loop over all nodes

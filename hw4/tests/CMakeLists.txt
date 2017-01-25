@@ -24,7 +24,7 @@ set(TRAINER_FILES trainer_test.cpp test_utils.cc ../trainer.cpp ../world.cpp ../
 add_executable(hw4_trainer_test ${TRAINER_FILES})
 #target_link_libraries(hw4_trainer_test libmtm.a)
 
-set(K_GRAPH_FILES k_graph_mtm_test.cpp test_utils.cc ../k_graph_mtm.h item_test.cpp)
+set(K_GRAPH_FILES k_graph_mtm_test.cpp test_utils.cc ../k_graph_mtm.h )
 add_executable(hw4_k_graph_test ${K_GRAPH_FILES})
 
 

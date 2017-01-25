@@ -292,7 +292,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   }
 
 /*   A destructor. Destroys the graph together with all resources allocated.*/
-  ~KGraph() {
+  virtual ~KGraph() {
       typename std::set<Node*>::iterator set_iter = nodes.begin();
       for (; set_iter != nodes.end() ; set_iter++) {
           delete (*set_iter);

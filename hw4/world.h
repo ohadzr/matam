@@ -38,14 +38,15 @@ static const int SOUTH = 1;
 static const int EAST = 2;
 static const int WEST = 3;
 
-class World {
+class World : public KGraph<std::string, Location*, 4>{
     class GYM : public Location {
     private:
         static const int LEADER_BONUS = 10;
 		static const int WINNER_BONUS = 2;
 		static const int LOSER_BONUS = -1;
 		static const int LAST_TRAINER_IN_GYM = 1;
-         Trainer* Leader;
+        Trainer* Leader;
+
          //TODO: add comments
 
         void switchLeader( Trainer& leader );
@@ -99,8 +100,6 @@ public:
   
   // A destructor.
   ~World();
-  void Connect(std::string const& key_u, //TODO: remove this after inherit KGRAPH
-               std::string const& key_v, int i_u, int i_v);
   
 /*   Input iterator. Scans a single line from the input stream. The line can be
    one of the following three options:
@@ -143,13 +142,12 @@ private:
     static const int POKEMON_CP = 1;
     static const int POKEMON_LEVEL = 2;
 
-    KGraph<std::string, Location*, DIRECTIONS>  world_map;
     std::set<std::string> location_names;
 
     friend class PokemonGo;
 
     static std::vector<std::string> parseInput(std::istream& input);
-    static void createLocationByType(std::string& location_name,
+    void createLocationByType(std::string& location_name,
                                      std::string& location_type,
                                      std::vector<std::string> input_vector,
                                      World& world);
