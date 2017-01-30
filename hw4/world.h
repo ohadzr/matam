@@ -5,7 +5,6 @@
  *       Header files include         *
  **************************************/
 
-
 #include <iostream>
 #include <string>
 #include "location.h"
@@ -47,41 +46,176 @@ class World : public KGraph<std::string, Location*, 4>{
 		static const int LAST_TRAINER_IN_GYM = 1;
         Trainer* Leader;
 
-         //TODO: add comments
-
+        /**
+         * function canculate the winner's new level after battle.
+         * @param winner_old_level - the level before the battle.
+         * @param loser_old_level - the level before the battle.
+         * @return
+         * winner's new level after battle.
+         */
+        int winnerNewLevel(int winner_old_level, int loser_old_level);
+        /**
+         * function calculate pokemon's new boost after eat candy.
+         * @param pokmon_old_level - pokemon's old level.
+         * @return
+         * boost points.
+         */
+        double pokemonBoost(int pokmon_old_level );
+        /**
+         * function update the new leader of the given GYM.
+         * @param leader - the new leader.
+         */
         void switchLeader( Trainer& leader );
+        /**
+         * function update the winner's level and suitable bonus points each.
+         * @param winner - the winner of fight.
+         * @param loser - the trainer who lost the fight.
+         */
         void fightOutcome( Trainer& winner, Trainer& loser );
+        /**
+         * function holds the fight between 2 given trainers.
+         * @param first - the first trainer.
+         * @param second - the second trainer.
+         * @return
+         * true if the second trainer won the fight, false else.
+         */
         bool makeFight( Trainer& first , Trainer& second );
+        /**
+         * function compare wich trainer is stronger based on thier teams.
+         * @param first - the first trainer.
+         * @param second - the second trainer.
+         * @return
+         * true if the second trainer won the fight, false else.
+         */
         static bool compareByTeam( Trainer& first , Trainer& second );
-        static void prepareToBattle( Trainer& first , Trainer& second );
-//        static void updateBonusPoints(Trainer &trainer, int bonus);
+        /**
+         * function make each trainer use his oldest item and update the use
+         * effects on HP /CP of the strongest pokemon. assert both trainers has
+         * at least one pokemon.
+         * @param first - the first trainer.
+         * @param second - the second trainer.
+         */
+         void prepareToBattle( Trainer& first , Trainer& second );
+        /**
+         * function update teams bonus points.
+         * @param trainer - the triner's whom his bonuse is updated in team.
+         * @param bonus - the size of bonus added to team ( can be negative).
+         */
+       //static void updateBonusPoints(Trainer &trainer, int bonus);
+        /**
+         * function delete pokemon who died over a fight from trainer, r.i.p.
+         * @param first - the first trainer.
+         * @param second - the second trainer.
+         * @param first_died - true if first's strongest pokemon died.
+         * @param second_died  true if second's strongest pokemon died.
+         */
         static void updateDeathResult(Trainer& first , Trainer& second ,
       		  bool first_died, bool second_died );
+        /**
+         * function detect the best substatite for the GYM from it's trainers.
+         * @return
+         * nullptr if no one was found worthy to posses such power,
+         * or the selected trainer.
+         */
         Trainer* findNextLeader();
+        /**
+         * function serch for the best option from a given team to replace
+         * leader.
+         * @param team - the team being checked.
+         * @return
+         * nullptr if no one was found worthy to posses such power,
+         * or the selected trainer.
+         */
         Trainer* candidateForLeadership( Team team );
+        /**
+         * function check witch one of the candidate is a suitable replacer.
+         * @param red_candidate - the red team candidate.
+         * @param blue_candidate - the blue team candidate.
+         * @param yellow_candidate - the yellow team candidate.
+         * @return
+         * nullptr if no one was found worthy to posses such power,
+         * or the selected trainer.
+         */
         Trainer* checkTeamSubstitute(Trainer* red_candidate ,
         Trainer* blue_candidate , Trainer* yellow_candidate );
+        /**
+         * function check if there is only one team members in GYM.
+         * @param red_candidate - the red team candidate.
+         * @param blue_candidate - the blue team candidate.
+         * @param yellow_candidate - the yellow team candidate.
+         * @return
+         * if there more then one team return nullptr, else reaturn the best
+         * replacer.
+         */
         static Trainer* checkisOneTeamLeft(Trainer* red_candidate ,
         		Trainer* blue_candidate , Trainer* yellow_candidate );
+        /**
+         * function check if there are two teams members in GYM.
+         * @param red_candidate - the red team candidate.
+         * @param blue_candidate - the blue team candidate.
+         * @param yellow_candidate - the yellow team candidate.
+         * @return
+         * the best trainer out of them both, although both must be great
+         * people , nullptr else.
+         */
         Trainer* checkBestOutOfTwoSubstitute(Trainer* red_candidate ,
         		Trainer* blue_candidate , Trainer* yellow_candidate );
+        /**
+         * function preform a fight between two trainers, after asserting they
+         * have at least one pokemon and both prepared for fight.
+         * @param first - the first trainer.
+         * @param second - the second trainer.
+         * @return
+         * true if the second trainer won the fight, false else.
+         */
         bool Fight( Trainer& first , Trainer& second );
     public:
+        /**
+         * defult constructor of GYM.
+         */
         GYM();
+        /**
+         * defult destructor of GYM.
+         */
         ~GYM();
+        /**
+         * override location function of trainer arraive to GYM.
+         * operate a few actions such as add trainer to GYM's trainers list,
+         * and update GYM's leader if neccery.
+         * @param trainer - the trainer to be added to GYM.
+         */
         void Arrive(Trainer& trainer) override ;
+        /**
+         * override location function of trainer leave from GYM.
+         * operate a few actions such as remove trainer from GYM's trainers
+         * list, and update GYM's leader if neccery.
+         * @param trainer - the trainer to be removed from GYM.
+         */
         void Leave(Trainer& trainer) override ;
-
-
     };
+
     class Pokestop : public Location {
         private:
             std::vector<Item*> item_vector = std::vector<Item*>();
             friend class mtm::pokemongo::Trainer;
 
         public:
+        /**
+         * constructor of Pokestop.
+         * @param input_vector - the command to Intentionlly build a Pokestop,
+         * with parameters.
+         */
         Pokestop(std::vector<std::string>& input_vector);
+        /**
+         * destructor of Pokestop.
+         */
         ~Pokestop();
+        /**
+          * override location function of trainer arraive to Pokestop.
+          * operate a few actions such as add trainer to Pokestop's trainers
+          * list, and if found item trainer can get give it to him.
+          * @param trainer - the trainer to be added to Pokestop.
+          */
         void Arrive(Trainer& trainer) override ;
     };
 
@@ -89,8 +223,22 @@ class World : public KGraph<std::string, Location*, 4>{
     private:
         std::vector<Pokemon*> pokemon_vector;
     public:
+        /**
+         * constructor of Starbucks.
+         * @param input_vector - the command to Intentionlly build a Starbucks,
+         * with parameters.
+         */
         Starbucks(std::vector<std::string>& input_vector);
+        /**
+         * destructor for Starbucks.
+         */
         ~Starbucks();
+        /**
+          * override location function of trainer arraive to Starbucks.
+          * operate a few actions such as add trainer to Starbucks's trainers
+          * list, and try to catch a pokemon if exist.
+          * @param trainer - the trainer to be added to Starbucks.
+          */
         void Arrive(Trainer& trainer) override ;
     };
 
@@ -146,14 +294,34 @@ private:
 
     friend class PokemonGo;
 
-    static std::vector<std::string> parseInput(std::istream& input);
+    /**
+     * function refine given input in strings vector and take care of cration
+     * of sutible elemnts instructed.
+     * @param location_name - the new location name, not an empty string.
+     * @param location_type - GYM, Starbucks or Pokestop.
+     * @param input_vector - a string vector with filterd command line.
+     * @param world - the world to initialize.
+     */
     void createLocationByType(std::string& location_name,
                                      std::string& location_type,
                                      std::vector<std::string> input_vector,
                                      World& world);
+    /**
+     * function parse lines from input into string vector.
+     * @param input - input stream.
+     * @return
+     * the string vector. //TODO: shoudent be reprence or a pointer?
+     */
+    static std::vector<std::string> parseInput(std::istream& input);
 
 };
-
+/**
+ * function execute operator input read.
+ * @param input - input stream.
+ * @param world - the world to initialize.
+ * @return
+ * input stream.
+ */
 std::istream& operator>>(std::istream& input, World& world);
 
 }  // namespace pokemongo

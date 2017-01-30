@@ -84,9 +84,17 @@ bool World::GYM::Fight( Trainer& first , Trainer& second ) {
     }
 }
 
+int World::GYM::winnerNewLevel(int winner_old_level, int loser_old_level) {
+	return winner_old_level +(int)ceil(((double)loser_old_level)/2);
+}
+
+double World::GYM::pokemonBoost(int pokmon_old_level ) {
+	return ((double)(pokmon_old_level)/10) ;
+}
+
 void World::GYM::fightOutcome( Trainer& winner, Trainer& loser ) {
-	int new_level = winner.GetLevel() +(int)ceil(((double) loser.GetLevel())/2);
-	winner.updateLevel(new_level);//TODO: what to do with numbers
+	int new_level = winnerNewLevel(winner.GetLevel(),loser.GetLevel());
+	winner.updateLevel(new_level);
     winner.updateFightBonus(WINNER_BONUS);
     loser.updateFightBonus(LOSER_BONUS);
 	if (Leader->GetName() == loser.GetName()) {
@@ -152,12 +160,12 @@ void World::GYM::prepareToBattle( Trainer& first , Trainer& second ) {
 
 	if ( first_item ) {
 		if ( first_item->getType() == "POTION" ) first_strongest.Heal();
-		else first_strongest.Train( 1 + (first_strongest.Level())/10 ); //TODO: make private
+		else first_strongest.Train( pokemonBoost(first_strongest.Level()) );
 		delete first_item;
 	}
 	if ( second_item ) {
 		if ( second_item->getType() == "POTION" ) second_strongest.Heal();
-		else second_strongest.Train( 1 + (second_strongest.Level())/10 );
+		else second_strongest.Train( pokemonBoost(second_strongest.Level()) );
 		delete first_item;
 	}
 }

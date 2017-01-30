@@ -99,39 +99,45 @@ class Trainer {
 /**   Returns the level of the trainer
 
    @return the level of the trainer.*/
-    int GetLevel() const; //TODO: is this allowed? (not in basic file)
-
-    std::string GetName() const; //TODO: is this allowed? (not in basic file)
-
-    int GetFightBonus() const; //TODO: is this allowed? (not in basic file)
-
-    void updateLevel(int new_level); //TODO: is this allowed? (not in basic file)
-
-
+    int GetLevel() const;
 
 /**
- *  Add an item at the end of the trainer's item list
- *
+ * function returns trainer's name.
+ * @return
+ * returns trainer's name type string.
+ */
+    std::string GetName() const;
+
+/**
+   * function return trainer bonus to the team he belongs.
+   * @return
+   * return trainer bonus to the team he belongs.
+   */
+    int GetFightBonus() const;
+
+/**
+ * function update trainer's level.
+ * @param new_level - the new level that will be set to trainer.
+ */
+    void updateLevel(int new_level);
+
+/**
+ *  Add an item at the end of the trainer's item list.
  * @param item - The item to add
  */
-    void addItem(Item* item); //TODO: is this allowed? (not in basic file)
-
-
-
+    void addItem(Item* item);
 
 /**
  * Find the oldest item the trainer has
  * @return The oldest item the trainer has
  */
-    Item* getOldestItem();//TODO: is this allowed? (not in basic file)
+    Item* getOldestItem();
 
 /**
  * Find the oldest item the trainer has
  * @return The oldest item the trainer has
  */
-    void updateFightBonus(int bonus);//TODO: is this allowed? (not in basic file)
-
-
+    void updateFightBonus(int bonus);
 
 /**   Tries to catch a Pokemon.
 

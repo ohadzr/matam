@@ -136,7 +136,7 @@ bool TestPokemonGo() {
 }
 
 
-int main() {
-    RUN_TEST(TestPokemonGo);
-    return 0;
-}
+//int main() {
+//    RUN_TEST(TestPokemonGo);
+//    return 0;
+//}

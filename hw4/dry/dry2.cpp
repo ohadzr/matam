@@ -5,8 +5,8 @@
 #include "dry2.h"
 
 
-int main() {
-    B a = B();
-    f(a);
-    return 0;
-}
+//int main() {
+//    B a = B();
+//    f(a);
+//    return 0;
+//}

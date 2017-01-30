@@ -130,7 +130,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
      @param rhs right hand side operand.
      @return true iff the iterators are equal.*/
     bool operator==(const iterator& rhs) const {
-        if (curr_graph != rhs.curr_graph) //TODO: check if this enough or should I implement operator== for graph
+        if (curr_graph != rhs.curr_graph)
             return false;
 
         // if same graph
@@ -155,7 +155,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
      @param rhs right hand side operand.
      @return true iff the iterators are equal.*/
     bool operator==(const const_iterator& rhs) const {
-        if (curr_graph != rhs.curr_graph) //TODO: check if this enough or should I implement operator== for graph
+        if (curr_graph != rhs.curr_graph)
             return false;
 
         // if same graph
@@ -245,7 +245,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
      @param rhs righ hand side operand.
      @return true iff the iterators are equal.*/
     bool operator==(const const_iterator& rhs) const {
-        if (curr_graph != rhs.curr_graph) //TODO: check if this enough or should I implement operator== for graph
+        if (curr_graph != rhs.curr_graph)
             return false;
 
         // if same graph
@@ -410,15 +410,15 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
    @param key the key to return its value.
    @return the value assigned to the given key.*/
   ValueType& operator[](KeyType const& key) {
-      typename std::set<Node*>::iterator set_iter = nodes.begin();
-      for (; set_iter != nodes.end() ; set_iter++) {
-          Node node = (**set_iter);
-          if ( node.Key() == key ) {
-              return node.Value();
-          }
-      }
-      Insert(key);
-      return (*this)[key];
+	  typename std::set<Node*>::iterator set_iter = nodes.begin();
+	       for (; set_iter != nodes.end() ; set_iter++) {
+	 //          Node node = (**set_iter);
+	           if ( (**set_iter).Key() == key ) {
+	         	  return (**set_iter).Value();
+	 //              return node.Value();
+	           }
+	       }
+	       throw KGraphKeyNotFoundException();
   }
 
 /*   A const version of the subscript operator. Returns the value assigned to
@@ -431,9 +431,10 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
   ValueType const& operator[](KeyType const& key) const {
       typename std::set<Node*>::iterator set_iter = nodes.begin();
       for (; set_iter != nodes.end() ; set_iter++) {
-          Node node = (**set_iter);
-          if ( node.Key() == key ) {
-              return node.Value();
+//          Node node = (**set_iter);
+          if ( (**set_iter).Key() == key ) {
+        	  return (**set_iter).Value();
+//              return node.Value();
           }
       }
       throw KGraphKeyNotFoundException();
