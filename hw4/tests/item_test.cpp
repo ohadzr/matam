@@ -41,7 +41,7 @@ bool TestComboItem() {
 }
 
 
-//int main() {
-//    RUN_TEST(TestComboItem);
-//    return 0;
-//}
+int main() {
+    RUN_TEST(TestComboItem);
+    return 0;
+}
