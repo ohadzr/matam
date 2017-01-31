@@ -21,7 +21,7 @@ bool TestComboWorld() {
     ********************************************************************/
 
 
-    std::ifstream world_in("C:\\Users\\ohad\\ClionProjects\\matam\\hw4\\tests\\world_test.in");
+    std::ifstream world_in("tests/world_test.in");
     std::string line;
 
 //    while (std::getline(world_in, line)) {

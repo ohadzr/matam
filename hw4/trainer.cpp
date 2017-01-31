@@ -32,6 +32,10 @@ Trainer::~Trainer() {
           it != t_items.end() ; ++it) {
         delete *it;
     }
+//    for ( std::vector<Pokemon*>::iterator p_it = t_pokemon_list.begin();
+//          p_it != t_pokemon_list.end() ; ++p_it) {
+//        delete *p_it;
+//    }
 }
 
 Pokemon& Trainer::GetStrongestPokemon() {
@@ -133,11 +137,9 @@ void Trainer::updateFightBonus(int bonus) {
 }
 
 bool Trainer::TryToCatch(Pokemon& pokemon) {
-
-    if ( t_level < pokemon.Level() ) return false;
-
+    if ( t_level < pokemon.Level() )
+        return false;
     t_pokemon_list.push_back(&pokemon);
-
     return true;
 }
 

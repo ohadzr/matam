@@ -10,7 +10,7 @@
 #include "location.h"
 #include "trainer.h"
 #include "pokemon.h"
-#include "k_graph_mtm.h"
+#include "k_graph.h"
 #include "item.h"
 #include <sstream>
 #include <vector>
@@ -221,7 +221,7 @@ class World : public KGraph<std::string, Location*, 4>{
 
     class Starbucks : public Location {
     private:
-        std::vector<Pokemon*> pokemon_vector;
+        std::vector<Pokemon> pokemon_vector;
     public:
         /**
          * constructor of Starbucks.
@@ -280,8 +280,8 @@ public:
   // Disable copy constructor.
   World(const World& world) = delete;
 
-  void Insert(string const location_name, Location* new_location);
-  void Remove(string const location_name);
+  void Insert(string const& location_name, Location* new_location);
+  void Remove(string const& location_name);
 
 private:
     static const int DIRECTIONS = 4;

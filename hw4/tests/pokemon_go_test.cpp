@@ -23,7 +23,7 @@ using mtm::pokemongo::PokemonGo;
  **************************************/
 
 void SetUpWorld(World* world) {
-  ifstream world_in("C:\\Users\\ohad\\ClionProjects\\matam\\hw4\\tests\\sahar_world_test.in");
+  ifstream world_in("tests/sahar_world_test.in");
   string line;
 
   while (std::getline(world_in, line)) {
@@ -60,7 +60,7 @@ bool TestPokemonGo() {
   ASSERT_NO_THROW( pokemon_go.AddTrainer("Ash", YELLOW, "mumbai") );
   ASSERT_NO_THROW( pokemon_go.AddTrainer("Sahar", RED, "paris") );
   ASSERT_THROW( PokemonGoLocationNotFoundException,
-		  pokemon_go.AddTrainer("Sahar", RED, "akraba") );
+		  pokemon_go.AddTrainer("Sahar2", RED, "akraba") );
   ASSERT_THROW( PokemonGoTrainerNameAlreadyUsedExcpetion,
 		  pokemon_go.AddTrainer("Sahar", RED, "mumbai") );
   ASSERT_NO_THROW(pokemon_go.AddTrainer("Ohad", BLUE, "sydney"));

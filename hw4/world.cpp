@@ -27,16 +27,16 @@ World::World() : KGraph(KGraph<std::string, Location*, DIRECTIONS>(nullptr)),
 }
 
 World::~World() {
-//	std::set<std::string>::iterator it = location_names.begin();
-//	for( ;it != location_names.end(); ++it ) {
-//		std::string location_name = *it;
-//		std::vector<Trainer*> trainers =
-//				world_map[location_name]->GetTrainers();
-//		std::vector<Trainer*>::const_iterator trainer_it = trainers.begin();
-//		for (; trainer_it != trainers.end(); trainer_it++) {
-//			delete *trainer_it;
-//		}
-//	}
+	std::set<string>::iterator it = location_names.begin();
+	for (; it != location_names.end() ; it ++) {
+		Location* location = this->operator[](*it);
+		std::vector<Trainer*> trainers = location->GetTrainers();
+		std::vector<Trainer*>::const_iterator t_it = trainers.begin();
+		for (; t_it != trainers.end(); t_it++){
+			delete *t_it;
+		}
+		delete location;
+	}
 }
 
 World::GYM::GYM() : Leader(nullptr) {
@@ -98,26 +98,15 @@ double World::GYM::pokemonBoost(int pokmon_old_level ) {
 }
 
 void World::GYM::fightOutcome( Trainer& winner, Trainer& loser ) {
-	int new_level = winnerNewLevel(winner.GetLevel(),loser.GetLevel());
+	int new_level = winnerNewLevel(winner.GetLevel(), loser.GetLevel());
 	winner.updateLevel(new_level);
-    winner.updateFightBonus(WINNER_BONUS);
-    loser.updateFightBonus(LOSER_BONUS);
+	winner.updateFightBonus(WINNER_BONUS);
+	loser.updateFightBonus(LOSER_BONUS);
 	if (Leader->GetName() == loser.GetName()) {
 		Leader->updateFightBonus(-LEADER_BONUS);
 		winner.updateFightBonus(LEADER_BONUS);
 	}
-//    updateBonusPoints(winner, WINNER_BONUS);
-//    updateBonusPoints(loser, LOSER_BONUS);
 }
-
-//void World::GYM::updateBonusPoints(Trainer &trainer, int bonus){
-//	Team trainer_team = trainer.GetTeam();
-//	switch (trainer_team) {
-//	case YELLOW : team_bonus_yellow += bonus ; break;
-//	case RED : team_bonus_red += bonus ; break;
-//	case BLUE : team_bonus_blue += bonus ; break;
-//	}
-//}
 
 //true if second win
 bool World::GYM::makeFight( Trainer& first , Trainer& second ) {
@@ -340,7 +329,7 @@ void World::Pokestop::Arrive(Trainer &trainer) {
 
 
 World::Starbucks::Starbucks(std::vector<std::string>& input_vector) :
-		pokemon_vector(std::vector<Pokemon*>()) {
+		pokemon_vector(std::vector<Pokemon>()) {
 	if (input_vector.size() % 3 != 0) //Check if args right amount of args
 		throw WorldInvalidInputLineException();
 
@@ -361,33 +350,23 @@ World::Starbucks::Starbucks(std::vector<std::string>& input_vector) :
 		input_vector.erase(input_vector.begin());
 
 		try{
-            Pokemon* new_pokemon = new Pokemon(pokemon_name, std::set<PokemonType>(),
+            Pokemon new_pokemon = Pokemon(pokemon_name, std::set<PokemonType>(),
 										  pokemon_cp, pokemon_level);
 			pokemon_vector.push_back(new_pokemon);
 		}
 		catch (PokemonInvalidArgsException& e) {
-			std::vector<Pokemon*>::iterator it = pokemon_vector.begin();
-			for( ;it != pokemon_vector.end(); ++it ) {
-					delete *it;
-			}
 			throw WorldInvalidInputLineException();
 		}
 	}
 }
 
-World::Starbucks::~Starbucks() {
-	for ( std::vector<Pokemon*>::iterator it = pokemon_vector.begin();
-		  it != pokemon_vector.end() ; ++it) {
-		delete *it;
-	}
-}
+World::Starbucks::~Starbucks() {}
 
 void World::Starbucks::Arrive(Trainer &trainer) {
     Location::Arrive( trainer );
 
-    std::vector<Pokemon*>::iterator it = pokemon_vector.begin();
-    if (trainer.TryToCatch(**it)) {
-        //delete *it;
+    std::vector<Pokemon>::iterator it = pokemon_vector.begin();
+    if (trainer.TryToCatch(*it)) {
 		pokemon_vector.erase(it);
     }
 }
@@ -455,7 +434,7 @@ void World::createLocationByType(std::string &location_name,
 	}
 }
 
-void World::Insert(string location_name, Location *new_location) {
+void World::Insert(string const& location_name, Location *new_location) {
 	for (std::set<string>::iterator it = location_names.begin();
 			it != location_names.end() ; it ++) {
 		if (*it == location_name)
@@ -465,13 +444,13 @@ void World::Insert(string location_name, Location *new_location) {
 	location_names.insert(location_name);
 }
 
-void World::Remove(string const location_name) {
+void World::Remove(string const& location_name) {
 	for (std::set<string>::iterator it = location_names.begin();
 		 it != location_names.end() ; it ++) {
 		if (*it == location_name)
 		{
 			KGraph::Remove(location_name);
-			location_names.erase(location_name);
+			location_names.erase(it);
 			return;
 		}
 	}

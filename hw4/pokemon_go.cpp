@@ -18,7 +18,7 @@ using mtm::pokemongo::PokemonGo;
 PokemonGo::PokemonGo(const World* world): p_world(world){}
 
 PokemonGo::~PokemonGo(){
-    delete p_world; //TODO: check that calls world defauld Dtor
+    delete p_world;
 }
 
 void PokemonGo::AddTrainer(const std::string& name, const Team& team,
@@ -27,15 +27,17 @@ void PokemonGo::AddTrainer(const std::string& name, const Team& team,
         Trainer* trainer = new Trainer(name, team);
 
         try {
-            string trainer_location = WhereIs(name);
-            if (trainer_location != "")
-                throw PokemonGoTrainerNameAlreadyUsedExcpetion();
+            WhereIs(name);
+            delete trainer;
+            throw PokemonGoTrainerNameAlreadyUsedExcpetion();
         }
         catch (PokemonGoTrainerNotFoundExcpetion& e) {}
 
         if (!(p_world->location_names.find(location) !=
-                p_world->location_names.end()))
+                p_world->location_names.end())) {
+            delete trainer;
             throw PokemonGoLocationNotFoundException();
+        }
 
         (*p_world)[location]->Arrive(*trainer);
     }

@@ -546,7 +546,7 @@ template<typename KeyType, typename ValueType, int k> class KGraph {
       typename std::set<Node*>::iterator set_iter = nodes.begin();
       Node* node_u = nullptr;
       Node* node_v = nullptr;
-      for (; set_iter != nodes.end() ; set_iter++) {
+      for (; set_iter != nodes.end() ; set_iter++) {// not c
           if ( (*set_iter)->Key() == key_u ) {
               node_u = *set_iter;
           }

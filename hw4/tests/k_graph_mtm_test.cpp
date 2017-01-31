@@ -38,8 +38,6 @@ bool TestComboKGraph() {
     ASSERT_NO_THROW(graph.Insert(no_number));
     ASSERT_TRUE(graph["one"] == 1);
     ASSERT_TRUE(graph["zero"] == 0);
-    ASSERT_TRUE(graph["still zero"] == 0);
-    ASSERT_TRUE(graph.Contains("still zero"));
 
     ASSERT_NO_THROW(graph.Connect(one, two, 0 ,0));
     ASSERT_THROW(KGraphNodesAlreadyConnected,
