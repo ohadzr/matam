@@ -15,7 +15,7 @@ using mtm::pokemongo::Item;
  *               Tests                *
  **************************************/
 
-bool TestComboItem() {
+bool TestItem() {
     /********************************************************************
     *                              tests                               *
     ********************************************************************/
@@ -42,6 +42,6 @@ bool TestComboItem() {
 
 
 int main() {
-    RUN_TEST(TestComboItem);
+    RUN_TEST(TestItem);
     return 0;
 }

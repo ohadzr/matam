@@ -13,11 +13,17 @@ using mtm::pokemongo::Location;
 using mtm::pokemongo::Team;
 using mtm::pokemongo::PokemonType;
 using std::set;
+
+const string World::STRING_TO_INT = "0123456789";
+const string World::STRING_TO_DOUBLE = "0123456789.";
+
+
 /**************************************
  *        Interface Functions         *
  **************************************/
 
-World::World() : KGraph(KGraph<std::string, Location*, DIRECTIONS>(nullptr)) {
+World::World() : KGraph(KGraph<std::string, Location*, DIRECTIONS>(nullptr)),
+				 location_names(std::set<string>()) {
 }
 
 World::~World() {
@@ -381,7 +387,7 @@ void World::Starbucks::Arrive(Trainer &trainer) {
 
     std::vector<Pokemon*>::iterator it = pokemon_vector.begin();
     if (trainer.TryToCatch(**it)) {
-        delete *it;
+        //delete *it;
 		pokemon_vector.erase(it);
     }
 }
@@ -450,7 +456,7 @@ void World::createLocationByType(std::string &location_name,
 }
 
 void World::Insert(string location_name, Location *new_location) {
-	for (std::set::iterator it = location_names.begin();
+	for (std::set<string>::iterator it = location_names.begin();
 			it != location_names.end() ; it ++) {
 		if (*it == location_name)
 			throw WorldLocationNameAlreadyUsed();
@@ -460,13 +466,12 @@ void World::Insert(string location_name, Location *new_location) {
 }
 
 void World::Remove(string const location_name) {
-	for (std::set::iterator it = location_names.begin();
+	for (std::set<string>::iterator it = location_names.begin();
 		 it != location_names.end() ; it ++) {
 		if (*it == location_name)
 		{
 			KGraph::Remove(location_name);
 			location_names.erase(location_name);
-			delete it;
 			return;
 		}
 	}

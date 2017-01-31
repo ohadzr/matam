@@ -352,7 +352,8 @@ bool trainerTestGetsAndUpdate() {
     ohad.addItem( &item2 );
     ohad.addItem( &item3 );
     Item* ohad_item = ohad.getOldestItem();
-    ASSERT_TRUE((ohad_item->getLevel() == 34)&&ohad_item->getType() == "POTION");
+    ASSERT_TRUE((ohad_item->getLevel() == 20) &&
+                         ohad_item->getType() == "POTION");
 
     return true;
 }
@@ -366,7 +367,7 @@ bool trainerTest() {
     RUN_TEST(trainerTestGetTeam);
     RUN_TEST(trainerTestTryToCatch);
     RUN_TEST(trainerTestGetsAndUpdate);
-	/* print test will be tested in pokemon go */
+    /* print test will be tested in pokemon go */
 
     return true;
 }
