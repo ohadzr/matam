@@ -129,14 +129,12 @@ bool TestPokemonGo() {
 
 
   //TODO: delete all trainers
-  //TODO: should I delete world here? or in destractor?
-  delete earth;
 
   return true;
 }
 
 
-//int main() {
-//    RUN_TEST(TestPokemonGo);
-//    return 0;
-//}
+int main() {
+    RUN_TEST(TestPokemonGo);
+    return 0;
+}

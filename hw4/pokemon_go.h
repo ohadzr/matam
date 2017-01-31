@@ -73,7 +73,7 @@ public:
   // @return the set of trainers found in the given location.
   // @throw PokemonGoLocationNotFoundException if the specified location does
   //        not exist.
-  const std::vector<Trainer*>& GetTrainersIn(const std::string& location); //TODO:ADD & back to the return value
+  const std::vector<Trainer*>& GetTrainersIn(const std::string& location);
 
   // Returns the score of a given team in the game.
   //

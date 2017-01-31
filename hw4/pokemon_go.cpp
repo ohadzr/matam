@@ -17,7 +17,9 @@ using mtm::pokemongo::PokemonGo;
 
 PokemonGo::PokemonGo(const World* world): p_world(world){}
 
-PokemonGo::~PokemonGo(){}
+PokemonGo::~PokemonGo(){
+    delete p_world; //TODO: check that calls world defauld ~Dtor
+}
 
 void PokemonGo::AddTrainer(const std::string& name, const Team& team,
                            const std::string& location){

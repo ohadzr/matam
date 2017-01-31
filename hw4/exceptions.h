@@ -33,6 +33,7 @@ namespace pokemongo {
 	class WorldException : public MtmException {};
   class WorldInvalidInputLineException : public WorldException {};
 	class WorldLocationNameAlreadyUsed : public WorldException {};
+	class WorldLocationNotFoundException : public WorldException {};
 
 	class PokemonGoException : public MtmException {};
 	class PokemonGoLocationNotFoundException : public PokemonGoException {};

@@ -280,8 +280,8 @@ public:
   // Disable copy constructor.
   World(const World& world) = delete;
 
-  void Insert(string location_name, Location* new_location);
-  void Remove(string location_name);
+  void Insert(string const location_name, Location* new_location);
+  void Remove(string const location_name);
 
 private:
     static const int DIRECTIONS = 4;
@@ -315,7 +315,7 @@ private:
      * function parse lines from input into string vector.
      * @param input - input stream.
      * @return
-     * the string vector. //TODO: shoudent be reprence or a pointer?
+     * the string vector.
      */
     static std::vector<std::string> parseInput(std::istream& input);
 

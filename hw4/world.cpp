@@ -355,7 +355,6 @@ World::Starbucks::Starbucks(std::vector<std::string>& input_vector) :
 		input_vector.erase(input_vector.begin());
 
 		try{
-			//Pokemon new_pokemon = Pokemon(pokemon_name, TODO:delete next line and remove comment
             Pokemon* new_pokemon = new Pokemon(pokemon_name, std::set<PokemonType>(),
 										  pokemon_cp, pokemon_level);
 			pokemon_vector.push_back(new_pokemon);
@@ -382,7 +381,8 @@ void World::Starbucks::Arrive(Trainer &trainer) {
 
     std::vector<Pokemon*>::iterator it = pokemon_vector.begin();
     if (trainer.TryToCatch(**it)) {
-        pokemon_vector.erase(it); //TODO: PROBLEM?? - check if this delete the pokemon the trainer caught - maybe send a copy of the pokemon (above)?
+        delete *it;
+		pokemon_vector.erase(it);
     }
 }
 
@@ -447,4 +447,28 @@ void World::createLocationByType(std::string &location_name,
 		World::Starbucks* new_starbucks = new World::Starbucks(input_vector);
 		this->Insert(location_name, new_starbucks);
 	}
+}
+
+void World::Insert(string location_name, Location *new_location) {
+	for (std::set::iterator it = location_names.begin();
+			it != location_names.end() ; it ++) {
+		if (*it == location_name)
+			throw WorldLocationNameAlreadyUsed();
+	}
+	KGraph::Insert(location_name, new_location);
+	location_names.insert(location_name);
+}
+
+void World::Remove(string const location_name) {
+	for (std::set::iterator it = location_names.begin();
+		 it != location_names.end() ; it ++) {
+		if (*it == location_name)
+		{
+			KGraph::Remove(location_name);
+			location_names.erase(location_name);
+			delete it;
+			return;
+		}
+	}
+	throw WorldLocationNotFoundException();
 }
