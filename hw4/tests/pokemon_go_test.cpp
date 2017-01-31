@@ -59,8 +59,8 @@ bool TestPokemonGo() {
 
   ASSERT_NO_THROW( pokemon_go.AddTrainer("Ash", YELLOW, "mumbai") );
   ASSERT_NO_THROW( pokemon_go.AddTrainer("Sahar", RED, "paris") );
-//  ASSERT_THROW( PokemonGoLocationNotFoundException,
-//		  pokemon_go.AddTrainer("Sahar", RED, "akraba") ); //TODO: check which exception is right?
+  ASSERT_THROW( PokemonGoLocationNotFoundException,
+		  pokemon_go.AddTrainer("Sahar", RED, "akraba") );
   ASSERT_THROW( PokemonGoTrainerNameAlreadyUsedExcpetion,
 		  pokemon_go.AddTrainer("Sahar", RED, "mumbai") );
   ASSERT_NO_THROW(pokemon_go.AddTrainer("Ohad", BLUE, "sydney"));
@@ -104,7 +104,12 @@ bool TestPokemonGo() {
   const vector<Trainer*>& trainers_in_rome =
           pokemon_go.GetTrainersIn("rome");
   ASSERT_TRUE( trainers_in_rome.empty() );
-  earth->Remove("rome"); // TODO: rome empty , try to go to rome.
+
+  earth->Remove("paris");
+
+  ASSERT_THROW( PokemonGoReachedDeadEndException,
+                pokemon_go.MoveTrainer( "Sahar", EAST ) );
+
   output << *(trainers_in_berlin[0]);
   output << *(trainers_in_berlin[1]);
   output << *(trainers_in_berlin[2]);
@@ -128,8 +133,8 @@ bool TestPokemonGo() {
   ASSERT_EQUAL( trainers_in_sydney.size() , 1 );
 
 
-  earth->Remove("sydney"); //TODO; want to check if ohad still exist
-  //TODO: delete all trainers
+  earth->Remove("sydney");
+  ASSERT_NO_THROW(pokemon_go.AddTrainer("Ohad", BLUE, "rome"));
 
   return true;
 }
