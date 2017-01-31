@@ -196,7 +196,7 @@ class World : public KGraph<std::string, Location*, 4>{
 
     class Pokestop : public Location {
         private:
-            std::vector<Item*> item_vector = std::vector<Item*>();
+            std::vector<Item> item_vector = std::vector<Item>();
             friend class mtm::pokemongo::Trainer;
 
         public:
@@ -280,7 +280,7 @@ public:
   // Disable copy constructor.
   World(const World& world) = delete;
 
-  void Insert(string const& location_name, Location* new_location);
+  void Insert(string const& location_name, Location* const& new_location);
   void Remove(string const& location_name);
 
 private:

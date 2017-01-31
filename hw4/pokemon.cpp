@@ -23,33 +23,34 @@ Pokemon::Pokemon( const string& species, const set<PokemonType>& types,
                                             p_hp(MAX_HP),
                                             p_level(level),
                                             name(string(species)),
-                                            p_types(set<PokemonType>(types)) {
+                                            p_types(types) {
     if ( cp <= 0 || level <= 0 || species == "" ) {
         /* invalid parameter */
         throw PokemonInvalidArgsException();
     }
 }
 
-//TODO: remove comment
-//Pokemon::Pokemon( const string& species,
-//                  const double& cp,
-//                  const int& level):  p_cp(cp) ,
-//                                      p_hp(MAX_HP),
-//                                      p_level(level),
-//                                      name(string(species)),
-//                                      p_types(GetDefaultTypes(species)) {
-//    if ( cp <= 0 || level <= 0 || species == "" ) {
-//        /* invalid parameter */
-//        throw PokemonInvalidArgsException();
-//    }
-//}
+
+
+Pokemon::Pokemon( const string& species,
+                  const double& cp,
+                  const int& level):  p_cp(cp) ,
+                                      p_hp(MAX_HP),
+                                      p_level(level),
+                                      name(species),
+                                      p_types(GetDefaultTypes(species)) {
+    if ( cp <= 0 || level <= 0 || species == "" ) {
+        /* invalid parameter */
+        throw PokemonInvalidArgsException();
+    }
+}
 
 
 Pokemon::Pokemon( const Pokemon& pokemon) :   p_cp(pokemon.p_cp),
                                               p_hp(pokemon.p_hp),
                                               p_level(pokemon.p_level),
                                               name(string(pokemon.name)),
-                                 p_types(set<PokemonType>(pokemon.p_types)) {
+                                 p_types(set<PokemonType>(pokemon.p_types))  {
 }
 
 Pokemon& Pokemon::operator=(const Pokemon& pokemon) {
@@ -130,7 +131,7 @@ std::ostream& mtm::pokemongo::operator<<(std::ostream& output,
 
     set<PokemonType>::iterator it;
     for (it = pokemon.p_types.begin() ; it != pokemon.p_types.end(); ++it) {
-        output << Pokemon::pokemonTypeToString(*it) << " ";
+        output << " " << Pokemon::pokemonTypeToString(*it);
     }
 
     return output;

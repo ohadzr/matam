@@ -131,7 +131,7 @@ bool TestComboWorld() {
     return true;
 }
 
-int main() {
-    RUN_TEST(TestComboWorld);
-    return 0;
-}
+//int main() {
+//    RUN_TEST(TestComboWorld);
+//    return 0;
+//}

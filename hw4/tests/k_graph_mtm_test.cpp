@@ -78,7 +78,7 @@ bool TestComboKGraph() {
     return true;
 }
 
-int main() {
-    RUN_TEST(TestComboKGraph);
-    return 0;
-}
+//int main() {
+//    RUN_TEST(TestComboKGraph);
+//    return 0;
+//}

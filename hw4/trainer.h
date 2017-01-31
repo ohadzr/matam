@@ -34,7 +34,7 @@ class Trainer {
 
     std::string t_name;
     int t_level;
-    std::vector<Pokemon*> t_pokemon_list;
+    std::vector<Pokemon> t_pokemon_list;
     std::vector<Item*> t_items;
     Team t_team;
     int fight_bonus;

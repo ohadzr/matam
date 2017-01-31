@@ -130,7 +130,7 @@ bool trainerTestKillStrongestPokemon() {
 
     ASSERT_THROW(mtm::pokemongo::TrainerNoPokemonsFoundException,
     		misti.GetStrongestPokemon());
-    ASSERT_TRUE(ash.GetStrongestPokemon()== charmander);
+    ASSERT_TRUE(ash.GetStrongestPokemon() == charmander);
 
     return true;
 }
@@ -372,7 +372,7 @@ bool trainerTest() {
     return true;
 }
 
-int main() {
-    trainerTest();
-    return 0;
-}
+//int main() {
+//    trainerTest();
+//    return 0;
+//}

@@ -50,9 +50,9 @@ bool pokemonTestCtor() {
 
     /* -------------------  initialize one pokemon  ------------------- */
 
-//    string poor_pokemon_name = "poor_pokemon";
-//    double poor_pokemon_cp = 80.0;
-//    int poor_pokemon_level = 7;
+    string poor_pokemon_name = "poor_pokemon";
+    double poor_pokemon_cp = 80.0;
+    int poor_pokemon_level = 7;
 
     /* -------------------  initialize one pokemon  ------------------- */
 
@@ -83,7 +83,7 @@ bool pokemonTestCtor() {
     ASSERT_NO_THROW(Pokemon(Cyndaquil_name,types2,Cyndaquil_cp,Cyndaquil_level));
     ASSERT_THROW(mtm::pokemongo::PokemonInvalidArgsException,Pokemon(
             Bad_pokemon1_name,types3,Bad_pokemon1_cp,Bad_pokemon1_level));
-//   ASSERT_NO_THROW(Pokemon(poor_pokemon_name,poor_pokemon_cp,poor_pokemon_level));
+   ASSERT_NO_THROW(Pokemon(poor_pokemon_name,poor_pokemon_cp,poor_pokemon_level));
     ASSERT_THROW(mtm::pokemongo::PokemonInvalidArgsException,
                   Pokemon(Bad_pokemon3_name,types5,
                       Bad_pokemon3_cp,Bad_pokemon3_level));
@@ -464,7 +464,7 @@ bool pokemonTest() {
     return true;
 }
 
-int main() {
-    pokemonTest();
-    return 0;
-}
+//int main() {
+//    pokemonTest();
+//    return 0;
+//}

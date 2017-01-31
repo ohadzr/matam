@@ -41,7 +41,7 @@ bool TestItem() {
 }
 
 
-int main() {
-    RUN_TEST(TestItem);
-    return 0;
-}
+//int main() {
+//    RUN_TEST(TestItem);
+//    return 0;
+//}

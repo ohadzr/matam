@@ -291,14 +291,10 @@ World::Pokestop::Pokestop(std::vector<std::string>& input_vector) {
 
 		try {
 			Item item = Item(item_type, item_level);
-			Item* new_item = new Item(item);
+			Item new_item = Item(item);
 			item_vector.push_back(new_item);
 		}
 		catch (ItemInvalidArgsException& e) {
-			for ( std::vector<Item*>::iterator it = item_vector.begin();
-				  it != item_vector.end() ; ++it) {
-				delete *it;
-			}
 			throw WorldInvalidInputLineException();
 		}
 
@@ -306,20 +302,15 @@ World::Pokestop::Pokestop(std::vector<std::string>& input_vector) {
 
 }
 
-World::Pokestop::~Pokestop() {
-	for ( std::vector<Item*>::iterator it = item_vector.begin();
-		  it != item_vector.end() ; ++it) {
-		delete *it;
-	}
-}
+World::Pokestop::~Pokestop() {}
 
 void World::Pokestop::Arrive(Trainer &trainer) {
     Location::Arrive( trainer );
 
-    for (std::vector<Item*>::iterator it = item_vector.begin() ;
+    for (std::vector<Item>::iterator it = item_vector.begin() ;
          it != item_vector.end(); ++it) {
-        if ((*it)->getLevel() <= trainer.GetLevel()){
-            trainer.addItem(*it);
+        if ((*it).getLevel() <= trainer.GetLevel()){
+            trainer.addItem(&(*it));
             item_vector.erase(it);
             break;
         }
@@ -350,8 +341,8 @@ World::Starbucks::Starbucks(std::vector<std::string>& input_vector) :
 		input_vector.erase(input_vector.begin());
 
 		try{
-            Pokemon new_pokemon = Pokemon(pokemon_name, std::set<PokemonType>(),
-										  pokemon_cp, pokemon_level);
+            Pokemon new_pokemon = Pokemon(pokemon_name, pokemon_cp,
+										  pokemon_level);
 			pokemon_vector.push_back(new_pokemon);
 		}
 		catch (PokemonInvalidArgsException& e) {
@@ -365,8 +356,10 @@ World::Starbucks::~Starbucks() {}
 void World::Starbucks::Arrive(Trainer &trainer) {
     Location::Arrive( trainer );
 
+	if (pokemon_vector.size() == 0)
+		return;
     std::vector<Pokemon>::iterator it = pokemon_vector.begin();
-    if (trainer.TryToCatch(*it)) {
+	if (trainer.TryToCatch(*it)) {
 		pokemon_vector.erase(it);
     }
 }
@@ -434,7 +427,7 @@ void World::createLocationByType(std::string &location_name,
 	}
 }
 
-void World::Insert(string const& location_name, Location *new_location) {
+void World::Insert(string const& location_name, Location* const& new_location) {
 	for (std::set<string>::iterator it = location_names.begin();
 			it != location_names.end() ; it ++) {
 		if (*it == location_name)
@@ -449,6 +442,7 @@ void World::Remove(string const& location_name) {
 		 it != location_names.end() ; it ++) {
 		if (*it == location_name)
 		{
+			delete (*this)[location_name];
 			KGraph::Remove(location_name);
 			location_names.erase(it);
 			return;

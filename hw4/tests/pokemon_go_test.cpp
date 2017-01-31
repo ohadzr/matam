@@ -85,8 +85,10 @@ bool TestPokemonGo() {
   ASSERT_THROW( PokemonGoReachedDeadEndException,
 		  pokemon_go.MoveTrainer( "Ohad", SOUTH ));
 
+  ASSERT_NO_THROW( pokemon_go.AddTrainer("Tamer", YELLOW, "madrid") );
+
   ASSERT_NO_THROW( pokemon_go.MoveTrainer( "Ash", NORTH ) );
-  ASSERT_EQUAL( pokemon_go.GetScore( YELLOW ), 1 );
+  ASSERT_EQUAL( pokemon_go.GetScore( YELLOW ), 2 );
 
   ASSERT_NO_THROW( pokemon_go.MoveTrainer( "Sahar", EAST ) );
   ASSERT_EQUAL( pokemon_go.GetScore( RED ), 12 );
@@ -105,14 +107,15 @@ bool TestPokemonGo() {
           pokemon_go.GetTrainersIn("rome");
   ASSERT_TRUE( trainers_in_rome.empty() );
 
-  earth->Remove("paris");
-
-  ASSERT_THROW( PokemonGoReachedDeadEndException,
-                pokemon_go.MoveTrainer( "Sahar", EAST ) );
+  // Passed the tests but in comment because of what you said in FAQ
+//  earth->Remove("paris");
+//  ASSERT_THROW( PokemonGoReachedDeadEndException,
+//                pokemon_go.MoveTrainer( "Sahar", WEST ) );
 
   output << *(trainers_in_berlin[0]);
   output << *(trainers_in_berlin[1]);
   output << *(trainers_in_berlin[2]);
+
 
   ASSERT_EQUAL(output.str(),
                "Sahar (1) RED\n"
@@ -120,10 +123,10 @@ bool TestPokemonGo() {
                "Tomer (1) RED\n"
 			   "pikachu(1/1/100)\n"
 		  	   "Ash (2) YELLOW\n"
-               "charmander(1/3/98)\n"); //TODO: replace this with real types!!!
+               "charmander(1/3/98) NORMAL BUG FAIRY ICE GHOST\n");
 
   ASSERT_EQUAL( pokemon_go.GetScore( RED ), 1 );
-  ASSERT_EQUAL( pokemon_go.GetScore( YELLOW ), 14 );
+  ASSERT_EQUAL( pokemon_go.GetScore( YELLOW ), 15 );
 
   ASSERT_NO_THROW( pokemon_go.MoveTrainer( "Tomer", NORTH ) );
   ASSERT_EQUAL( pokemon_go.GetScore( RED ), 11 );
@@ -132,15 +135,15 @@ bool TestPokemonGo() {
      pokemon_go.GetTrainersIn("sydney");
   ASSERT_EQUAL( trainers_in_sydney.size() , 1 );
 
-
-  earth->Remove("sydney");
-  ASSERT_NO_THROW(pokemon_go.AddTrainer("Ohad", BLUE, "rome"));
+// Passed the tests but in comment because of what you said in FAQ
+//  earth->Remove("sydney");
+//  ASSERT_NO_THROW(pokemon_go.AddTrainer("Ohad", BLUE, "rome"));
 
   return true;
 }
 
 
-int main() {
-    RUN_TEST(TestPokemonGo);
-    return 0;
-}
+//int main() {
+//    RUN_TEST(TestPokemonGo);
+//    return 0;
+//}
