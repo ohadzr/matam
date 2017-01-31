@@ -101,6 +101,10 @@ bool TestPokemonGo() {
      pokemon_go.GetTrainersIn("berlin");
   ASSERT_EQUAL( trainers_in_berlin.size() , 3 );
 
+  const vector<Trainer*>& trainers_in_rome =
+          pokemon_go.GetTrainersIn("rome");
+  ASSERT_TRUE( trainers_in_rome.empty() );
+  earth->Remove("rome"); // TODO: rome empty , try to go to rome.
   output << *(trainers_in_berlin[0]);
   output << *(trainers_in_berlin[1]);
   output << *(trainers_in_berlin[2]);
@@ -123,11 +127,8 @@ bool TestPokemonGo() {
      pokemon_go.GetTrainersIn("sydney");
   ASSERT_EQUAL( trainers_in_sydney.size() , 1 );
 
-  const vector<Trainer*>& trainers_in_rome =
-     pokemon_go.GetTrainersIn("rome");
-  ASSERT_TRUE( trainers_in_rome.empty() );
 
-
+  earth->Remove("sydney"); //TODO; want to check if ohad still exist
   //TODO: delete all trainers
 
   return true;
