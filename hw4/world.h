@@ -289,6 +289,8 @@ private:
     static const int POKEMON_NAME = 0;
     static const int POKEMON_CP = 1;
     static const int POKEMON_LEVEL = 2;
+    static const string STRING_TO_INT = "0123456789";
+    static const string STRING_TO_DOUBLE = "0123456789.";
 
     std::set<std::string> location_names;
 

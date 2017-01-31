@@ -17,8 +17,7 @@ using std::set;
  *        Interface Functions         *
  **************************************/
 
-World::World() : KGraph(KGraph<std::string, Location*, DIRECTIONS>(nullptr)),
-				 location_names(std::set<std::string>()) {
+World::World() : KGraph(KGraph<std::string, Location*, DIRECTIONS>(nullptr)) {
 }
 
 World::~World() {
@@ -288,6 +287,9 @@ World::Pokestop::Pokestop(std::vector<std::string>& input_vector) {
 
 	while (input_vector.size() != 0) {
 		std::string item_type = input_vector[ITEM_TYPE];
+        if (input_vector[ITEM_LEVEL].find_first_not_of(STRING_TO_INT) !=
+                string::npos)
+            throw WorldInvalidInputLineException();
 		int item_level = atoi(input_vector[ITEM_LEVEL].c_str());
 		input_vector.erase(input_vector.begin());
 		input_vector.erase(input_vector.begin());
@@ -338,6 +340,14 @@ World::Starbucks::Starbucks(std::vector<std::string>& input_vector) :
 
 	while (input_vector.size() != 0) {
 		std::string pokemon_name = input_vector[POKEMON_NAME];
+        if (input_vector[POKEMON_CP].find_first_not_of(STRING_TO_DOUBLE) !=
+                string::npos ||
+            input_vector[POKEMON_LEVEL].find_first_not_of(STRING_TO_INT) !=
+                string::npos ||
+            std::count(input_vector[POKEMON_CP].begin(),
+                       input_vector[POKEMON_CP].end(),'.') > 1)
+            throw WorldInvalidInputLineException();
+
 		double pokemon_cp = atof(input_vector[POKEMON_CP].c_str());
 		int pokemon_level = atoi(input_vector[POKEMON_LEVEL].c_str());
 		input_vector.erase(input_vector.begin());
@@ -412,7 +422,6 @@ std::istream& mtm::pokemongo::operator>>(std::istream& input, World& world) {
 std::vector<std::string> World::parseInput(std::istream &input) {
 	std::vector<std::string> input_vector = std::vector<std::string>();
 	std::string input_string;
-	// TODO: ADD parsing int and float
 	while (input >> input_string){
 		input_vector.push_back(input_string);
 	}
@@ -427,15 +436,15 @@ void World::createLocationByType(std::string &location_name,
 	if (location_type == "GYM") {
 		if (input_vector.size() != 0)
 			throw WorldInvalidInputLineException();
-		World::GYM new_gym = World::GYM();
-		this->Insert(location_name, &new_gym);
+		World::GYM* new_gym = new World::GYM();
+		this->Insert(location_name, new_gym);
 	}
 	else if (location_type == "POKESTOP") {
-		World::Pokestop new_pokestop = World::Pokestop(input_vector);
-		this->Insert(location_name, &new_pokestop);
+		World::Pokestop* new_pokestop = new World::Pokestop(input_vector);
+		this->Insert(location_name, new_pokestop);
 	}
 	else {
-		World::Starbucks new_starbucks = World::Starbucks(input_vector);
-		this->Insert(location_name, &new_starbucks);
+		World::Starbucks* new_starbucks = new World::Starbucks(input_vector);
+		this->Insert(location_name, new_starbucks);
 	}
 }

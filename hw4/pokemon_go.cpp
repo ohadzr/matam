@@ -61,8 +61,8 @@ void PokemonGo::MoveTrainer(const std::string& trainer_name,
             p_world->BeginAt(location);
     try {
         std::string next_location = *(it.Move(dir));
-        (*p_world)[next_location]->Arrive(*trainer);
         (*p_world)[location]->Leave(*trainer);
+        (*p_world)[next_location]->Arrive(*trainer);
     }
     catch (KGraphIteratorReachedEnd& e) {
         throw PokemonGoReachedDeadEndException();
