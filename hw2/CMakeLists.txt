@@ -8,3 +8,6 @@ add_executable(hw2_pokemon_test ${SOURCE_FILES})
 
 set(SOURCE_FILES2 pokemon.h pokemon.c pokemon_trainer_test.c pokemon_trainer.c)
 add_executable(hw2_trainer_test ${SOURCE_FILES2})
+
+
+#ido was here
